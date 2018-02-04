@@ -56,9 +56,9 @@ public class Comm extends Application{
     private static String clientSecret = "zPaBp4G84kQmLbMeG1tcaE4/6N2tMeIu7nzBzKFQbxLrmY/wLg5uK8pprthHqTspsVaBC0YkP7HKbeewdt/UwmD+Sj+PF4trJ/0di1uZe6+/4Ulk0oY9E7X0nlUqmKiyiGABPKGHmVz7kZfd8M6Vr4/zohS5iWtJSJCSVfNujHzHsE+YP9/VDFlCwhZzC6V/kIKk74+lUJDpV/36jlWj0Q==";
     private static MessageDigest _md_sha1;
 
-//    public  static String URL = "http://192.168.1.100:8080/";
-    public  static String URL = "http://192.168.0.138:8080/multipartes/";
-  //  public  static String URL = "http://app.multipartes.com.py/";
+
+ //   public  static String URL = "http://192.168.0.138:8080/multipartes/";
+    public  static String URL = "http://app.teckel.com.py/";
 
     public void onCreate(){
         super.onCreate();
