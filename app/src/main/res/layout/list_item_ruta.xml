@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="10">
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="5">
+
+        <!--TextView
+            android:id="@+id/txt1_item_ruta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:text="Juan Perez Insaurralde" />
+
+        <TextView
+            android:id="@+id/txt2_item_ruta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Orden: 1 - Fecha: 18-10-2015 18:53 hs"/-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:paddingTop="8dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5">
+
+        <!--Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/item_ruta_entrada_btn"
+            android:text="Entr"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/item_ruta_salida_btn"
+            android:text="Sal"/-->
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_toolbar"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="0dp">
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical"
+        android:layout_below="@id/toolbar">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sincronizar_progress_bar"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/sincronizar_mensaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:text=""/>
+
+        <Button
+            style="@style/button"
+            android:id="@+id/btn_sincronizar"
+            android:text="Iniciar Sincronización"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+        <CheckBox
+            android:id="@+id/sincronizar_checkbox_catalog"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descargar también Catálogo"/>
+
+        <TextView
+            android:id="@+id/sincronizar_texto_catalogo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Si descarga el catalogo de productos el proceso puede tardar varios minutos mas."
+            android:visibility="invisible"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

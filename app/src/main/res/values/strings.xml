@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MultipartesApp</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="configuracion">Configuración</string>
+    <string name="cerrar_sesion">Cerrar Sesión</string>
+    <string name="title_activity_rutas">Rutas</string>
+
+
+    <string name="action_next">Siguiente ></string>
+    <string name="action_finish">Última</string>
+
+    <string name="connection">Dispositivo a configurar. Selecciona un dispositivo de la lista.</string>
+    <string name="mac_address_hint">AA:BB:CC:11:22:33</string>
+    <string name="config">Utilizar esta impresora</string>
+    <string name="print">Probar Impresión</string>
+
+</resources>

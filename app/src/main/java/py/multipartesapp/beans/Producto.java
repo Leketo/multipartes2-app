@@ -1,0 +1,100 @@
+package py.multipartesapp.beans;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by Adolfo on 15/01/2016.
+ */
+public class Producto extends Bean {
+
+    Integer m_product_id;
+    String name;
+    Integer price;
+    Integer stock;
+    String codinterno;
+
+    Integer idFamilia;
+    Integer idSubFamilia;
+
+
+    @Override
+    public void initWithJson(JSONObject o) throws JSONException {
+
+        m_product_id = getInteger(o, "m_product_id");
+        name = getString(o, "name");
+        price = getInteger(o, "price");
+        stock = getInteger(o, "stock");
+        codinterno = getString(o, "codinterno");
+        idFamilia = getInteger(o, "m_product_family_id");
+        idSubFamilia = getInteger(o, "m_product_subfamily_id");
+    }
+
+    @Override
+    public void initWithJsonArray(JSONArray o) throws JSONException {
+    }
+
+    public Integer getM_product_id() {
+        return m_product_id;
+    }
+
+    public void setM_product_id(Integer m_product_id) {
+        this.m_product_id = m_product_id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
+    public String getCodinterno() {
+        return codinterno;
+    }
+
+    public void setCodinterno(String codinterno) {
+        this.codinterno = codinterno;
+    }
+
+    public Integer getIdFamilia() {
+        return idFamilia;
+    }
+
+    public void setIdFamilia(Integer idFamilia) {
+        this.idFamilia = idFamilia;
+    }
+
+    public Integer getIdSubFamilia() {
+        return idSubFamilia;
+    }
+
+    public void setIdSubFamilia(Integer idSubFamilia) {
+        this.idSubFamilia = idSubFamilia;
+    }
+
+    @Override
+    public String toString() {
+        return name + " - " + codinterno;
+    }
+
+
+}

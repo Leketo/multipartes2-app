@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="py.multipartesapp"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"> <!-- uses-sdk tools:node="replace" / -->
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="21"
+        tools:node="merge"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but are recommended.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <uses-feature android:name="android.hardware.camera"/>
+
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!--
+uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" /
+    -->
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activities.Main"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
+            android:name=".activities.RegistroVisitasActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity android:name=".activities.ConfiguracionActivity">
+        </activity>
+        <activity
+            android:name=".activities.SincronizarActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".activities.EntregaActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.ListRegistroVisitasActivity">
+        </activity>
+        <activity android:name=".activities.ListEntregaActivity">
+        </activity>
+        <activity
+            android:name=".activities.RutaLocationNewActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity android:name=".activities.ListPedidoActivity">
+        </activity>
+        <activity android:name=".activities.PedidoActivity">
+        </activity>
+        <activity android:name=".activities.PedidoDetalleNuevoActivity">
+        </activity>
+        <activity android:name=".activities.ConsultasActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaStockActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaClienteActivity">
+        </activity>
+        <activity android:name=".activities.CobranzaDetalleItemActivity">
+        </activity>
+        <activity
+            android:name=".activities.ListRutasActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
+            android:name=".activities.RutasActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
+            android:name=".activities.ListProductosImagenesActivity"
+            android:windowSoftInputMode="adjustPan">
+            >
+        </activity>
+        <activity android:name=".activities.ListCobranzaActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaClienteWebViewActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaVisitasActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaVisitasWebViewActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaPedidosActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaPedidosWebViewActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaEntregasActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaEntregasWebViewActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaCobrosActivity">
+        </activity>
+        <activity android:name=".activities.ConsultaCobrosWebViewActivity">
+        </activity>
+        <activity android:name=".activities.CobranzaActivity">
+        </activity>
+        <activity android:name=".activities.CobranzaDetalleActivity">
+        </activity>
+        <activity android:name=".activities.ProductoImagenActivity">
+        </activity>
+        <activity
+            android:name=".activities.ScreenSlidePagerActivity"
+            android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
+            android:uiOptions="splitActionBarWhenNarrow">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.Main"/>
+        </activity>
+
+        <receiver android:name=".utils.NetworkChangesReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".locationServices.LocationService"
+            android:enabled="true">
+        </service>
+
+        <receiver
+            android:name=".locationServices.LocationReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="xxx.yyy.intent.action.LOCATION"/>
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="@string/google_maps_key"/>
+
+        <activity android:name=".activities.DOPrintMainActivity">
+        </activity>
+    </application>
+
+</manifest>
