@@ -59,7 +59,7 @@ public class Comm extends Application{
 
  //   public  static String URL = "http://192.168.0.138:8080/multipartes/";
    // public  static String URL = "http://192.168.0.138:8080/";
-    public  static String URL = "http://app.teckel.com.py/";
+    public  static String URL = "http://app.multipartes.com.py/";
 
     public void onCreate(){
         super.onCreate();
