@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="py.multipartesapp"
+<manifest package="py.multipartes2"
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"> <!-- uses-sdk tools:node="replace" / -->
     <uses-sdk
@@ -33,25 +33,25 @@ uses-permission android:name="android.permission.WAKE_LOCK" />
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.Main"
+            android:name="py.multipartes2.android.activities.Main"
             android:theme="@style/AppTheme">
         </activity>
         <activity
-            android:name=".activities.RegistroVisitasActivity"
+            android:name="py.multipartes2.android.activities.RegistroVisitasActivity"
             android:windowSoftInputMode="adjustPan">
         </activity>
-        <activity android:name=".activities.ConfiguracionActivity">
+        <activity android:name="py.multipartes2.android.activities.ConfiguracionActivity">
         </activity>
         <activity
-            android:name=".activities.SincronizarActivity"
+            android:name="py.multipartes2.android.activities.SincronizarActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".activities.EntregaActivity"
+            android:name="py.multipartes2.android.activities.EntregaActivity"
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
-            android:name=".activities.LoginActivity"
+            android:name="py.multipartes2.android.activities.LoginActivity"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -59,89 +59,89 @@ uses-permission android:name="android.permission.WAKE_LOCK" />
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ListRegistroVisitasActivity">
+        <activity android:name="py.multipartes2.android.activities.ListRegistroVisitasActivity">
         </activity>
-        <activity android:name=".activities.ListEntregaActivity">
+        <activity android:name="py.multipartes2.android.activities.ListEntregaActivity">
         </activity>
         <activity
-            android:name=".activities.RutaLocationNewActivity"
+            android:name="py.multipartes2.android.activities.RutaLocationNewActivity"
             android:windowSoftInputMode="adjustPan">
         </activity>
-        <activity android:name=".activities.ListPedidoActivity">
+        <activity android:name="py.multipartes2.android.activities.ListPedidoActivity">
         </activity>
-        <activity android:name=".activities.PedidoActivity">
+        <activity android:name="py.multipartes2.android.activities.PedidoActivity">
         </activity>
-        <activity android:name=".activities.PedidoDetalleNuevoActivity">
+        <activity android:name="py.multipartes2.android.activities.PedidoDetalleNuevoActivity">
         </activity>
-        <activity android:name=".activities.ConsultasActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultasActivity">
         </activity>
-        <activity android:name=".activities.ConsultaStockActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaStockActivity">
         </activity>
-        <activity android:name=".activities.ConsultaClienteActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaClienteActivity">
         </activity>
-        <activity android:name=".activities.CobranzaDetalleItemActivity">
-        </activity>
-        <activity
-            android:name=".activities.ListRutasActivity"
-            android:windowSoftInputMode="adjustPan">
+        <activity android:name="py.multipartes2.android.activities.CobranzaDetalleItemActivity">
         </activity>
         <activity
-            android:name=".activities.RutasActivity"
+            android:name="py.multipartes2.android.activities.ListRutasActivity"
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
-            android:name=".activities.ListProductosImagenesActivity"
+            android:name="py.multipartes2.android.activities.RutasActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
+            android:name="py.multipartes2.android.activities.ListProductosImagenesActivity"
             android:windowSoftInputMode="adjustPan">
             >
         </activity>
-        <activity android:name=".activities.ListCobranzaActivity">
+        <activity android:name="py.multipartes2.android.activities.ListCobranzaActivity">
         </activity>
-        <activity android:name=".activities.ConsultaClienteWebViewActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaClienteWebViewActivity">
         </activity>
-        <activity android:name=".activities.ConsultaVisitasActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaVisitasActivity">
         </activity>
-        <activity android:name=".activities.ConsultaVisitasWebViewActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaVisitasWebViewActivity">
         </activity>
-        <activity android:name=".activities.ConsultaPedidosActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaPedidosActivity">
         </activity>
-        <activity android:name=".activities.ConsultaPedidosWebViewActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaPedidosWebViewActivity">
         </activity>
-        <activity android:name=".activities.ConsultaEntregasActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaEntregasActivity">
         </activity>
-        <activity android:name=".activities.ConsultaEntregasWebViewActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaEntregasWebViewActivity">
         </activity>
-        <activity android:name=".activities.ConsultaCobrosActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaCobrosActivity">
         </activity>
-        <activity android:name=".activities.ConsultaCobrosWebViewActivity">
+        <activity android:name="py.multipartes2.android.activities.ConsultaCobrosWebViewActivity">
         </activity>
-        <activity android:name=".activities.CobranzaActivity">
+        <activity android:name="py.multipartes2.android.activities.CobranzaActivity">
         </activity>
-        <activity android:name=".activities.CobranzaDetalleActivity">
+        <activity android:name="py.multipartes2.android.activities.CobranzaDetalleActivity">
         </activity>
-        <activity android:name=".activities.ProductoImagenActivity">
+        <activity android:name="py.multipartes2.android.activities.ProductoImagenActivity">
         </activity>
         <activity
-            android:name=".activities.ScreenSlidePagerActivity"
+            android:name="py.multipartes2.android.activities.ScreenSlidePagerActivity"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
             android:uiOptions="splitActionBarWhenNarrow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.Main"/>
+                android:value="py.multipartes2.android.activities.Main"/>
         </activity>
 
-        <receiver android:name=".utils.NetworkChangesReceiver">
+        <receiver android:name="py.multipartes2.android.utils.NetworkChangesReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
 
         <service
-            android:name=".locationServices.LocationService"
+            android:name="py.multipartes2.android.locationServices.LocationService"
             android:enabled="true">
         </service>
 
         <receiver
-            android:name=".locationServices.LocationReceiver"
+            android:name="py.multipartes2.android.locationServices.LocationReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="xxx.yyy.intent.action.LOCATION"/>
@@ -155,7 +155,7 @@ uses-permission android:name="android.permission.WAKE_LOCK" />
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key"/>
 
-        <activity android:name=".activities.DOPrintMainActivity">
+        <activity android:name="py.multipartes2.android.activities.DOPrintMainActivity">
         </activity>
     </application>
 

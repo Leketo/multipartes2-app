@@ -33,13 +33,13 @@
                 android:layout_height="wrap_content"
                 android:text="Vendedor: "/>
 
-            <py.multipartesapp.customAutoComplete.CustomAutoCompleteView
+            <py.multipartes2.customAutoComplete.CustomAutoCompleteView
                 android:id="@+id/rutalocation_vendedor_autocomplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/ic_close"
                 android:completionThreshold="1" >
-            </py.multipartesapp.customAutoComplete.CustomAutoCompleteView>
+            </py.multipartes2.customAutoComplete.CustomAutoCompleteView>
 
         </LinearLayout>
 
@@ -57,13 +57,13 @@
                 android:layout_height="wrap_content"
                 android:text="Cliente a visitar: "/>
 
-            <py.multipartesapp.customAutoComplete.CustomAutoCompleteView
+            <py.multipartes2.customAutoComplete.CustomAutoCompleteView
                 android:id="@+id/rutalocation_cliente_autocomplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/ic_close"
                 android:completionThreshold="1" >
-            </py.multipartesapp.customAutoComplete.CustomAutoCompleteView>
+            </py.multipartes2.customAutoComplete.CustomAutoCompleteView>
         </LinearLayout>
 
         <View

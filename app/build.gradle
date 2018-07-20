@@ -12,9 +12,10 @@ android {
 
     defaultConfig {
 
-        applicationId "py.multipartesapp"
+        applicationId 'py.multipartes2'
         minSdkVersion 14
         targetSdkVersion 21
+        versionCode 3
         versionName "3.0"
         multiDexEnabled true
 
@@ -30,7 +31,6 @@ android {
 }
 
 dependencies {
-
     compile files('libs/agptekbtsdk.jar')
     compile 'com.android.support:appcompat-v7:21.+'
     compile 'org.apache.httpcomponents:httpclient:4.3.6'
