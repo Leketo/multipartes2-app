@@ -24,6 +24,9 @@ public class Cobranza extends Bean {
 
     List<CobranzaDetalle> detalles;
 
+    List<CobranzaDetalleItem> items;
+
+
     @Override
     public void initWithJson(JSONObject o) throws JSONException {
 
@@ -129,5 +132,13 @@ public class Cobranza extends Bean {
 
     public void setDetalles(List<CobranzaDetalle> detalles) {
         this.detalles = detalles;
+    }
+
+    public List<CobranzaDetalleItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<CobranzaDetalleItem> items) {
+        this.items = items;
     }
 }

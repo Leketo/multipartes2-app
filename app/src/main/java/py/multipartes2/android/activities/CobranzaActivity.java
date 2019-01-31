@@ -405,6 +405,7 @@ public class CobranzaActivity extends ActionBarActivity {
                 detalleJson.put("cashed", detalle.getCashed());
 
 
+                JSONObject formaPagoJson = new JSONObject();
                 JSONArray cobrosJsonArray = new JSONArray();
                 for (CobranzaDetalleItem cobro : detalle.getItems()){
                     JSONObject cobroJson = new JSONObject();
@@ -418,7 +419,9 @@ public class CobranzaActivity extends ActionBarActivity {
 
                 }
 
-                detalleJson.accumulate("chageDetail", cobrosJsonArray);
+
+                formaPagoJson.accumulate("paymentline", cobrosJsonArray);
+
 
                 //detalleJson.put("charge_id", detalle.getCharge_id());
 
@@ -430,6 +433,8 @@ public class CobranzaActivity extends ActionBarActivity {
 
                 detallesJsonArray.put(detalleJson);
             }
+
+
             jsonObject.accumulate("chargesline", detallesJsonArray);
 
             // 4. convert JSONObject to JSON to String
