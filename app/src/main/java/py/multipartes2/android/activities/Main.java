@@ -62,12 +62,12 @@ public class Main extends ActionBarActivity {
         nombreUsuarioTextView = (TextView) findViewById(R.id.main_nombre_usuario);
         registroVisistasBtn = (Button) findViewById(R.id.main_btn_registroVisita);
         sincronizarBtn = (Button) findViewById(R.id.main_btn_sincronizar_datos);
-        rutasBtn = (Button) findViewById(R.id.main_btn_rutas);
-        entregasBtn = (Button) findViewById(R.id.main_btn_entrega);
+//        rutasBtn = (Button) findViewById(R.id.main_btn_rutas);
+//        entregasBtn = (Button) findViewById(R.id.main_btn_entrega);
         pedidosBtn = (Button) findViewById(R.id.main_btn_pedido);
         cobranzasBtn = (Button) findViewById(R.id.main_btn_cobranza);
         catalogoBtn = (Button) findViewById(R.id.main_btn_catalogo);
-        crearRutaBtn = (Button) findViewById(R.id.main_btn_crear_ruta);
+//        crearRutaBtn = (Button) findViewById(R.id.main_btn_crear_ruta);
         consultasBtn = (Button) findViewById(R.id.main_btn_consultas);
 
         registroVisistasBtn.setOnClickListener(new View.OnClickListener() {
@@ -86,21 +86,21 @@ public class Main extends ActionBarActivity {
             }
         });
 
-        rutasBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Main.this, ListRutasActivity.class);
-                startActivity(intent);
-            }
-        });
+//        rutasBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(Main.this, ListRutasActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
-        entregasBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Main.this, ListEntregaActivity.class);
-                startActivity(intent);
-            }
-        });
+//        entregasBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(Main.this, ListEntregaActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         pedidosBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,13 +126,13 @@ public class Main extends ActionBarActivity {
             }
         });
 
-        crearRutaBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Main.this, RutaLocationNewActivity.class);
-                startActivity(intent);
-            }
-        });
+//        crearRutaBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(Main.this, RutaLocationNewActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         consultasBtn.setOnClickListener(new View.OnClickListener() {
             @Override
