@@ -1,4 +1,4 @@
-package py.multipartes2.utils;
+package py.multipartesapp.utils;
 
 import android.support.v4.view.ViewPager;
 import android.view.View;

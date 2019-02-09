@@ -11,8 +11,8 @@ import android.widget.TextView;
 import java.util.HashMap;
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.utils.ListaEntrada;
+import py.multipartesapp.R;
+import py.multipartesapp.utils.ListaEntrada;
 
 /**
  * Created by edith on 12/11/2017.

@@ -26,15 +26,15 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.CobranzaDetalleItem;
-import py.multipartes2.beans.Factura;
-import py.multipartes2.beans.FormaPago;
-import py.multipartes2.customAutoComplete.CobranzaActivityBancoTextChangedListener;
-import py.multipartes2.customAutoComplete.CustomAutoCompleteView;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.AppUtils;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.CobranzaDetalleItem;
+import py.multipartesapp.beans.Factura;
+import py.multipartesapp.beans.FormaPago;
+import py.multipartesapp.customAutoComplete.CobranzaActivityBancoTextChangedListener;
+import py.multipartesapp.customAutoComplete.CustomAutoCompleteView;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.AppUtils;
+import py.multipartesapp.utils.Globals;
 
 /**
  * Created by Adolfo on 18/10/2015.

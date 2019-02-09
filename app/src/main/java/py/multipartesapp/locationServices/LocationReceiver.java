@@ -1,4 +1,4 @@
-package py.multipartes2.locationServices;
+package py.multipartesapp.locationServices;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,13 +9,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import py.multipartesapp.activities.Main;
-import py.multipartes2.beans.LocationTable;
-import py.multipartes2.beans.Session;
-import py.multipartes2.comm.Comm;
-import py.multipartes2.comm.CommDelegateAndroid;
-import py.multipartes2.comm.CommReq;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.AppUtils;
+import py.multipartesapp.beans.LocationTable;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommDelegateAndroid;
+import py.multipartesapp.comm.CommReq;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.AppUtils;
 
 /**
  * Created by Adolfo on 08/12/2015.

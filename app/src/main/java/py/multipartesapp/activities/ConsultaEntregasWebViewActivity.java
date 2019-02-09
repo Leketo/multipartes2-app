@@ -16,8 +16,8 @@ import com.github.barteksc.pdfviewer.PDFView;
 
 import java.io.File;
 
-import py.multipartes2.R;
-import py.multipartes2.db.AppDatabase;
+import py.multipartesapp.R;
+import py.multipartesapp.db.AppDatabase;
 
 //import com.joanzapata.pdfview.PDFView;
 

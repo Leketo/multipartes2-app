@@ -22,10 +22,10 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cobranza;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cobranza;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.Globals;
 
 /**
  * Created by Adolfo on 09/02/2016.

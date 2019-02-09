@@ -1,4 +1,4 @@
-package py.multipartes2.comm;
+package py.multipartesapp.comm;
 
 
 

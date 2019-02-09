@@ -1,11 +1,11 @@
-package py.multipartes2.beans;
+package py.multipartesapp.beans;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import py.multipartes2.utils.JSON;
+import py.multipartesapp.utils.JSON;
 
 
 public abstract class Bean implements Serializable{

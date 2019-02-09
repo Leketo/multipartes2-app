@@ -1,4 +1,4 @@
-package py.multipartes2.db;
+package py.multipartesapp.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,26 +12,26 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.beans.Cobranza;
-import py.multipartes2.beans.CobranzaDetalle;
-import py.multipartes2.beans.Configuracion;
-import py.multipartes2.beans.Entrega;
-import py.multipartes2.beans.Factura;
-import py.multipartes2.beans.LocationTable;
-import py.multipartes2.beans.Login;
-import py.multipartes2.beans.Pedido;
-import py.multipartes2.beans.PedidoDetalle;
-import py.multipartes2.beans.PrecioCategoria;
-import py.multipartes2.beans.PrecioVersion;
-import py.multipartes2.beans.Producto;
-import py.multipartes2.beans.ProductoFamilia;
-import py.multipartes2.beans.ProductoImagen;
-import py.multipartes2.beans.ProductoSubFamilia;
-import py.multipartes2.beans.RegistroVisita;
-import py.multipartes2.beans.RutaLocation;
-import py.multipartes2.beans.Session;
-import py.multipartes2.beans.Usuario;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.Cobranza;
+import py.multipartesapp.beans.CobranzaDetalle;
+import py.multipartesapp.beans.Configuracion;
+import py.multipartesapp.beans.Entrega;
+import py.multipartesapp.beans.Factura;
+import py.multipartesapp.beans.LocationTable;
+import py.multipartesapp.beans.Login;
+import py.multipartesapp.beans.Pedido;
+import py.multipartesapp.beans.PedidoDetalle;
+import py.multipartesapp.beans.PrecioCategoria;
+import py.multipartesapp.beans.PrecioVersion;
+import py.multipartesapp.beans.Producto;
+import py.multipartesapp.beans.ProductoFamilia;
+import py.multipartesapp.beans.ProductoImagen;
+import py.multipartesapp.beans.ProductoSubFamilia;
+import py.multipartesapp.beans.RegistroVisita;
+import py.multipartesapp.beans.RutaLocation;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.beans.Usuario;
 
 /**
  * Created by Adolfo on 19/06/2015.

@@ -1,4 +1,4 @@
-package py.multipartes2.beans;
+package py.multipartesapp.beans;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import py.multipartes2.utils.MyFormatter;
+import py.multipartesapp.utils.MyFormatter;
 
 /**
  * Created by Adolfo on 15/01/2016.

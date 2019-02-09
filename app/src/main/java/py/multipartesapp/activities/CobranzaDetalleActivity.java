@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.CobranzaDetalleItem;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.AppUtils;
-import py.multipartes2.utils.Globals;
-import py.multipartes2.utils.MyFormatter;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.CobranzaDetalleItem;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.AppUtils;
+import py.multipartesapp.utils.Globals;
+import py.multipartesapp.utils.MyFormatter;
 
 /**
  * Created by Adolfo on 18/10/2015.

@@ -18,10 +18,10 @@ import com.google.maps.android.ui.IconGenerator;
 
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.beans.RutaLocation;
-import py.multipartes2.db.AppDatabase;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.RutaLocation;
+import py.multipartesapp.db.AppDatabase;
 
 public class RutasActivity extends FragmentActivity {
     public static final String TAG = RutasActivity.class.getSimpleName();

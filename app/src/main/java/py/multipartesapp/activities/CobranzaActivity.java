@@ -61,21 +61,21 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.beans.Cobranza;
-import py.multipartes2.beans.CobranzaDetalle;
-import py.multipartes2.beans.CobranzaDetalleItem;
-import py.multipartes2.beans.Factura;
-import py.multipartes2.beans.Session;
-import py.multipartes2.beans.Usuario;
-import py.multipartes2.comm.Comm;
-import py.multipartes2.customAutoComplete.CobranzaActivityClienteTextChangedListener;
-import py.multipartes2.customAutoComplete.CustomAutoCompleteView;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.AppUtils;
-import py.multipartes2.utils.Globals;
-import py.multipartes2.utils.MyFormatter;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.Cobranza;
+import py.multipartesapp.beans.CobranzaDetalle;
+import py.multipartesapp.beans.CobranzaDetalleItem;
+import py.multipartesapp.beans.Factura;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.beans.Usuario;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.customAutoComplete.CobranzaActivityClienteTextChangedListener;
+import py.multipartesapp.customAutoComplete.CustomAutoCompleteView;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.AppUtils;
+import py.multipartesapp.utils.Globals;
+import py.multipartesapp.utils.MyFormatter;
 
 /**
  * Created by Adolfo on 05/04/2016.

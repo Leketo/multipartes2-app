@@ -36,13 +36,13 @@
                 android:text="Producto: "/>
 
 
-            <py.multipartes2.customAutoComplete.CustomAutoCompleteView
+            <py.multipartesapp.customAutoComplete.CustomAutoCompleteView
                 android:id="@+id/consulta_stock_producto_autocomplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/ic_close"
                 android:completionThreshold="1" >
-            </py.multipartes2.customAutoComplete.CustomAutoCompleteView>
+            </py.multipartesapp.customAutoComplete.CustomAutoCompleteView>
 
         </LinearLayout>
 

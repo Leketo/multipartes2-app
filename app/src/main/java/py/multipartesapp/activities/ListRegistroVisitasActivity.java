@@ -20,13 +20,13 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.beans.RegistroVisita;
-import py.multipartes2.beans.Session;
-import py.multipartes2.beans.Usuario;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.RegistroVisita;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.beans.Usuario;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.Globals;
 
 /**
  * Created by Adolfo on 18/10/2015.

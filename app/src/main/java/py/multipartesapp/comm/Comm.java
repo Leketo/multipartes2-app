@@ -1,5 +1,5 @@
 
-package py.multipartes2.comm;
+package py.multipartesapp.comm;
 
 //import com.google.common.collect.ArrayListMultimap;
 //import com.google.common.collect.Multimap;
@@ -21,28 +21,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import py.multipartes2.beans.Bean;
-import py.multipartes2.beans.ClienteList;
-import py.multipartes2.beans.CobranzaList;
-import py.multipartes2.beans.EntregaList;
-import py.multipartes2.beans.FacturaList;
-import py.multipartes2.beans.Login;
-import py.multipartes2.beans.PedidoList;
-import py.multipartes2.beans.PrecioCategoriaList;
-import py.multipartes2.beans.PrecioVersionList;
-import py.multipartes2.beans.ProductoFamiliaList;
-import py.multipartes2.beans.ProductoImagenList;
-import py.multipartes2.beans.ProductoList;
-import py.multipartes2.beans.ProductoSubFamiliaList;
-import py.multipartes2.beans.RegistroVisitaList;
-import py.multipartes2.beans.RutaLocationList;
-import py.multipartes2.beans.Session;
-import py.multipartes2.beans.UsuarioList;
-import py.multipartes2.comm.Http.HttpException;
-import py.multipartes2.comm.Http.HttpResponse;
-import py.multipartes2.comm.Http.Logger;
-import py.multipartes2.utils.Globals;
-import py.multipartes2.utils.Hex;
+import py.multipartesapp.beans.Bean;
+import py.multipartesapp.beans.ClienteList;
+import py.multipartesapp.beans.CobranzaList;
+import py.multipartesapp.beans.EntregaList;
+import py.multipartesapp.beans.FacturaList;
+import py.multipartesapp.beans.Login;
+import py.multipartesapp.beans.PedidoList;
+import py.multipartesapp.beans.PrecioCategoriaList;
+import py.multipartesapp.beans.PrecioVersionList;
+import py.multipartesapp.beans.ProductoFamiliaList;
+import py.multipartesapp.beans.ProductoImagenList;
+import py.multipartesapp.beans.ProductoList;
+import py.multipartesapp.beans.ProductoSubFamiliaList;
+import py.multipartesapp.beans.RegistroVisitaList;
+import py.multipartesapp.beans.RutaLocationList;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.beans.UsuarioList;
+import py.multipartesapp.comm.Http.HttpException;
+import py.multipartesapp.comm.Http.HttpResponse;
+import py.multipartesapp.comm.Http.Logger;
+import py.multipartesapp.utils.Globals;
+import py.multipartesapp.utils.Hex;
 
 
 public class Comm extends Application{

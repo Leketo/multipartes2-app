@@ -1,4 +1,4 @@
-package py.multipartes2.utils;
+package py.multipartesapp.utils;
 
 /**
  * Created by edith on 20/11/2017.

@@ -34,19 +34,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.beans.Entrega;
-import py.multipartes2.beans.Pedido;
-import py.multipartes2.beans.Session;
-import py.multipartes2.comm.Comm;
-import py.multipartes2.comm.CommDelegateAndroid;
-import py.multipartes2.comm.CommReq;
-import py.multipartes2.customAutoComplete.EntregaActivityClienteTextChangedListener;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.AppUtils;
-import py.multipartes2.customAutoComplete.CustomAutoCompleteView;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.Entrega;
+import py.multipartesapp.beans.Pedido;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommDelegateAndroid;
+import py.multipartesapp.comm.CommReq;
+import py.multipartesapp.customAutoComplete.EntregaActivityClienteTextChangedListener;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.AppUtils;
+import py.multipartesapp.customAutoComplete.CustomAutoCompleteView;
+import py.multipartesapp.utils.Globals;
 
 
 public class EntregaActivity extends ActionBarActivity implements View.OnClickListener {

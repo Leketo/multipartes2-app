@@ -27,13 +27,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Producto;
-import py.multipartes2.beans.ProductoFamilia;
-import py.multipartes2.beans.ProductoImagen;
-import py.multipartes2.beans.ProductoSubFamilia;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Producto;
+import py.multipartesapp.beans.ProductoFamilia;
+import py.multipartesapp.beans.ProductoImagen;
+import py.multipartesapp.beans.ProductoSubFamilia;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.Globals;
 
 /**
  * Created by Adolfo on 11/03/2016.

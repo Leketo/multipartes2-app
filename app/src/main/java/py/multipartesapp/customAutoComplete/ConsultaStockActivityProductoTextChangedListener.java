@@ -1,4 +1,4 @@
-package py.multipartes2.customAutoComplete;
+package py.multipartesapp.customAutoComplete;
 
 import android.content.Context;
 import android.text.Editable;

@@ -1,4 +1,4 @@
-package py.multipartes2.utils;
+package py.multipartesapp.utils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

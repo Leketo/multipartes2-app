@@ -23,7 +23,7 @@
             android:gravity="center_vertical">
 
 
-            <py.multipartes2.fragments.TouchImageView
+            <py.multipartesapp.fragments.TouchImageView
                 android:id="@+id/catalogo_fragment_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

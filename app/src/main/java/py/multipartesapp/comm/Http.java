@@ -1,4 +1,4 @@
-package py.multipartes2.comm;
+package py.multipartesapp.comm;
 
 
 //import com.google.common.collect.Multimap;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
         import java.util.List;
 import java.util.Map;
 
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.utils.Globals;
 
 
 public class Http {

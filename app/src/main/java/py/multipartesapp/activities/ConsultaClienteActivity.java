@@ -1,6 +1,8 @@
 package py.multipartesapp.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,11 +35,11 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.comm.Comm;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.DownloaderPdf;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.DownloaderPdf;
 
 
 public class ConsultaClienteActivity extends ActionBarActivity  {
@@ -49,6 +51,9 @@ public class ConsultaClienteActivity extends ActionBarActivity  {
     private Button consultarBtn;
     ///private TextView categoriaClienteTextView;
     //private TextView creditoClienteTextView;
+
+
+    private static final int REQUEST_CODE_ASK_PERMISSIONS = 200;
 
     DecimalFormat formateador = new DecimalFormat("###,###.##");
 
@@ -143,6 +148,31 @@ public class ConsultaClienteActivity extends ActionBarActivity  {
         consultarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+
+//                    Toast.makeText(this, "This version is not Android 6 or later " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
+
+
+                } else {
+
+                    int hasWriteContactsPermission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                    if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+
+                        requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                REQUEST_CODE_ASK_PERMISSIONS);
+
+//                        Toast.makeText(this, "Solicitando permiso", Toast.LENGTH_LONG).show();
+
+                    }else if (hasWriteContactsPermission == PackageManager.PERMISSION_GRANTED){
+
+//                        Toast.makeText(this, "El permiso ya ha sido concedido ", Toast.LENGTH_LONG).show();
+
+                    }
+
+                }
+
                 if (clienteSeleccionado == null){
                     int duration = Toast.LENGTH_LONG;
                     Toast toast = Toast.makeText(ConsultaClienteActivity.this, "Seleccione un cliente para ver datos", duration);

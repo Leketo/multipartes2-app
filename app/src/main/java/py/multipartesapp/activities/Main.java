@@ -1,11 +1,15 @@
 package py.multipartesapp.activities;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,21 +18,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import org.apache.http.impl.cookie.BasicClientCookie;
 
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.LocationTable;
-import py.multipartes2.beans.Session;
-import py.multipartes2.beans.Usuario;
-import py.multipartes2.comm.Comm;
-import py.multipartes2.comm.CommDelegateAndroid;
-import py.multipartes2.comm.CommReq;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.locationServices.LocationService;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.LocationTable;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.beans.Usuario;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommDelegateAndroid;
+import py.multipartesapp.comm.CommReq;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.locationServices.LocationService;
+import py.multipartesapp.utils.Globals;
 
 
 public class Main extends ActionBarActivity {
@@ -51,6 +56,10 @@ public class Main extends ActionBarActivity {
     private LocationTable location;
 
     private TextView versionName;
+
+    private static final int REQUEST_CODE_ASK_PERMISSIONS = 123;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,8 +178,56 @@ public class Main extends ActionBarActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
+
+        String [] permisos= {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        solicitarPermisos(permisos);
+
+
         startCheckLocationService();
     }
+
+    public void solicitarPermisos(String[] permisos){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+
+            Toast.makeText(this, "This version is not Android 6 or later " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
+
+        } else {
+
+            for(int i=0;i<permisos.length;i++){
+                int permisoConcedido = checkSelfPermission(permisos[i]);
+
+                if (permisoConcedido != PackageManager.PERMISSION_GRANTED) {
+
+                    requestPermissions(new String[] {permisos[i]},
+                            REQUEST_CODE_ASK_PERMISSIONS);
+
+                    //Toast.makeText(this, "Solicitando permiso", Toast.LENGTH_LONG).show();
+
+                }else if (permisoConcedido == PackageManager.PERMISSION_GRANTED){
+
+                    //Toast.makeText(this, "El permiso ya ha sido concedido ", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(REQUEST_CODE_ASK_PERMISSIONS == requestCode) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permiso concedido ! " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Permiso no concedido ! " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
+            }
+        }else{
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
 
     public static Context getAppContext() {
         return Main.context;
@@ -180,6 +237,15 @@ public class Main extends ActionBarActivity {
      * Check location service.
      */
     private void startCheckLocationService() {
+
+//        Activity activity = (Activity) context;
+
+//        int permissionCheck = ContextCompat.checkSelfPermission(activity,
+//                Manifest.permission.ACCESS_FINE_LOCATION);
+//
+//
+//
+//        Log.d(TAG,"permiso gps"+permissionCheck);
 
         Boolean servicioCorriendo = false;
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

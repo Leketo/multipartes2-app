@@ -1,4 +1,4 @@
-package py.multipartes2.beans;
+package py.multipartesapp.beans;
 
 import org.json.JSONArray;
 import org.json.JSONException;

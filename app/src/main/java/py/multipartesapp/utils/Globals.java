@@ -1,4 +1,4 @@
-package py.multipartes2.utils;
+package py.multipartesapp.utils;
 
 import android.graphics.Bitmap;
 
@@ -7,13 +7,13 @@ import org.apache.http.impl.client.BasicCookieStore;
 
 import java.util.List;
 
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.beans.CobranzaDetalleItem;
-import py.multipartes2.beans.Pedido;
-import py.multipartes2.beans.PedidoDetalle;
-import py.multipartes2.beans.Producto;
-import py.multipartes2.beans.ProductoImagen;
-import py.multipartes2.beans.RutaLocation;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.CobranzaDetalleItem;
+import py.multipartesapp.beans.Pedido;
+import py.multipartesapp.beans.PedidoDetalle;
+import py.multipartesapp.beans.Producto;
+import py.multipartesapp.beans.ProductoImagen;
+import py.multipartesapp.beans.RutaLocation;
 
 
 /**

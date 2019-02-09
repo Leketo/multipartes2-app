@@ -1,8 +1,8 @@
-package py.multipartes2.comm;
+package py.multipartesapp.comm;
 
 import android.util.Log;
 
-import py.multipartes2.comm.Http.Logger;
+import py.multipartesapp.comm.Http.Logger;
 
 public class AndroidLogger implements Logger {
 

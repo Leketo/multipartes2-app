@@ -1,10 +1,10 @@
-package py.multipartes2.comm;
+package py.multipartesapp.comm;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import py.multipartes2.comm.Comm.CommDelegate;
-import py.multipartes2.comm.Http.Logger;
+import py.multipartesapp.comm.Comm.CommDelegate;
+import py.multipartesapp.comm.Http.Logger;
 
 public class CommDelegateAndroid extends CommDelegate {
 

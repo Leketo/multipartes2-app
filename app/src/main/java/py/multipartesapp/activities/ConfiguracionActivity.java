@@ -17,10 +17,10 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Configuracion;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.AppUtils;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Configuracion;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.AppUtils;
 
 
 public class ConfiguracionActivity extends ActionBarActivity {

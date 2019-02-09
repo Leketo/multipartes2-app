@@ -20,14 +20,14 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.PedidoDetalle;
-import py.multipartes2.beans.PrecioCategoria;
-import py.multipartes2.beans.PrecioVersion;
-import py.multipartes2.beans.Producto;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.AppUtils;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.PedidoDetalle;
+import py.multipartesapp.beans.PrecioCategoria;
+import py.multipartesapp.beans.PrecioVersion;
+import py.multipartesapp.beans.Producto;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.AppUtils;
+import py.multipartesapp.utils.Globals;
 
 /**
  * Created by Adolfo on 18/10/2015.

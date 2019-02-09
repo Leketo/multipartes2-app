@@ -12,10 +12,10 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import py.multipartes2.R;
-import py.multipartes2.fragments.ScreenSlidePageFragment;
-import py.multipartes2.utils.Globals;
-import py.multipartes2.utils.ZoomOutPageTransformer;
+import py.multipartesapp.R;
+import py.multipartesapp.fragments.ScreenSlidePageFragment;
+import py.multipartesapp.utils.Globals;
+import py.multipartesapp.utils.ZoomOutPageTransformer;
 
 /**
  * Created by Adolfo on 23/05/2016.

@@ -45,18 +45,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.beans.Pedido;
-import py.multipartes2.beans.PedidoDetalle;
-import py.multipartes2.beans.PrecioCategoria;
-import py.multipartes2.beans.Producto;
-import py.multipartes2.beans.Session;
-import py.multipartes2.comm.Comm;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.AppUtils;
-import py.multipartes2.utils.Globals;
-import py.multipartes2.utils.MyFormatter;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.Pedido;
+import py.multipartesapp.beans.PedidoDetalle;
+import py.multipartesapp.beans.PrecioCategoria;
+import py.multipartesapp.beans.Producto;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.AppUtils;
+import py.multipartesapp.utils.Globals;
+import py.multipartesapp.utils.MyFormatter;
 
 
 public class PedidoActivity extends ActionBarActivity implements View.OnClickListener {

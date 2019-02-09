@@ -1,4 +1,4 @@
-package py.multipartes2.utils;
+package py.multipartesapp.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import py.multipartes2.beans.Login;
+import py.multipartesapp.beans.Login;
 
 /**
  * Created by Adolfo on 11/06/2015.

@@ -13,16 +13,16 @@ import android.widget.ProgressBar;
 //import org.apache.http.cookie.Cookie;
 //import org.apache.http.impl.cookie.BasicClientCookie;
 
-import py.multipartes2.beans.Login;
-import py.multipartes2.beans.Session;
-import py.multipartes2.beans.Usuario;
-import py.multipartes2.comm.Comm;
-import py.multipartes2.comm.CommDelegateAndroid;
-import py.multipartes2.comm.CommReq;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.R;
-import py.multipartes2.utils.AppUtils;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.beans.Login;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.beans.Usuario;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommDelegateAndroid;
+import py.multipartesapp.comm.CommReq;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.R;
+import py.multipartesapp.utils.AppUtils;
+import py.multipartesapp.utils.Globals;
 
 /**
  * Created by Adolfo on 10/06/2015.

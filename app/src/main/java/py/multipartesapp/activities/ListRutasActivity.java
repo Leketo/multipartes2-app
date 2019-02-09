@@ -44,13 +44,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.beans.RutaLocation;
-import py.multipartes2.comm.Comm;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.AppUtils;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.RutaLocation;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.AppUtils;
+import py.multipartesapp.utils.Globals;
 
 /**
  * Created by Adolfo on 11/03/2016.

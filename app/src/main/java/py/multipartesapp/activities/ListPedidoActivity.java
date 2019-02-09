@@ -20,12 +20,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.beans.Pedido;
-import py.multipartes2.beans.Session;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.Pedido;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.Globals;
 
 /**
  * Created by Adolfo on 09/02/2016.

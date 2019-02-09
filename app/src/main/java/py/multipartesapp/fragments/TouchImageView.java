@@ -1,4 +1,4 @@
-package py.multipartes2.fragments;
+package py.multipartesapp.fragments;
 
 /**
  * Created by willynx on 1/3/17.

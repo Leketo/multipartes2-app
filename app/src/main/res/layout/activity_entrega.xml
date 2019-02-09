@@ -33,13 +33,13 @@
                 android:layout_height="wrap_content"
                 android:text="Cliente: "/>
 
-            <py.multipartes2.customAutoComplete.CustomAutoCompleteView
+            <py.multipartesapp.customAutoComplete.CustomAutoCompleteView
                 android:id="@+id/entrega_cliente_autocomplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/ic_close"
                 android:completionThreshold="1" >
-            </py.multipartes2.customAutoComplete.CustomAutoCompleteView>
+            </py.multipartesapp.customAutoComplete.CustomAutoCompleteView>
 
         </LinearLayout>
 

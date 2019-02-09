@@ -1,4 +1,4 @@
-package py.multipartes2.fragments;
+package py.multipartesapp.fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,12 +19,12 @@ import android.widget.Toast;
 
 import java.io.FileInputStream;
 
-import py.multipartes2.R;
+import py.multipartesapp.R;
 import py.multipartesapp.activities.Main;
-import py.multipartes2.beans.Producto;
-import py.multipartes2.beans.ProductoImagen;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.beans.Producto;
+import py.multipartesapp.beans.ProductoImagen;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.Globals;
 
 /**
  * Created by Adolfo on 23/05/2016.

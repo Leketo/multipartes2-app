@@ -7,7 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
-import py.multipartes2.R;
+import py.multipartesapp.R;
 
 //import org.apache.http.cookie.Cookie;
 //import org.apache.http.impl.cookie.BasicClientCookie;

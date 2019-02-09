@@ -1,4 +1,4 @@
-package py.multipartes2.beans;
+package py.multipartesapp.beans;
 
 /**
  * Created by Adolfo on 08/12/2016.

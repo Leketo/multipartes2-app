@@ -40,12 +40,12 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import py.multipartes2.R;
+import py.multipartesapp.R;
 import py.multipartesapp.activities.adapters.ExpandableDeviceListAdapter;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.DOPrintSettings;
-import py.multipartes2.utils.ListaEntrada;
-import py.multipartes2.utils.QuickstartPreferences;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.DOPrintSettings;
+import py.multipartesapp.utils.ListaEntrada;
+import py.multipartesapp.utils.QuickstartPreferences;
 
 public class DOPrintMainActivity extends ActionBarActivity {
 

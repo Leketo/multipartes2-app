@@ -50,17 +50,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.beans.RegistroVisita;
-import py.multipartes2.beans.TipoVisita;
-import py.multipartes2.beans.Session;
-import py.multipartes2.beans.Usuario;
-import py.multipartes2.comm.Comm;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.AppUtils;
-import py.multipartes2.utils.Globals;
-import py.multipartes2.utils.MyLocation;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.RegistroVisita;
+import py.multipartesapp.beans.TipoVisita;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.beans.Usuario;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.AppUtils;
+import py.multipartesapp.utils.Globals;
+import py.multipartesapp.utils.MyLocation;
 
 
 public class RegistroVisitasActivity extends ActionBarActivity implements View.OnClickListener {

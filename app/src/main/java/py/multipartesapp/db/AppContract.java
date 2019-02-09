@@ -1,4 +1,4 @@
-package py.multipartes2.db;
+package py.multipartesapp.db;
 
 import android.provider.BaseColumns;
 

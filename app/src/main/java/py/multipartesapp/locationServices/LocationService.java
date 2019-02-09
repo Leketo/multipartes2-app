@@ -1,4 +1,4 @@
-package py.multipartes2.locationServices;
+package py.multipartesapp.locationServices;
 
 import android.app.Service;
 import android.content.Context;
@@ -18,11 +18,11 @@ import java.util.Date;
 import java.util.UUID;
 
 import py.multipartesapp.activities.Main;
-import py.multipartes2.beans.Session;
-import py.multipartes2.comm.Comm;
-import py.multipartes2.comm.CommDelegateAndroid;
-import py.multipartes2.comm.CommReq;
-import py.multipartes2.db.AppDatabase;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommDelegateAndroid;
+import py.multipartesapp.comm.CommReq;
+import py.multipartesapp.db.AppDatabase;
 
 /**
  * Created by Adolfo on 08/12/2015.

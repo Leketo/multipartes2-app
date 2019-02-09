@@ -1,4 +1,4 @@
-package py.multipartes2.beans;
+package py.multipartesapp.beans;
 
 import android.util.Log;
 

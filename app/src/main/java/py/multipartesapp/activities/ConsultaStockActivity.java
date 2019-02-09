@@ -17,14 +17,14 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.PrecioCategoria;
-import py.multipartes2.beans.PrecioVersion;
-import py.multipartes2.beans.Producto;
-import py.multipartes2.customAutoComplete.ConsultaStockActivityProductoTextChangedListener;
-import py.multipartes2.customAutoComplete.CustomAutoCompleteView;
-import py.multipartes2.db.AppDatabase;
-import py.multipartes2.utils.Globals;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.PrecioCategoria;
+import py.multipartesapp.beans.PrecioVersion;
+import py.multipartesapp.beans.Producto;
+import py.multipartesapp.customAutoComplete.ConsultaStockActivityProductoTextChangedListener;
+import py.multipartesapp.customAutoComplete.CustomAutoCompleteView;
+import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.Globals;
 
 /**
  * Created by Adolfo on 08/11/2016.

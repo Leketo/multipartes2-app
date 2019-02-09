@@ -17,9 +17,9 @@ import com.github.barteksc.pdfviewer.PDFView;
 
 import java.io.File;
 
-import py.multipartes2.R;
-import py.multipartes2.beans.Cliente;
-import py.multipartes2.db.AppDatabase;
+import py.multipartesapp.R;
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.db.AppDatabase;
 
 
 public class ConsultaClienteWebViewActivity extends ActionBarActivity  {
