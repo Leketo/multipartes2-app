@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+ext.versionMajor = 3
+ext.versionMinor = 5
+ext.versionPatch = 5
+ext.versionClassifier = null
+ext.isSnapshot = false
+ext.minimumSdkVersion = 19
+
+
 android {
 
     compileSdkVersion 22
@@ -8,6 +16,8 @@ android {
         encoding "UTF-8"
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+
+
     }
 
     defaultConfig {
@@ -15,8 +25,9 @@ android {
         applicationId 'py.multipartes2'
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 3
-        versionName "3.0"
+        minSdkVersion project.ext.minimumSdkVersion
+        versionCode generateVersionCode() // 190010203
+        versionName generateVersionName() // 1.2.3-SNAPSHOT
         multiDexEnabled true
 
     }
@@ -28,6 +39,24 @@ android {
     }
     productFlavors {
     }
+
+}
+
+
+private Integer generateVersionCode() {
+    return ext.minimumSdkVersion * 10000000 + ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
+}
+
+private String generateVersionName() {
+    String versionName = "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
+    if (ext.versionClassifier == null && ext.isSnapshot) {
+        ext.versionClassifier = "SNAPSHOT"
+    }
+
+    if (ext.versionClassifier != null) {
+        versionName += "-" + ext.versionClassifier
+    }
+    return versionName;
 }
 
 dependencies {

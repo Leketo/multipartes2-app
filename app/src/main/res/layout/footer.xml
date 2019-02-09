@@ -8,5 +8,7 @@ android:gravity="bottom">
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
     android:textAlignment="center"
-    android:text="v1.0"/>
+    android:id="@+id/versionName"
+    android:gravity="center"
+    android:text=""/>
 </LinearLayout>
