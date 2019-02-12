@@ -13,7 +13,7 @@ public class CobranzaDetalle {
     private Integer charge_id;
     private String nroFactura;
 
-    private List<CobranzaDetalleItem> items;
+    private List<CobranzaFormaPago> items;
 
 
     public String getInvoice() {
@@ -48,11 +48,11 @@ public class CobranzaDetalle {
         this.charge_id = charge_id;
     }
 
-    public List<CobranzaDetalleItem> getItems() {
+    public List<CobranzaFormaPago> getItems() {
         return items;
     }
 
-    public void setItems(List<CobranzaDetalleItem> items) {
+    public void setItems(List<CobranzaFormaPago> items) {
         this.items = items;
     }
 

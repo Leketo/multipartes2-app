@@ -1,4 +1,4 @@
-package py.multipartesapp.activities.adapters;
+package py.multipartesapp.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;

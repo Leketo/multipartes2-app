@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import py.multipartesapp.R;
-import py.multipartesapp.beans.CobranzaDetalleItem;
+import py.multipartesapp.beans.CobranzaFormaPago;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.AppUtils;
 import py.multipartesapp.utils.Globals;
@@ -47,7 +47,7 @@ public class CobranzaDetalleActivity extends ActionBarActivity  {
     private ListView detallesListView;
     private ImageAdapter adapterDetalles;
 
-    public static List<CobranzaDetalleItem> detallesList;
+    public static List<CobranzaFormaPago> detallesList;
     //private ImageAdapter adapterDetalles;
     private TextView totalACobrar;
 
@@ -79,7 +79,7 @@ public class CobranzaDetalleActivity extends ActionBarActivity  {
         String totalFactura = CobranzaActivity.facturaSeleccionada.getGrandtotal().toString();
         totalPedidoTextView.setText(MyFormatter.formatMoney(totalFactura));
 
-        detallesList = new ArrayList<CobranzaDetalleItem>();
+        detallesList = new ArrayList<CobranzaFormaPago>();
 
         adapterDetalles = new ImageAdapter (this);
         detallesListView.setAdapter(adapterDetalles);
@@ -152,7 +152,7 @@ public class CobranzaDetalleActivity extends ActionBarActivity  {
 
     public Integer calcularTotal (){
         Integer total = 0;
-        for (CobranzaDetalleItem item : detallesList){
+        for (CobranzaFormaPago item : detallesList){
             total = total + item.getAmount();
         }
         return total;
@@ -227,7 +227,7 @@ public class CobranzaDetalleActivity extends ActionBarActivity  {
         @Override
         public View getView(final int i, View view, ViewGroup viewGroup) {
 
-            CobranzaDetalleItem item = detallesList.get(i);
+            CobranzaFormaPago item = detallesList.get(i);
             View v = view;
             if (v == null) {
                 v = mInflater.inflate(R.layout.list_item_cobranza_itemcobro, viewGroup, false);
@@ -259,11 +259,11 @@ public class CobranzaDetalleActivity extends ActionBarActivity  {
                     ViewParent viewParent = parentRow.getParent();
                     ListView listView = (ListView) viewParent.getParent();
                     int position = listView.getPositionForView((View) viewParent);
-                    CobranzaDetalleItem detalleSelected = detallesList.get(position);
+                    CobranzaFormaPago detalleSelected = detallesList.get(position);
 
-                    Iterator<CobranzaDetalleItem> i = detallesList.iterator();
+                    Iterator<CobranzaFormaPago> i = detallesList.iterator();
                     while (i.hasNext()) {
-                        CobranzaDetalleItem o = i.next();
+                        CobranzaFormaPago o = i.next();
                         if (o.getAmount().equals(detalleSelected.getAmount()) && o.getPayment_type().equals(detalleSelected.getPayment_type()) ){
                             i.remove();
                             break;

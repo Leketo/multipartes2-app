@@ -8,7 +8,7 @@ import org.apache.http.impl.client.BasicCookieStore;
 import java.util.List;
 
 import py.multipartesapp.beans.Cliente;
-import py.multipartesapp.beans.CobranzaDetalleItem;
+import py.multipartesapp.beans.CobranzaFormaPago;
 import py.multipartesapp.beans.Pedido;
 import py.multipartesapp.beans.PedidoDetalle;
 import py.multipartesapp.beans.Producto;
@@ -24,7 +24,7 @@ public class Globals {
     public static int last_request_code;
     public static Boolean isLogged = false;
     public static PedidoDetalle nuevoPedidoDetalle;
-    public static List<CobranzaDetalleItem> itemCobroList;
+    public static List<CobranzaFormaPago> itemCobroList;
     public static Cliente clienteSeleccionadoPedido;
     public static RutaLocation rutaLocationSeleccionada;
 
@@ -209,11 +209,11 @@ public class Globals {
         Globals.ordenEntregas = ordenEntregas;
     }
 
-    public static List<CobranzaDetalleItem> getItemCobroList() {
+    public static List<CobranzaFormaPago> getItemCobroList() {
         return itemCobroList;
     }
 
-    public static void setItemCobroList(List<CobranzaDetalleItem> itemCobroList) {
+    public static void setItemCobroList(List<CobranzaFormaPago> itemCobroList) {
         Globals.itemCobroList = itemCobroList;
     }
 }

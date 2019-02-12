@@ -21,10 +21,11 @@ public class Cobranza extends Bean {
     String nombre_cliente;
     String nombre_vendedor;
     String estado_envio;
+    Integer ad_org_id;
 
     List<CobranzaDetalle> detalles;
 
-    List<CobranzaDetalleItem> items;
+    List<CobranzaFormaPago> items;
 
 
     @Override
@@ -39,6 +40,7 @@ public class Cobranza extends Bean {
         status = getString(o, "status");
         nombre_cliente = getString(o, "nombre_cliente");
         nombre_vendedor = getString(o, "nombre_vendedor");
+        ad_org_id=getInteger(o,"ad_org_id");
 
     }
 
@@ -134,11 +136,19 @@ public class Cobranza extends Bean {
         this.detalles = detalles;
     }
 
-    public List<CobranzaDetalleItem> getItems() {
+    public List<CobranzaFormaPago> getItems() {
         return items;
     }
 
-    public void setItems(List<CobranzaDetalleItem> items) {
+    public void setItems(List<CobranzaFormaPago> items) {
         this.items = items;
+    }
+
+    public Integer getAd_org_id() {
+        return ad_org_id;
+    }
+
+    public void setAd_org_id(Integer ad_org_id) {
+        this.ad_org_id = ad_org_id;
     }
 }

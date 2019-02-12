@@ -44,6 +44,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -65,7 +66,7 @@ import py.multipartesapp.R;
 import py.multipartesapp.beans.Cliente;
 import py.multipartesapp.beans.Cobranza;
 import py.multipartesapp.beans.CobranzaDetalle;
-import py.multipartesapp.beans.CobranzaDetalleItem;
+import py.multipartesapp.beans.CobranzaFormaPago;
 import py.multipartesapp.beans.Factura;
 import py.multipartesapp.beans.Session;
 import py.multipartesapp.beans.Usuario;
@@ -224,12 +225,18 @@ public class CobranzaActivity extends ActionBarActivity {
                 return false;
             }
         });
+
+
         guardarCobranzaBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 guardarCobranzaBtn.setEnabled(false);
                 //progressBar.setVisibility(View.VISIBLE);
-                enviarCobranza();
+                try {
+                    enviarCobranza();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -262,7 +269,7 @@ public class CobranzaActivity extends ActionBarActivity {
         }
     };
 
-    public void enviarCobranza (){
+    public void enviarCobranza () throws JSONException {
 
         if (clienteSeleccionado == null || clienteAutoComplete.getText().toString().equals("")){
             String[] buttons = {"Ok"};
@@ -319,12 +326,6 @@ public class CobranzaActivity extends ActionBarActivity {
 
                 cd.setItems(p.getItems());
                 cd.setNroFactura(p.getNroFacturaImprimir());
-                //hasta aca--------------
-//                cd.setExpired_date(p.getExpired_date());
-//                cd.setBank(p.getBank());
-//                cd.setPayment_type(p.getPayment_type());
-//                cd.setCheck_number(p.getCheck_number());
-//                cd.setCheck_name(p.getCheck_name());
 
                 detalles.add(cd);
             }
@@ -344,8 +345,12 @@ public class CobranzaActivity extends ActionBarActivity {
         Usuario vendedor = db.selectUsuarioById(sessionLogueado.getUserId());
         c.setNombre_vendedor(vendedor.getName());
         c.setNombre_cliente(clienteSeleccionado.getNombre());
+        c.setAd_org_id(1000047);
+
         String print = crearTicket(c);
+
         boolean enLinea = AppUtils.isOnline(getApplicationContext());
+
         Log.d(TAG,"Conexión a internet: " + enLinea);
         imprimir(print);
         if (!enLinea){
@@ -368,77 +373,88 @@ public class CobranzaActivity extends ActionBarActivity {
             return;
         }
 
+        //Preparar los datos a ser enviados
+        JSONObject jsonObject=prepararDatosEnvio(c);
+        // 4. convert JSONObject to JSON to String
+        String json = jsonObject.toString();
+
+        //Enviar los datos al servidor
+        String result=enviarCobroAlServidor(json);
+
+
+
+    }
+
+    private JSONObject prepararDatosEnvio(Cobranza c) throws JSONException {
+
+        // 3. build jsonObject
+        JSONObject jsonObject = new JSONObject();
+
+        //jsonObject.accumulate("order_id", "1000010");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+
+
+        jsonObject.accumulate("date_received", dateFormatter.format(new Date()));
+        jsonObject.accumulate("time_received", timeFormatter.format(new Date()));
+        jsonObject.accumulate("client_id", c.getClient_id());
+        jsonObject.accumulate("user_id", c.getUser_id());
+        jsonObject.accumulate("amount", c.getAmount());
+        jsonObject.accumulate("receipt_number", c.getInvoice_number());
+        jsonObject.accumulate("observation", c.getObservation());
+        jsonObject.accumulate("status", "A");
+        jsonObject.accumulate("ad_org_id",c.getAd_org_id());
+
+
+        //Agregamos los detalles
+        JSONArray detallesJsonArray = new JSONArray();
+        for (CobranzaDetalle detalle: c.getDetalles()){
+            JSONObject detalleJson = new JSONObject();
+            detalleJson.put("invoice_id", detalle.getInvoice());
+            detalleJson.put("amount", detalle.getAmount());
+            detalleJson.put("cashed", detalle.getCashed());
+
+
+            JSONObject formaPagoJson = new JSONObject();
+
+            detallesJsonArray.put(detalleJson);
+        }
+        jsonObject.accumulate("facturasPagadas", detallesJsonArray);
+
+
+        JSONArray cobrosJsonArray = new JSONArray();
+
+        for (CobranzaFormaPago formaPago : Globals.getItemCobroList()){
+            JSONObject cobroJson = new JSONObject();
+            cobroJson.put("payment_type", formaPago.getPayment_type());
+            cobroJson.put("amount", formaPago.getAmount());
+            cobroJson.put("bank", formaPago.getBank());
+            cobroJson.put("check_number", formaPago.getCheck_number());
+            cobroJson.put("expired_date", formaPago.getExpired_date());
+            cobroJson.put("check_name", formaPago.getCheck_name());
+            cobroJson.put("iscrossed", formaPago.getIscrossed());
+
+            cobrosJsonArray.put(cobroJson);
+
+        }
+
+        jsonObject.accumulate("formaPago", cobrosJsonArray);
+
+
+        return jsonObject;
+
+    }
+
+
+    private String enviarCobroAlServidor(String json){
         InputStream inputStream = null;
         String result = "";
         try {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            String url = Comm.URL + "/api/charge/save";
+            String url = Comm.URL + "/api/cobro/registrar-cobro";
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
-            String json = "";
-
-            // 3. build jsonObject
-            JSONObject jsonObject = new JSONObject();
-
-            //jsonObject.accumulate("order_id", "1000010");
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
-
-
-            jsonObject.accumulate("date_received", dateFormatter.format(new Date()));
-            jsonObject.accumulate("time_received", timeFormatter.format(new Date()));
-            jsonObject.accumulate("client_id", c.getClient_id());
-            jsonObject.accumulate("user_id", c.getUser_id());
-            jsonObject.accumulate("amount", c.getAmount());
-            jsonObject.accumulate("receipt_number", c.getInvoice_number());
-            jsonObject.accumulate("observation", c.getObservation());
-            jsonObject.accumulate("status", "A");
-
-
-            //Agregamos los detalles
-            JSONArray detallesJsonArray = new JSONArray();
-            for (CobranzaDetalle detalle: c.getDetalles()){
-                JSONObject detalleJson = new JSONObject();
-                detalleJson.put("invoice_id", detalle.getInvoice());
-                detalleJson.put("amount", detalle.getAmount());
-                detalleJson.put("cashed", detalle.getCashed());
-
-
-                JSONObject formaPagoJson = new JSONObject();
-                JSONArray cobrosJsonArray = new JSONArray();
-                for (CobranzaDetalleItem cobro : detalle.getItems()){
-                    JSONObject cobroJson = new JSONObject();
-                    cobroJson.put("payment_type", cobro.getPayment_type());
-                    cobroJson.put("amount", cobro.getAmount());
-                    cobroJson.put("bank", cobro.getBank());
-                    cobroJson.put("check_number", cobro.getCheck_number());
-                    cobroJson.put("expired_date", cobro.getExpired_date());
-                    cobroJson.put("check_name", cobro.getCheck_name());
-                    cobrosJsonArray.put(cobroJson);
-
-                }
-
-
-                formaPagoJson.accumulate("paymentline", cobrosJsonArray);
-
-
-                //detalleJson.put("charge_id", detalle.getCharge_id());
-
-//                detalleJson.put("expired_date", detalle.getExpired_date());
-//                detalleJson.put("bank", detalle.getBank());
-//                detalleJson.put("payment_type", detalle.getPayment_type());
-//                detalleJson.put("check_number", detalle.getCheck_number());
-//                detalleJson.put("check_name", detalle.getCheck_name());
-
-                detallesJsonArray.put(detalleJson);
-            }
-
-
-            jsonObject.accumulate("chargesline", detallesJsonArray);
-
-            // 4. convert JSONObject to JSON to String
-            json = jsonObject.toString();
 
             // 5. set json to StringEntity
             StringEntity se = new StringEntity(json, HTTP.ASCII);
@@ -490,7 +506,8 @@ public class CobranzaActivity extends ActionBarActivity {
                     toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
                     toast.show();
                     finish();
-                    return;
+
+                    return "NO_ENVIADO_SIN_CONEXION_A_INTERNET";
 
                 }
                 Toast.makeText(getApplicationContext(), "Cobro enviado correctamente.", Toast.LENGTH_LONG).show();
@@ -502,6 +519,7 @@ public class CobranzaActivity extends ActionBarActivity {
                     db.insertCobranzaDetalle(cd);
                 }
                 finish();
+                return "ENVIADO_CORRECTAMENTE";
             } else {
                 Toast.makeText(getApplicationContext(), "Error al enviar cobro .", Toast.LENGTH_LONG).show();
                 guardarCobranzaBtn.setEnabled(true);
@@ -514,6 +532,7 @@ public class CobranzaActivity extends ActionBarActivity {
             Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
             guardarCobranzaBtn.setEnabled(true);
         }
+        return "ENVIADO_CORRECTAMENTE";
     }
 
     private void imprimir(String datos) {
@@ -550,7 +569,7 @@ public class CobranzaActivity extends ActionBarActivity {
     private void actualizarImporteFormaPago(){
         double totAmountFp = 0;
         if(Globals.getItemCobroList() != null) {
-            for (CobranzaDetalleItem c : Globals.getItemCobroList()) {
+            for (CobranzaFormaPago c : Globals.getItemCobroList()) {
                 totAmountFp += c.getAmount();
             }
         }

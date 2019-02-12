@@ -41,7 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import py.multipartesapp.R;
-import py.multipartesapp.activities.adapters.ExpandableDeviceListAdapter;
+import py.multipartesapp.adapters.ExpandableDeviceListAdapter;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.DOPrintSettings;
 import py.multipartesapp.utils.ListaEntrada;

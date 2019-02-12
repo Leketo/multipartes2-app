@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import py.multipartesapp.R;
-import py.multipartesapp.beans.CobranzaDetalleItem;
+import py.multipartesapp.beans.CobranzaFormaPago;
 import py.multipartesapp.beans.Factura;
 import py.multipartesapp.beans.FormaPago;
 import py.multipartesapp.customAutoComplete.CobranzaActivityBancoTextChangedListener;
@@ -268,7 +268,7 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
 //        CobranzaActivity.facturaSeleccionada.setCheck_name(nombreChequeEditText.getText().toString());
 
 
-        CobranzaDetalleItem itemCobro = new CobranzaDetalleItem();
+        CobranzaFormaPago itemCobro = new CobranzaFormaPago();
         itemCobro.setPayment_type(formaPagoSeleccionado.getDescripcion());
 
 
@@ -285,7 +285,7 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
             itemCobro.setCheck_name(nombreChequeEditText.getText().toString());
         }
         if(Globals.getItemCobroList() == null){
-            Globals.setItemCobroList(new ArrayList<CobranzaDetalleItem>());
+            Globals.setItemCobroList(new ArrayList<CobranzaFormaPago>());
         }
         Globals.getItemCobroList().add(itemCobro);
         finish();
@@ -395,7 +395,7 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
     private void actualizarImporteFormaPago(){
         totAmountFp = 0;
         if(Globals.getItemCobroList() != null) {
-            for (CobranzaDetalleItem c : Globals.getItemCobroList()) {
+            for (CobranzaFormaPago c : Globals.getItemCobroList()) {
                 totAmountFp += c.getAmount();
             }
         }

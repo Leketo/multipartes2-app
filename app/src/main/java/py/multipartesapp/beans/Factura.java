@@ -24,7 +24,7 @@ public class Factura extends Bean {
     String montoCobrado;
 
 
-    private List<CobranzaDetalleItem> items;
+    private List<CobranzaFormaPago> items;
 
 
     @Override
@@ -125,11 +125,11 @@ public class Factura extends Bean {
         this.nroFacturaImprimir = nroFacturaImprimir;
     }
 
-    public List<CobranzaDetalleItem> getItems() {
+    public List<CobranzaFormaPago> getItems() {
         return items;
     }
 
-    public void setItems(List<CobranzaDetalleItem> items) {
+    public void setItems(List<CobranzaFormaPago> items) {
         this.items = items;
     }
 }
