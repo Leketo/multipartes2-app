@@ -39,46 +39,46 @@ public class ConsultasActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //muestra el boton atras
         getSupportActionBar().setTitle("Consultas");
 
-        misVisitasBtn = (Button) findViewById(R.id.consultas_visitas);
-        misPedidosBtn = (Button) findViewById(R.id.consultas_pedidos);
-        misEntregasBtn = (Button) findViewById(R.id.consultas_entregas);
-        misCobrosBtn = (Button) findViewById(R.id.consultas_cobranzas);
+//        misVisitasBtn = (Button) findViewById(R.id.consultas_visitas);
+//        misPedidosBtn = (Button) findViewById(R.id.consultas_pedidos);
+//        misEntregasBtn = (Button) findViewById(R.id.consultas_entregas);
+//        misCobrosBtn = (Button) findViewById(R.id.consultas_cobranzas);
 
 
         estadoCuentaBtn = (Button) findViewById(R.id.consultas_estado_cuenta);
         stockProductoBtn = (Button) findViewById(R.id.consultas_stock_producto);
 
-        misVisitasBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ConsultasActivity.this, ConsultaVisitasActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        misPedidosBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ConsultasActivity.this, ConsultaPedidosActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        misEntregasBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ConsultasActivity.this, ConsultaEntregasActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        misCobrosBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ConsultasActivity.this, ConsultaCobrosActivity.class);
-                startActivity(intent);
-            }
-        });
+//        misVisitasBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(ConsultasActivity.this, ConsultaVisitasActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        misPedidosBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(ConsultasActivity.this, ConsultaPedidosActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        misEntregasBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(ConsultasActivity.this, ConsultaEntregasActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        misCobrosBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(ConsultasActivity.this, ConsultaCobrosActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
 
         estadoCuentaBtn.setOnClickListener(new View.OnClickListener() {

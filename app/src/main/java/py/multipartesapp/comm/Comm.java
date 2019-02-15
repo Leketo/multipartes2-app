@@ -37,6 +37,7 @@ import py.multipartesapp.beans.ProductoSubFamiliaList;
 import py.multipartesapp.beans.RegistroVisitaList;
 import py.multipartesapp.beans.RutaLocationList;
 import py.multipartesapp.beans.Session;
+import py.multipartesapp.beans.StockList;
 import py.multipartesapp.beans.UsuarioList;
 import py.multipartesapp.comm.Http.HttpException;
 import py.multipartesapp.comm.Http.HttpResponse;
@@ -58,6 +59,7 @@ public class Comm extends Application{
  //   public  static String URL = "http://192.168.0.138:8080/multipartes/";
    // public  static String URL = "http://192.168.0.138:8080/";
     public  static String URL = "http://app.multipartes.com.py/";
+	public  static String URL_API_MULTIP2 = "http://app.multipartes.com.py/multip/";
 
     public void onCreate(){
         super.onCreate();
@@ -112,6 +114,7 @@ public class Comm extends Application{
 		{CommReq.CommReqGetAllProductImages, ProductoImagenList.class.getName()},
 		{CommReq.CommReqGetRegistroVisita, RegistroVisitaList.class.getName()},
 		{CommReq.CommReqGetAllEntrega, EntregaList.class.getName()},
+			{CommReq.CommReqGetStockProducto, StockList.class.getName()}
 
 
 	};
@@ -432,10 +435,18 @@ public class Comm extends Application{
     */
     public void requestGet(final String req, final Object[][]params, final CommDelegate delegate){
         Map hash = toMap(params);
-        requestGet(req, hash, delegate);
+        String api_url=URL;
+        requestGet(api_url,req, hash, delegate);
     }
 
-    public void requestGet(final String req, final Map params, final CommDelegate delegate){
+	public void requestGet(final String api_url,final String req, final Object[][]params, final CommDelegate delegate){
+		Map hash = toMap(params);
+
+		requestGet(api_url,req, hash, delegate);
+	}
+
+    public void requestGet(final String api_url,final String req, final Map params, final CommDelegate delegate){
+
 
         execute(new CommRunnable() {
 
@@ -446,7 +457,7 @@ public class Comm extends Application{
                 String response;
                 Object object = null;
                 try {
-                    response = get(delegate, req, URL + commandURL, params);
+                    response = get(delegate, req, api_url + commandURL, params);
                     object = objectFromResponse(req,response);
                 } catch (JSONException e) {
                     e.printStackTrace();

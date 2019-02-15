@@ -74,6 +74,7 @@ public class CommReq {
     public static final String CommReqGetAllEntrega
             = App + "delivery/summary";
 
+    public static final String CommReqGetStockProducto=App+"product/stock-producto/";
 
 
 

@@ -24,6 +24,9 @@ import py.multipartesapp.R;
 import py.multipartesapp.utils.AppUtils;
 import py.multipartesapp.utils.Globals;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
+
 /**
  * Created by Adolfo on 10/06/2015.
  */
@@ -42,6 +45,8 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activiy_login);
 
         try {

@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 //import org.apache.http.impl.cookie.BasicClientCookie;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.List;
 
 import py.multipartesapp.R;
@@ -50,6 +52,8 @@ public class Main extends ActionBarActivity {
     private Button catalogoBtn;
     private Button crearRutaBtn;
     private Button consultasBtn;
+
+    private Button testBtn;
 
     private AppDatabase db = new AppDatabase(this);
     private static Context context;
@@ -82,6 +86,8 @@ public class Main extends ActionBarActivity {
         catalogoBtn = (Button) findViewById(R.id.main_btn_catalogo);
 //        crearRutaBtn = (Button) findViewById(R.id.main_btn_crear_ruta);
         consultasBtn = (Button) findViewById(R.id.main_btn_consultas);
+
+        testBtn =(Button) findViewById(R.id.main_btn_test);
 
         versionName=(TextView) findViewById(R.id.versionName);
 
@@ -141,13 +147,14 @@ public class Main extends ActionBarActivity {
             }
         });
 
-//        crearRutaBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+        testBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
 //                Intent intent = new Intent(Main.this, RutaLocationNewActivity.class);
 //                startActivity(intent);
-//            }
-//        });
+            }
+        });
 
         consultasBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,8 +167,11 @@ public class Main extends ActionBarActivity {
         Session session = db.selectUsuarioLogeado();
         Usuario usuario = db.selectUsuarioById(session.getUserId());
 
+        logUser(usuario);
+
         if (usuario.getRole() != null && !usuario.getRole().equals("ROOT")){
-            crearRutaBtn.setVisibility(View.INVISIBLE);
+            //crearRutaBtn.setVisibility(View.INVISIBLE);
+            testBtn.setVisibility(View.INVISIBLE);
         }
         if (usuario.getName() != null){
             nombreUsuarioTextView.setText("Bienvenido, "+usuario.getName() + " "+ usuario.getLastname()+"!");
@@ -184,7 +194,18 @@ public class Main extends ActionBarActivity {
         solicitarPermisos(permisos);
 
 
-        startCheckLocationService();
+       startCheckLocationService();
+    }
+
+    private void logUser(Usuario usuario) {
+
+        Crashlytics.setUserIdentifier(""+usuario.getId());
+        Crashlytics.setUserEmail(usuario.getMail());
+        Crashlytics.setUserName(usuario.getName());
+    }
+
+    public void forceCrash(View view) {
+        throw new RuntimeException("This is a crash");
     }
 
     public void solicitarPermisos(String[] permisos){
@@ -215,18 +236,18 @@ public class Main extends ActionBarActivity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if(REQUEST_CODE_ASK_PERMISSIONS == requestCode) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permiso concedido ! " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Permiso no concedido ! " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
-            }
-        }else{
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//        if(REQUEST_CODE_ASK_PERMISSIONS == requestCode) {
+//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(this, "Permiso concedido ! " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
+//            } else {
+//                Toast.makeText(this, "Permiso no concedido ! " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
+//            }
+//        }else{
+//            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        }
+//    }
 
 
     public static Context getAppContext() {
@@ -238,14 +259,6 @@ public class Main extends ActionBarActivity {
      */
     private void startCheckLocationService() {
 
-//        Activity activity = (Activity) context;
-
-//        int permissionCheck = ContextCompat.checkSelfPermission(activity,
-//                Manifest.permission.ACCESS_FINE_LOCATION);
-//
-//
-//
-//        Log.d(TAG,"permiso gps"+permissionCheck);
 
         Boolean servicioCorriendo = false;
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -302,20 +315,6 @@ public class Main extends ActionBarActivity {
     }
 
     public void enviarLocation(Context context) {
-        //temporal
-//        if (Globals.cookieStore.getCookies().size() == 0){
-//            BasicClientCookie cookie = new BasicClientCookie("JSESSIONID", "un_cookie_test_en_enviar_locations");
-//            cookie.setDomain("186.2.196.105");
-//            cookie.setPath("/");
-//            Globals.cookieStore.addCookie(cookie);
-//        }
-
-        /*
-        if (Globals.cookieStore == null || Globals.cookieStore.getCookies().isEmpty()) {
-            Log.d(TAG, "==============Cookie NULL:  No se envian LOCATIONS Pendientes");
-            return;
-        }
-        */
 
         db = new AppDatabase(context);
         List<LocationTable> list = db.selectLocationByEstado("PENDIENTE");

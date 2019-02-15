@@ -1,26 +1,39 @@
 package py.multipartesapp.activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import py.multipartesapp.R;
+import py.multipartesapp.beans.LocatorDTO;
 import py.multipartesapp.beans.PrecioCategoria;
 import py.multipartesapp.beans.PrecioVersion;
 import py.multipartesapp.beans.Producto;
+import py.multipartesapp.beans.StockDTO;
+import py.multipartesapp.beans.StockList;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommDelegateAndroid;
+import py.multipartesapp.comm.CommReq;
 import py.multipartesapp.customAutoComplete.ConsultaStockActivityProductoTextChangedListener;
 import py.multipartesapp.customAutoComplete.CustomAutoCompleteView;
 import py.multipartesapp.db.AppDatabase;
@@ -48,6 +61,14 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
     private ImageView vistaPreviaImgView;
 
+    public ImageAdapter stockListAdapter;
+
+    private StockList stockList = new StockList();
+
+    private ListView stockListView;
+
+
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -62,9 +83,6 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
 
         productoAutoComplete = (CustomAutoCompleteView) findViewById(R.id.consulta_stock_producto_autocomplete);
-        codigoProductoTxtView = (TextView) findViewById(R.id.consuta_stock_codigo);
-        precioProductoTxtView = (TextView) findViewById(R.id.consuta_stock_precio);
-        stockProductoTxtView = (TextView) findViewById(R.id.consuta_stock_detalle_stock);
 
         //verCatalogoBtn = (Button) findViewById(R.id.pedido_detalle_nuevo_catalogo_btn);
         vistaPreviaImgView = (ImageView) findViewById(R.id.agregar_detalle_pedido_vista_previa);
@@ -80,6 +98,29 @@ public class ConsultaStockActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         }); */
+
+        stockListView=(ListView) findViewById(R.id.stock_list);
+
+        StockDTO stockDTO= new StockDTO();
+        Producto producto = new Producto();
+        producto.setCodinterno("");
+        producto.setM_product_id(0);
+        producto.setName("");
+        stockDTO.setProducto(producto);
+        LocatorDTO locatorDTO = new LocatorDTO();
+        locatorDTO.setM_locator_id("");
+
+        locatorDTO.setM_locator_value("");
+        stockDTO.setLocator(locatorDTO);
+        stockDTO.setStock_disponible(0);
+
+        List<StockDTO> listStock= new ArrayList<>();
+        listStock.add(stockDTO);
+        stockList.setList(listStock);
+
+        stockListAdapter=new ImageAdapter(this);
+        stockListView.setAdapter(stockListAdapter);
+
 
         if (db.countProduct()== 0){
             Toast.makeText(getApplicationContext(), "Favor sincronizar datos primero.", Toast.LENGTH_LONG).show();
@@ -98,13 +139,45 @@ public class ConsultaStockActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //clienteTextView.clearFocus();
-                productoSeleccionado = productosFiltrados.get(position);
-                //pedidoLinearLayout.setVisibility(View.VISIBLE);
-                codigoProductoTxtView.setText(productoSeleccionado.getCodinterno());
-                if (productoSeleccionado.getPrice()!= null)
-                    precioProductoTxtView.setText(productoSeleccionado.getPrice().toString());
-                if (productoSeleccionado.getStock() != null)
-                    stockProductoTxtView.setText(productoSeleccionado.getStock().toString());
+                //productoSeleccionado = productosFiltrados.get(position);
+
+
+                productoSeleccionado=productosFiltrados.get(0);
+
+                //obtener el stock del producto haciendo la llamada al servicio stock-productos
+                CommDelegateAndroid delegate = new CommDelegateAndroid(){
+                    @Override
+                    public void onError(){
+                        Log.e(TAG, this.exception.getMessage());
+                    }
+                    @Override
+                    public void onSuccess(){
+                        Log.d(TAG, "Datos de producto");
+                        Comm.CommResponse r = response;
+
+                        stockList.getList().clear();
+                        stockList=(StockList) r.getBean();
+
+                        //Actualizamos el adapter de la lista de Stock
+                        stockListAdapter.notifyDataSetChanged();
+
+
+                    }
+                };
+
+                new Comm().requestGet(Comm.URL_API_MULTIP2, CommReq.CommReqGetStockProducto, new String[][]{
+                        {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
+                }, delegate);
+
+
+
+
+//                //pedidoLinearLayout.setVisibility(View.VISIBLE);
+//                codigoProductoTxtView.setText(productoSeleccionado.getCodinterno());
+//                if (productoSeleccionado.getPrice()!= null)
+//                    precioProductoTxtView.setText(productoSeleccionado.getPrice().toString());
+//                if (productoSeleccionado.getStock() != null)
+//                    stockProductoTxtView.setText(productoSeleccionado.getStock().toString());
             }
         });
 
@@ -137,6 +210,13 @@ public class ConsultaStockActivity extends ActionBarActivity {
             }
         });
     }
+
+    public void limpiarListViewStock(){
+        stockList.getList().clear();
+
+        stockListAdapter.notifyDataSetChanged();
+    }
+
 
     DialogInterface.OnClickListener dialogOnclicListener = new DialogInterface.OnClickListener() {
         @Override
@@ -248,6 +328,60 @@ public class ConsultaStockActivity extends ActionBarActivity {
             i++;
         }
         return item;
+    }
+
+
+    public class ImageAdapter extends BaseAdapter {
+        private Context mContext;
+        private LayoutInflater mInflater;
+
+        public ImageAdapter(Context c) {
+            mContext = c;
+            mInflater = LayoutInflater.from(mContext);
+        }
+
+        public int getCount() {
+            return stockList.getList().size();
+        }
+
+        public Object getItem(int position) {
+            return null;
+        }
+
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        // create a new ImageView for each item referenced by the Adapter
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+
+            StockDTO item = stockList.getList().get(i);
+            View v = view;
+            if (v == null) {
+                v = mInflater.inflate(R.layout.list_item_registro_generico, viewGroup, false);
+                //v.setTag(R.id.img_places, v.findViewById(R.id.img_places));
+                v.setTag(R.id.txt1, v.findViewById(R.id.txt1));
+                v.setTag(R.id.txt2, v.findViewById(R.id.txt2));
+//                v.setTag(R.id.icon, v.findViewById(R.id.icon));
+            }
+
+            TextView titleTextView = (TextView) v.findViewById(R.id.txt1);
+            if(item.getLocator()!=null){
+                titleTextView.setText("Sucursal: "+item.getLocator().getM_locator_value());
+            }
+
+            if(item.getProducto()!=null){
+
+            }
+
+
+            TextView subTitleTextView = (TextView) v.findViewById(R.id.txt2);
+            subTitleTextView.setText("Cant. Diponible: "+item.getStock_disponible());
+
+
+            return v;
+        }
     }
 
 
