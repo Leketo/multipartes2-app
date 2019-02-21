@@ -216,6 +216,10 @@ public class CobranzaActivity extends ActionBarActivity {
                         facturaSeleccionada = null;
                         facturasFiltrados = new ArrayList<Factura>();
                         adapterDetalles.notifyDataSetChanged();
+
+                        Globals.setItemCobroList(null);
+
+                        actualizarImporteFormaPago();
                         actualizarTotal();
                         actualizarTotalDeuda();
 
@@ -383,6 +387,7 @@ public class CobranzaActivity extends ActionBarActivity {
 
 
 
+
     }
 
     private JSONObject prepararDatosEnvio(Cobranza c) throws JSONException {
@@ -518,6 +523,21 @@ public class CobranzaActivity extends ActionBarActivity {
                 for (CobranzaDetalle cd : c.getDetalles()){
                     db.insertCobranzaDetalle(cd);
                 }
+
+                /* ------- limpiar datos despues de haber enviado al server - adolfo 21/02/2019  */
+                clienteAutoComplete.setText("");
+                clienteSeleccionado = null;
+                facturaSeleccionada = null;
+                facturasFiltrados = new ArrayList<Factura>();
+                adapterDetalles.notifyDataSetChanged();
+
+                Globals.setItemCobroList(null);
+
+                actualizarImporteFormaPago();
+                actualizarTotal();
+                actualizarTotalDeuda();
+
+
                 finish();
                 return "ENVIADO_CORRECTAMENTE";
             } else {
