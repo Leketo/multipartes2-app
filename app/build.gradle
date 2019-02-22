@@ -8,14 +8,16 @@ repositories {
 
 ext.versionMajor = 3
 ext.versionMinor = 5
-ext.versionPatch = 9
+ext.versionPatch = 13
 ext.versionClassifier = null
 ext.isSnapshot = false
-ext.minimumSdkVersion = 26
+ext.minimumSdkVersion = 22
 
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://raw.github.com/xujiaao/mvn-repository/master/releases' }
+
     }
 
     dependencies {
@@ -25,6 +27,8 @@ buildscript {
         // We recommend changing it to the latest version from our changelog:
         // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
         classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.github.xujiaao:aarLinkSources:1.0.0'
+
     }
 }
 
@@ -58,7 +62,7 @@ android {
         targetSdkVersion 26
         minSdkVersion project.ext.minimumSdkVersion
         versionCode generateVersionCode()
-        versionName generateVersionName() // 1.2.3-SNAPSHOT
+        versionName generateVersionName()
         multiDexEnabled true
         signingConfig signingConfigs.config
 
@@ -123,4 +127,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true;
     }
+//    compile 'com.jaspersoft.android.sdk:js-android-sdk-client:1.9'
+//    compile 'com.jaspersoft.android.sdk:js-android-sdk-ui:1.9'
+//    caarLinkSources "com.jaspersoft.android.sdk:js-android-sdk-client:1.9:sources@jar"
+
 }

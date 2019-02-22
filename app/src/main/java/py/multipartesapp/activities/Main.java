@@ -167,7 +167,7 @@ public class Main extends ActionBarActivity {
         Session session = db.selectUsuarioLogeado();
         Usuario usuario = db.selectUsuarioById(session.getUserId());
 
-        logUser(usuario);
+        //logUser(usuario);
 
         if (usuario.getRole() != null && !usuario.getRole().equals("ROOT")){
             //crearRutaBtn.setVisibility(View.INVISIBLE);
@@ -205,7 +205,7 @@ public class Main extends ActionBarActivity {
     }
 
     public void forceCrash(View view) {
-        throw new RuntimeException("This is a crash");
+        throw new RuntimeException("Crash desde la app");
     }
 
     public void solicitarPermisos(String[] permisos){

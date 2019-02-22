@@ -40,7 +40,7 @@ public class ConsultasActivity extends ActionBarActivity {
         getSupportActionBar().setTitle("Consultas");
 
 //        misVisitasBtn = (Button) findViewById(R.id.consultas_visitas);
-//        misPedidosBtn = (Button) findViewById(R.id.consultas_pedidos);
+        misPedidosBtn = (Button) findViewById(R.id.consultas_pedidos);
 //        misEntregasBtn = (Button) findViewById(R.id.consultas_entregas);
 //        misCobrosBtn = (Button) findViewById(R.id.consultas_cobranzas);
 
@@ -56,13 +56,13 @@ public class ConsultasActivity extends ActionBarActivity {
 //            }
 //        });
 //
-//        misPedidosBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(ConsultasActivity.this, ConsultaPedidosActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        misPedidosBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ConsultasActivity.this, ConsultaPedidosActivity.class);
+                startActivity(intent);
+            }
+        });
 //
 //        misEntregasBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override

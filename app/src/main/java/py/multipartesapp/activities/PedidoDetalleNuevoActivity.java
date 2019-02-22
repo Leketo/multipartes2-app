@@ -18,13 +18,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import py.multipartesapp.R;
+import py.multipartesapp.beans.LocatorDTO;
 import py.multipartesapp.beans.PedidoDetalle;
 import py.multipartesapp.beans.PrecioCategoria;
 import py.multipartesapp.beans.PrecioVersion;
 import py.multipartesapp.beans.Producto;
+import py.multipartesapp.beans.StockDTO;
+import py.multipartesapp.beans.StockList;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommDelegateAndroid;
+import py.multipartesapp.comm.CommReq;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.AppUtils;
 import py.multipartesapp.utils.Globals;
@@ -46,6 +53,9 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
     private Button verCatalogoBtn;
 
     private ImageView vistaPreviaImgView;
+
+
+    private List<StockDTO> listStock= new ArrayList<>();
 
 
     @Override
@@ -104,9 +114,28 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
                 codigoProductoTxtView.setText(productoSeleccionado.getCodinterno());
                 Integer precio = calcularPrecioProducto();
                 precioProductoTxtView.setText(precio.toString());
-                stockProductoTxtView.setText(productoSeleccionado.getStock().toString());
+
+                int sumaAsu=0;
+                int sumaSucursales=0;
+
+                if(productoSeleccionado.getM_product_id()!=null){
+                    obtenerStockArticulo();
+
+
+                    for(StockDTO stockDTO: listStock){
+                        if(stockDTO.getLocator().getM_locator_id().equalsIgnoreCase("ASU")){
+                            sumaAsu=stockDTO.getStock_disponible();
+                        }else{
+                            sumaSucursales=stockDTO.getStock_disponible();
+                        }
+                    }
+                }
+
+                stockProductoTxtView.setText(sumaAsu+"/"+sumaSucursales);
             }
         });
+
+
 
         //boton limpiar texto
         productoTextView.setOnTouchListener(new View.OnTouchListener() {
@@ -144,6 +173,48 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
             //clic en boton Ok
         }
     };
+
+
+    public void obtenerStockArticulo(){
+        StockDTO stockDTO= new StockDTO();
+        Producto producto = new Producto();
+        producto.setCodinterno("");
+        producto.setM_product_id(0);
+        producto.setName("");
+        stockDTO.setProducto(producto);
+        LocatorDTO locatorDTO = new LocatorDTO();
+        locatorDTO.setM_locator_id("");
+
+        locatorDTO.setM_locator_value("");
+        stockDTO.setLocator(locatorDTO);
+        stockDTO.setStock_disponible(0);
+
+        listStock= new ArrayList<>();
+
+
+
+        //obtener el stock del producto haciendo la llamada al servicio stock-productos
+        CommDelegateAndroid delegate = new CommDelegateAndroid(){
+            @Override
+            public void onError(){
+                Log.e(TAG, this.exception.getMessage());
+            }
+            @Override
+            public void onSuccess(){
+                Log.d(TAG, "Datos de producto");
+                Comm.CommResponse r = response;
+
+                StockList stockList=(StockList) r.getBean();
+
+                listStock=stockList.getList();
+
+            }
+        };
+
+        new Comm().requestGet(Comm.URL_API_MULTIP2, CommReq.CommReqGetStockProducto, new String[][]{
+                {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
+        }, delegate);
+    }
 
     private void agregarDetalle (){
         //validar producto
@@ -269,7 +340,13 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
             codigoProductoTxtView.setText(productoSeleccionado.getCodinterno());
             Integer precio = calcularPrecioProducto();
             precioProductoTxtView.setText(precio.toString());
-            stockProductoTxtView.setText(productoSeleccionado.getStock().toString());
+
+            //obtenemos el stock de los articulos que no sean de la sucursal ASU
+
+
+
+
+            stockProductoTxtView.setText(productoSeleccionado.getStock().toString()+"");
             productoTextView.setText(productoSeleccionado.toString());
 
             if (Globals.imagenSeleccionadaCatalogo != null){

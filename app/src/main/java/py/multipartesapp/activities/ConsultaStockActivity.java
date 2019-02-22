@@ -200,9 +200,10 @@ public class ConsultaStockActivity extends ActionBarActivity {
                     if (event.getRawX() >= leftEdgeOfRightDrawable) {
                         // clicked on clear icon
                         productoAutoComplete.setText("");
-                        codigoProductoTxtView.setText("");
-                        precioProductoTxtView.setText("");
-                        stockProductoTxtView.setText("");
+                        limpiarListViewStock();
+//                        codigoProductoTxtView.setText("");
+//                        precioProductoTxtView.setText("");
+//                        stockProductoTxtView.setText("");
                         return true;
                     }
                 }
@@ -368,7 +369,7 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
             TextView titleTextView = (TextView) v.findViewById(R.id.txt1);
             if(item.getLocator()!=null){
-                titleTextView.setText("Sucursal: "+item.getLocator().getM_locator_value());
+                titleTextView.setText("Depósito: "+item.getLocator().getM_locator_value());
             }
 
             if(item.getProducto()!=null){

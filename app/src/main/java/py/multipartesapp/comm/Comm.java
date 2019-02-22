@@ -60,6 +60,7 @@ public class Comm extends Application{
    // public  static String URL = "http://192.168.0.138:8080/";
     public  static String URL = "http://app.multipartes.com.py/";
 	public  static String URL_API_MULTIP2 = "http://app.multipartes.com.py/multip/";
+	public  static String URL_TEST = "http://test.multipartes.com.py/";
 
     public void onCreate(){
         super.onCreate();
@@ -407,32 +408,32 @@ public class Comm extends Application{
 			}			
 		}, delegate);
 	}
-    /*
-    public void request2(final String req, final Multimap params, final CommDelegate delegate){
+	public void request(final String api_url,final String req, final Map params, final CommDelegate delegate){
 
-        execute(new CommRunnable() {
+		execute(new CommRunnable() {
 
-            public CommResponse run() throws CommException {
+			public CommResponse run() throws CommException {
 
-                String commandURL = req;
-                commandURL = sanitateUrl(commandURL);
-                String response;
-                Object object = null;
-                try {
-                    response = post2(delegate, req, URL+commandURL,params);
-                    object = objectFromResponse(req,response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if( object instanceof Bean ){
-                    return new CommResponse((Bean) object);
-                } else {
-                    return new CommResponse(object);
-                }
-            }
-        }, delegate);
-    }
-    */
+				String commandURL = req;
+				commandURL = sanitateUrl(commandURL);
+				String response;
+				Object object = null;
+				try {
+					response = post(delegate, req, api_url+commandURL,params);
+					object = objectFromResponse(req,response);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				if( object instanceof Bean ){
+					return new CommResponse((Bean) object);
+				} else {
+					return new CommResponse(object);
+				}
+			}
+		}, delegate);
+	}
+
+
     public void requestGet(final String req, final Object[][]params, final CommDelegate delegate){
         Map hash = toMap(params);
         String api_url=URL;
