@@ -244,6 +244,14 @@ public class AppDatabase {
         return mappingListProducto(c);
     }
 
+    public List<Producto> selectProductByNombreOrCodigo (String nombreOcodigo){
+        SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
+        String sql = " SELECT * FROM " +AppContract.Tables.PRODUCTO + " WHERE "+ AppContract.Producto.name + " like '%"+nombreOcodigo+"%' " +
+                " or "+ AppContract.Producto.codinterno + " like '%"+nombreOcodigo+"%' ";
+        String[] whereArgs = { nombreOcodigo };
+        Cursor c = db.rawQuery(sql, null);
+        return mappingListProducto(c);
+    }
 
     public Producto selectProductById (Integer id_producto){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();

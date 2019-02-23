@@ -134,7 +134,7 @@ public class ConsultaStockActivity extends ActionBarActivity {
         productoAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, itemsProductos);
         productoAutoComplete.setAdapter(productoAdapter);
 
-        //al seleccionar un cliente de la lista filtrada
+        //al seleccionar un producto de la lista filtrada
         productoAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -182,8 +182,8 @@ public class ConsultaStockActivity extends ActionBarActivity {
         });
 
 
-        //boton limpiar texto
-        //boton limpiar texto cliente
+
+        //boton limpiar texto producto
         productoAutoComplete.setOnTouchListener(new View.OnTouchListener() {
             final int DRAWABLE_LEFT = 0;
             final int DRAWABLE_TOP = 1;
@@ -320,12 +320,12 @@ public class ConsultaStockActivity extends ActionBarActivity {
     // this function is used in CustomAutoCompleteTextChangedListener.java
     public String[] getProductosFiltrados(String searchTerm){
         // add itemsClientes on the array dynamically
-        productosFiltrados = db.selectProductByNombre(searchTerm);
+        productosFiltrados = db.selectProductByNombreOrCodigo(searchTerm);
         int rowCount = productosFiltrados.size();
         String[] item = new String[rowCount];
         int i = 0;
         for (Producto c : productosFiltrados) {
-            item[i] = c.getName();
+            item[i] = c.getCodinterno() + "-" + c.getName();
             i++;
         }
         return item;
