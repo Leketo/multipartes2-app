@@ -121,17 +121,23 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
                 if(productoSeleccionado.getM_product_id()!=null){
                     obtenerStockArticulo();
 
-
+                    /*
                     for(StockDTO stockDTO: listStock){
                         if(stockDTO.getLocator().getM_locator_id().equalsIgnoreCase("ASU")){
                             sumaAsu=stockDTO.getStock_disponible();
+                            Log.d(TAG, "llego stock en ASU: " +sumaAsu);
                         }else{
                             sumaSucursales=stockDTO.getStock_disponible();
                         }
                     }
+
+                    // Setear el stock, solo el de ASU para validar al guardar. adolfo 24-02-2019
+                    Log.d(TAG, "setear stock producto seleccionado: " +sumaAsu);
+                    productoSeleccionado.setStock(sumaAsu);
+                    */
                 }
 
-                stockProductoTxtView.setText(sumaAsu+"/"+sumaSucursales);
+                //stockProductoTxtView.setText("ASU:"+sumaAsu+" / SUC.:"+sumaSucursales);
             }
         });
 
@@ -207,6 +213,23 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
                 StockList stockList=(StockList) r.getBean();
 
                 listStock=stockList.getList();
+
+                int sumaAsu=0;
+                int sumaSucursales=0;
+
+                for(StockDTO stockDTO: listStock){
+                    if(stockDTO.getLocator().getM_locator_value().equalsIgnoreCase("ASU")){
+                        sumaAsu=stockDTO.getStock_disponible();
+                    }else{
+                        sumaSucursales=stockDTO.getStock_disponible();
+                    }
+                }
+
+                // Setear el stock, solo el de ASU para validar al guardar. adolfo 24-02-2019
+                Log.d(TAG, "setear stock producto seleccionado ASU: " +sumaAsu);
+                productoSeleccionado.setStock(sumaAsu);
+
+                stockProductoTxtView.setText("ASU:"+sumaAsu+" / SUC.:"+sumaSucursales);
 
             }
         };
