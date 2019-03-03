@@ -359,13 +359,13 @@ public class CobranzaActivity extends ActionBarActivity {
         imprimir(print);
         if (!enLinea){
             Log.d(TAG, "Sin conexion, se guarda el cobro");
-            /*
+
             //guardar con estado PENDIENTE para su posterior envio
             c.setEstado_envio("PENDIENTE");
             db.insertCobranza(c);
             for (CobranzaDetalle cd : c.getDetalles()){
                 db.insertCobranzaDetalle(cd);
-            }*/
+            }
 
             Context context = getApplicationContext();
             CharSequence text = "No hay conexión. Se guarda y se volverá a intentar mas tarde.";

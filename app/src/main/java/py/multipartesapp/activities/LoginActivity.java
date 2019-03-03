@@ -1,10 +1,14 @@
 package py.multipartesapp.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +17,16 @@ import android.widget.ProgressBar;
 //import org.apache.http.cookie.Cookie;
 //import org.apache.http.impl.cookie.BasicClientCookie;
 
+import android.widget.Toast;
+import com.google.gson.JsonObject;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
 import py.multipartesapp.beans.Login;
 import py.multipartesapp.beans.Session;
 import py.multipartesapp.beans.Usuario;
@@ -26,6 +40,11 @@ import py.multipartesapp.utils.Globals;
 
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * Created by Adolfo on 10/06/2015.
@@ -54,6 +73,11 @@ public class LoginActivity extends Activity {
             Log.d(TAG, "version name:" + versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+        }
+
+        if (Build.VERSION.SDK_INT > 9){
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
         }
 
         //Si aun no tiene Configuracion, saltar a la pagina de Configuracion
@@ -116,7 +140,7 @@ public class LoginActivity extends Activity {
         });
     }
 
-    private void login (){
+    private void login () {
         Boolean enLinea = AppUtils.isOnline(getApplicationContext());
         //login sin conexion
         if (!enLinea){
@@ -150,7 +174,7 @@ public class LoginActivity extends Activity {
                 return;
             }
         }
-
+        /*
         CommDelegateAndroid delegateLogin = new CommDelegateAndroid(){
             @Override
             public void onError(){
@@ -187,7 +211,28 @@ public class LoginActivity extends Activity {
                 {"j_username", usernameEditText.getText().toString().trim()},
                 {"j_password", passwordEditText.getText().toString().trim()},
         }, delegateLogin);
+        */
 
+        JSONObject json = null;
+        try {
+            json = prepararDatosEnvio(usernameEditText.getText().toString().trim(),
+                    passwordEditText.getText().toString().trim());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        loginServer(json.toString());
+
+    }
+
+
+    public  void getUsuarioLogeadoNuevo(){
+
+        Log.d(TAG, "getUsuarioLogeadoNuevo. Datos recibidos");
+
+        Intent intent = new Intent(LoginActivity.this, Main.class);
+        startActivity(intent);
+        finish();
 
     }
 
@@ -225,4 +270,120 @@ public class LoginActivity extends Activity {
         }, delegateGetUsuario);
 
     }
+
+    private String loginServer(String json){
+        InputStream inputStream = null;
+        String result = "";
+        try {
+            // 1. create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            String url = Comm.URL + "erp/api/authenticate";
+            // 2. make POST request to the given URL
+            HttpPost httpPost = new HttpPost(url);
+
+            // 5. set json to StringEntity
+            StringEntity se = new StringEntity(json, HTTP.ASCII);
+
+            // 6. set httpPost Entity
+            httpPost.setEntity(se);
+
+            // 7. Set some headers to inform server about the type of the content
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+
+            Log.d(TAG, "enviando post: "+ url);
+            Log.d(TAG, "mensaje post: "+ json);
+
+            DefaultHttpClient httpclient2 = new DefaultHttpClient();
+
+            // 8. Execute POST request to the given URL
+            HttpResponse httpResponse = httpclient2.execute(httpPost);
+
+            int code = httpResponse.getStatusLine().getStatusCode();
+            //si llega 401 es error de login
+            Log.d(TAG, "responde code: "+code);
+
+            // 9. receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // 10. convert inputstream to string
+            if(inputStream != null) {
+                result = convertInputStreamToString(inputStream);
+            } else {
+                result = "Did not work!";
+            }
+
+            if (code == 200){
+                if (result.contains("Portal Movil Tigo")){
+                    Log.d(TAG, "Sin conexion para login");
+
+
+                    Context context = getApplicationContext();
+                    CharSequence text = "No hay conexión.";
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
+                    toast.show();
+                    finish();
+
+                    return "NO_ENVIADO_SIN_CONEXION_A_INTERNET";
+
+                }
+
+                /* si llego hasta aca, login correcto */
+                JSONObject resultJson = new JSONObject(result);
+                Log.d(TAG, resultJson.get("id_token").toString());
+
+                Login login = new Login();
+                login.setUserName(usernameEditText.getText().toString());
+                login.setStatus("ACTIVE");
+                login.setSessionID(resultJson.get("id_token").toString());
+
+
+                Globals.setIsLogged(true);
+                db.insertLogin(login);
+                getUsuarioLogeado();
+
+
+                return "ENVIADO_CORRECTAMENTE";
+            } else {
+                AppUtils.handleError("Acceso denegado.", LoginActivity.this);
+                progressBar.setVisibility(View.GONE);
+            }
+
+            Log.d(TAG, "resultado  post: "+ result);
+        } catch (Exception e) {
+            AppUtils.handleError("Error al enviar login.", LoginActivity.this);
+            Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
+        }
+        return "ENVIADO_CORRECTAMENTE";
+
+    }
+
+
+    private JSONObject prepararDatosEnvio(String user, String pass) throws JSONException {
+
+        //  build jsonObject
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.accumulate("username", user);
+        jsonObject.accumulate("password", pass);
+        jsonObject.accumulate("remember", true);
+
+        return jsonObject;
+
+    }
+
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
+
 }
