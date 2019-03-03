@@ -378,7 +378,7 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
 
             TextView subTitleTextView = (TextView) v.findViewById(R.id.txt2);
-            subTitleTextView.setText("Cant. Diponible: "+item.getStock_disponible());
+            subTitleTextView.setText("Cant. Disponible: "+item.getStock_disponible());
 
 
             return v;

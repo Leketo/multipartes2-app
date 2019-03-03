@@ -269,10 +269,10 @@ public class Main extends ActionBarActivity {
             }
         }
         Log.d(TAG, "=====================State checkLocation running: " + servicioCorriendo);
-        if (!servicioCorriendo) {
-            Intent mServiceIntent = new Intent(this, LocationService.class);
-            startService(mServiceIntent);
-        }
+//        if (!servicioCorriendo) {
+//            Intent mServiceIntent = new Intent(this, LocationService.class);
+//            startService(mServiceIntent);
+//        }
     }
 
     @Override

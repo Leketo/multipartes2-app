@@ -183,17 +183,17 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
 
     public void obtenerStockArticulo(){
         StockDTO stockDTO= new StockDTO();
-        Producto producto = new Producto();
-        producto.setCodinterno("");
-        producto.setM_product_id(0);
-        producto.setName("");
-        stockDTO.setProducto(producto);
-        LocatorDTO locatorDTO = new LocatorDTO();
-        locatorDTO.setM_locator_id("");
-
-        locatorDTO.setM_locator_value("");
-        stockDTO.setLocator(locatorDTO);
-        stockDTO.setStock_disponible(0);
+//        Producto producto = new Producto();
+//        producto.setCodinterno("");
+//        producto.setM_product_id(0);
+//        producto.setName("");
+//        stockDTO.setProducto(producto);
+//        LocatorDTO locatorDTO = new LocatorDTO();
+//        locatorDTO.setM_locator_id("");
+//
+//        locatorDTO.setM_locator_value("");
+//        stockDTO.setLocator(locatorDTO);
+//        stockDTO.setStock_disponible(0);
 
         listStock= new ArrayList<>();
 
@@ -218,10 +218,11 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
                 int sumaSucursales=0;
 
                 for(StockDTO stockDTO: listStock){
-                    if(stockDTO.getLocator().getM_locator_value().equalsIgnoreCase("ASU")){
-                        sumaAsu=stockDTO.getStock_disponible();
+                    //TODO Verificar por sucursal
+                    if(stockDTO.getLocator().getM_locator_value().contains("ASU")){
+                        sumaAsu=sumaAsu+stockDTO.getStock_disponible();
                     }else{
-                        sumaSucursales=stockDTO.getStock_disponible();
+                        sumaSucursales=sumaSucursales+stockDTO.getStock_disponible();
                     }
                 }
 

@@ -54,8 +54,8 @@ import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.AppUtils;
 
 /*
-* @author adolfo
-*/
+ * @author adolfo
+ */
 
 public class SincronizarActivity extends ActionBarActivity {
     public static final String TAG = SincronizarActivity.class.getSimpleName();
@@ -81,8 +81,14 @@ public class SincronizarActivity extends ActionBarActivity {
     private EntregaList entregaList;
 
     private CheckBox catalogoCheckbox;
-    private int count=0;
+    private int count = 0;
 
+    private String userId;
+
+
+    HashMap mapClaseResponseRoutes = new HashMap();
+
+    HashMap mapClaseResponse = new HashMap();
 
 
     @Override
@@ -111,11 +117,13 @@ public class SincronizarActivity extends ActionBarActivity {
             }
         });
 
+        userId = db.selectUsuarioLogeado().getUserId().toString();
+
 
     }
 
 
-    public void obtenerImagenesProducto(){
+    public void obtenerImagenesProducto() {
         /*
         int id = R.drawable.me_dos;
         Resources res = getResources();
@@ -131,17 +139,17 @@ public class SincronizarActivity extends ActionBarActivity {
         File file = new File(dir, "my_filename");
         boolean deleted = file.delete();
          */
-        for (String nombre : getFilesDir().list()){
+        for (String nombre : getFilesDir().list()) {
             File file = new File(getFilesDir(), nombre);
             boolean deleted = file.delete();
-            Log.d(TAG, "Eliminando foto:"+nombre+" -> "+deleted);
+            Log.d(TAG, "Eliminando foto:" + nombre + " -> " + deleted);
         }
 
         List<ProductoImagen> listNombresImagenes = db.selectAllProductoImagen();
-        String url = Comm.URL+ CommReq.CommReqGetProductImageFile;
+        String url = Comm.URL + CommReq.CommReqGetProductImageFile;
 
 
-        for (ProductoImagen p : listNombresImagenes){
+        for (ProductoImagen p : listNombresImagenes) {
             new DownloadImage().execute(url + p.getM_product_id(), p.getImg());
         }
 
@@ -158,28 +166,75 @@ public class SincronizarActivity extends ActionBarActivity {
         return;
     }
 
-    public void sincronizarDatos (){
+    public void sincronizarDatos() {
 
 
         String userId = db.selectUsuarioLogeado().getUserId().toString();
 
         /* ============================== || 1 ||========================================= */
+        sincronizarClientes();
 
-        CommDelegateAndroid delegateClientes = new CommDelegateAndroid(){
+        /* ============================== || 2 ||========================================= */
+        sincronizarUsuarios();
+
+        /* ============================== || 3 ||========================================= */
+        sincronizarFacturas();
+
+        /* ============================== || 4 ||========================================= */
+
+        sincronizarProductos();
+
+        /* ============================== || 5 ||========================================= */
+        sincronizarPreciosCategoria();
+
+        /* ============================== || 6 ||========================================= */
+        sincronizarListaPrecios();
+
+        /* ============================== || 7 ||========================================= */
+        //sincronizarPedidos();
+
+
+        /* ============================== || 8 ||========================================= */
+        //sincronizarCobros();
+
+        /* ============================== || 9 ||========================================= */
+        //sincronizarHojaDeRuta();
+
+        /* ============================== || 10 ||========================================= */
+        sincronizarFamiliaProducto();
+
+        /* ============================== || 11 ||========================================= */
+        sincronizarSubFamiliaProducto();
+
+        /* ============================== || 12 ||========================================= */
+        sincronizarImagenesProducto();
+
+          /* ============================== || 13 ||========================================= */
+        //sincronizarVisitas();
+
+        /* ============================== || 14 ||========================================= */
+        //sincronizarEntregas();
+
+
+    }
+
+
+    public void sincronizarClientes() {
+        CommDelegateAndroid delegateClientes = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "Clientes. Datos recibidos");
                 Comm.CommResponse r = response;
-                clienteList =  (ClienteList) r.getBean();
-                if(clienteList!=null) {
+                clienteList = (ClienteList) r.getBean();
+                if (clienteList != null) {
                     Log.d(TAG, "Clientes. Tamaño lista " + clienteList.getList().size());
 
                     new Thread(new Runnable() {
@@ -216,7 +271,7 @@ public class SincronizarActivity extends ActionBarActivity {
                                     //mensajeTextView.setText("Sincronización finalizada.");
 
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -230,23 +285,23 @@ public class SincronizarActivity extends ActionBarActivity {
             }
         };
 
-        String ultmaActualizacionCliente="TODOS";
+        String ultmaActualizacionCliente = "TODOS";
         Configuracion c = db.selectConfiguracionByClave("CLIENT_LAST_UPDATED");
-        if (c.getValor() != null){
+        if (c.getValor() != null) {
             ultmaActualizacionCliente = c.getValor();
         }
 
         HashMap mapClaseResponse = new HashMap();
-        mapClaseResponse.put(CommReq.CommReqGetAllClients+"/"+ultmaActualizacionCliente, ClienteList.class.getName());
+        mapClaseResponse.put(CommReq.CommReqGetAllClients + "/" + ultmaActualizacionCliente, ClienteList.class.getName());
 
-        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllClients+"/"+ultmaActualizacionCliente, new String[][]{
+        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllClients + "/" + ultmaActualizacionCliente, new String[][]{
         }, delegateClientes);
+    }
 
-        /* ============================== || 2 ||========================================= */
-
-        CommDelegateAndroid delegateUsuarios = new CommDelegateAndroid(){
+    public void sincronizarUsuarios() {
+        CommDelegateAndroid delegateUsuarios = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
@@ -258,7 +313,7 @@ public class SincronizarActivity extends ActionBarActivity {
                 Log.d(TAG, "Usuarios. Datos recibidos");
                 Comm.CommResponse r = response;
                 usuarioList = (UsuarioList) r.getBean();
-                if (usuarioList!=null) {
+                if (usuarioList != null) {
                     Log.d(TAG, "Usuarios. Tamaño lista " + usuarioList.getList().size());
 
                     new Thread(new Runnable() {
@@ -275,7 +330,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -290,106 +345,104 @@ public class SincronizarActivity extends ActionBarActivity {
         };
         new Comm().requestGet(CommReq.CommReqGetAllUsers, new String[][]{
         }, delegateUsuarios);
+    }
 
-        /* ============================== || 3 ||========================================= */
-
-        CommDelegateAndroid delegatePedidos = new CommDelegateAndroid(){
+    public void sincronizarPedidos() {
+        CommDelegateAndroid delegatePedidos = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "Pedidos. Datos recibidos");
                 Comm.CommResponse r = response;
-                pedidoList =  (PedidoList) r.getBean();
-                if(pedidoList !=null) {
+                pedidoList = (PedidoList) r.getBean();
+                if (pedidoList != null) {
                     Log.d(TAG, "Pedidos. Tamaño lista " + pedidoList.getList().size());
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "Pedidos. Insertando registros");
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "Pedidos. Insertando registros");
 
-                        Log.d(TAG, "Se eliminará la tabla Pedidos y Detalles...");
-                        //db.deletePedidoSinEstado();
-                        //db.deletePedidoDetalle();
-                        Log.d(TAG, "Eliminacion exitosa");
+                            Log.d(TAG, "Se eliminará la tabla Pedidos y Detalles...");
+                            //db.deletePedidoSinEstado();
+                            //db.deletePedidoDetalle();
+                            Log.d(TAG, "Eliminacion exitosa");
 
-                        db.insertPedidoLista(pedidoList.getList(), getApplicationContext());
-                        for (Pedido pedido : pedidoList.getList()){
-                            //Log.d(TAG, "Insertando Pedido cabecera");
-                            for (PedidoDetalle detalle : pedido.getDetalles()){
-                                db.insertPedidoDetalle(detalle);
-                            }
-                        }
-                        Log.d(TAG, "Pedidos. Registros insertados exitosamente");
-
-                        //insertar fecha ultima actualizacion pedidos
-                        Configuracion fechaActualizacion = new Configuracion();
-                        fechaActualizacion.setClave("ORDER_LAST_UPDATED");
-                        String now =  new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-                        fechaActualizacion.setValor(now);
-
-                        db.deleteConfiguracionByClave("ORDER_LAST_UPDATED");
-                        db.insertConfiguracion(fechaActualizacion);
-
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                count++;
-                                mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
-                                if (count == getTotal()) {
-                                    mensajeTextView.setText("Sincronización finalizada.");
-                                    progressBar.setVisibility(View.INVISIBLE);
+                            db.insertPedidoLista(pedidoList.getList(), getApplicationContext());
+                            for (Pedido pedido : pedidoList.getList()) {
+                                //Log.d(TAG, "Insertando Pedido cabecera");
+                                for (PedidoDetalle detalle : pedido.getDetalles()) {
+                                    db.insertPedidoDetalle(detalle);
                                 }
                             }
-                        });
-                    }
-                }).start();
+                            Log.d(TAG, "Pedidos. Registros insertados exitosamente");
+
+                            //insertar fecha ultima actualizacion pedidos
+                            Configuracion fechaActualizacion = new Configuracion();
+                            fechaActualizacion.setClave("ORDER_LAST_UPDATED");
+                            String now = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+                            fechaActualizacion.setValor(now);
+
+                            db.deleteConfiguracionByClave("ORDER_LAST_UPDATED");
+                            db.insertConfiguracion(fechaActualizacion);
+
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    count++;
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
+                                    if (count == getTotal()) {
+                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                            });
+                        }
+                    }).start();
                 }
             }
         };
 
-
-
-        String ultmaActualizacionPedidos="TODOS";
+        String ultmaActualizacionPedidos = "TODOS";
         Configuracion pedido_last_updated = db.selectConfiguracionByClave("ORDER_LAST_UPDATED");
-        if (pedido_last_updated.getValor() != null){
+        if (pedido_last_updated.getValor() != null) {
             ultmaActualizacionPedidos = pedido_last_updated.getValor();
         }
 
 
         mapClaseResponse = new HashMap();
-        mapClaseResponse.put(CommReq.CommReqGetAllOrders+"/"+ultmaActualizacionPedidos, PedidoList.class.getName());
+        mapClaseResponse.put(CommReq.CommReqGetAllOrders + "/" + ultmaActualizacionPedidos, PedidoList.class.getName());
 
-        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllOrders+"/"+ultmaActualizacionPedidos, new String[][]{
+        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllOrders + "/" + ultmaActualizacionPedidos, new String[][]{
                 {"userId", userId
-        }
+                }
 
         }, delegatePedidos);
+    }
 
-        /* ============================== || 4 ||========================================= */
-
-        CommDelegateAndroid delegateProductos = new CommDelegateAndroid(){
+    public void sincronizarProductos() {
+        CommDelegateAndroid delegateProductos = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "Productos. Datos recibidos");
                 Comm.CommResponse r = response;
-                productoList =  (ProductoList) r.getBean();
+                productoList = (ProductoList) r.getBean();
 
-                if(productoList!=null) {
+                if (productoList != null) {
                     Log.d(TAG, "Productos. Tamaño lista " + productoList.getList().size());
 
                     new Thread(new Runnable() {
@@ -398,9 +451,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             Log.d(TAG, "Productos. Insertando registros");
 
                             //Si ya existe actualizar
-                            if (db.countProduct() > 0){
+                            if (db.countProduct() > 0) {
                                 db.insertOrUpdateProductoList(productoList.getList());
-                            }else{
+                            } else {
                                 Log.d(TAG, "Se eliminará la tabla Productos...");
                                 db.deleteProducto();
                                 Log.d(TAG, "Eliminacion exitosa");
@@ -421,7 +474,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -434,23 +487,23 @@ public class SincronizarActivity extends ActionBarActivity {
             }
         };
 
-        String ultmaActualizacionProductos="TODOS";
+        String ultmaActualizacionProductos = "TODOS";
         Configuracion producto_last_updated = db.selectConfiguracionByClave("PRODUCTO_LAST_UPDATED");
-        if (producto_last_updated.getValor() != null){
+        if (producto_last_updated.getValor() != null) {
             ultmaActualizacionProductos = producto_last_updated.getValor();
         }
 
         mapClaseResponse = new HashMap();
-        mapClaseResponse.put(CommReq.CommReqGetAllProduct+"/"+ultmaActualizacionProductos, ProductoList.class.getName());
+        mapClaseResponse.put(CommReq.CommReqGetAllProduct + "/" + ultmaActualizacionProductos, ProductoList.class.getName());
 
-        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllProduct+"/"+ultmaActualizacionProductos, new String[][]{
+        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllProduct + "/" + ultmaActualizacionProductos, new String[][]{
         }, delegateProductos);
+    }
 
-        /* ============================== || 5 ||========================================= */
-
-        CommDelegateAndroid delegatePrecioCategoria = new CommDelegateAndroid(){
+    public void sincronizarPreciosCategoria() {
+        CommDelegateAndroid delegatePrecioCategoria = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
@@ -478,7 +531,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -494,22 +547,24 @@ public class SincronizarActivity extends ActionBarActivity {
         new Comm().requestGet(CommReq.CommReqGetAllPrecioCategoria, new String[][]{
         }, delegatePrecioCategoria);
 
-        /* ============================== || 6 ||========================================= */
-        CommDelegateAndroid delegatePrecioVersion = new CommDelegateAndroid(){
+    }
+
+    public void sincronizarListaPrecios() {
+        CommDelegateAndroid delegatePrecioVersion = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "PrecioVersion. Datos recibidos");
                 Comm.CommResponse r = response;
-                precioVersionList =  (PrecioVersionList) r.getBean();
-                if(precioVersionList!=null) {
+                precioVersionList = (PrecioVersionList) r.getBean();
+                if (precioVersionList != null) {
                     Log.d(TAG, "PrecioVersion. Tamaño lista " + precioVersionList.getList().size());
 
                     new Thread(new Runnable() {
@@ -540,7 +595,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -553,35 +608,36 @@ public class SincronizarActivity extends ActionBarActivity {
             }
         };
 
-        String ultmaActualizacionPrecioVersion="TODOS";
+        String ultmaActualizacionPrecioVersion = "TODOS";
 
         Configuracion conf = db.selectConfiguracionByClave("PRECIO_VERSION_LAST_UPDATED");
-        if (conf.getValor() != null){
+        if (conf.getValor() != null) {
             ultmaActualizacionPrecioVersion = conf.getValor();
         }
 
         mapClaseResponse = new HashMap();
-        mapClaseResponse.put(CommReq.CommReqGetAllPrecioVersion+"/"+ultmaActualizacionPrecioVersion, PrecioVersionList.class.getName());
+        mapClaseResponse.put(CommReq.CommReqGetAllPrecioVersion + "/" + ultmaActualizacionPrecioVersion, PrecioVersionList.class.getName());
 
-        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllPrecioVersion+"/"+ultmaActualizacionPrecioVersion, new String[][]{
+        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllPrecioVersion + "/" + ultmaActualizacionPrecioVersion, new String[][]{
         }, delegatePrecioVersion);
+    }
 
-        /* ============================== || 7 ||========================================= */
-        CommDelegateAndroid delegateRutas = new CommDelegateAndroid(){
+    public void sincronizarHojaDeRuta() {
+        CommDelegateAndroid delegateRutas = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "RutasLocation. Datos recibidos");
                 Comm.CommResponse r = response;
-                rutaLocationList =  (RutaLocationList) r.getBean();
-                if(rutaLocationList!=null) {
+                rutaLocationList = (RutaLocationList) r.getBean();
+                if (rutaLocationList != null) {
                     Log.d(TAG, "RutasLocation. Tamaño lista " + rutaLocationList.getList().size());
 
                     new Thread(new Runnable() {
@@ -598,7 +654,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -613,28 +669,28 @@ public class SincronizarActivity extends ActionBarActivity {
         String fechahoy = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         //String fechahoy = "2016-03-01";
 
-        userId = db.selectUsuarioLogeado().getUserId().toString();
-        HashMap mapClaseResponseRoutes = new HashMap();
-        mapClaseResponseRoutes.put(CommReq.CommReqGetAllRoutes+"/"+userId, RutaLocationList.class.getName());
-        new Comm(mapClaseResponseRoutes).requestGet(CommReq.CommReqGetAllRoutes+"/"+userId, new String[][]{
-        }, delegateRutas);
 
-        /* ============================== || 8 ||========================================= */
-        CommDelegateAndroid delegateCobranzas = new CommDelegateAndroid(){
+        mapClaseResponseRoutes.put(CommReq.CommReqGetAllRoutes + "/" + userId, RutaLocationList.class.getName());
+        new Comm(mapClaseResponseRoutes).requestGet(CommReq.CommReqGetAllRoutes + "/" + userId, new String[][]{
+        }, delegateRutas);
+    }
+
+    public void sincronizarCobros() {
+        CommDelegateAndroid delegateCobranzas = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "Cobranza. Datos recibidos");
                 Comm.CommResponse r = response;
-                cobranzaList =  (CobranzaList) r.getBean();
-                if(cobranzaList!=null) {
+                cobranzaList = (CobranzaList) r.getBean();
+                if (cobranzaList != null) {
                     Log.d(TAG, "Cobranza. Tamaño lista " + cobranzaList.getList().size());
 
                     new Thread(new Runnable() {
@@ -665,7 +721,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -678,36 +734,36 @@ public class SincronizarActivity extends ActionBarActivity {
             }
         };
 
-        String ultmaActualizacionCobros="TODOS";
+        String ultmaActualizacionCobros = "TODOS";
 
         Configuracion confCobranza = db.selectConfiguracionByClave("COBRANZA_LAST_UPDATED");
-        if (confCobranza.getValor() != null){
+        if (confCobranza.getValor() != null) {
             ultmaActualizacionCobros = confCobranza.getValor();
         }
 
         mapClaseResponse = new HashMap();
-        mapClaseResponse.put(CommReq.CommReqGetAllCobros+"/"+ultmaActualizacionCobros, CobranzaList.class.getName());
+        mapClaseResponse.put(CommReq.CommReqGetAllCobros + "/" + ultmaActualizacionCobros, CobranzaList.class.getName());
 
-        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllCobros +"/"+ultmaActualizacionCobros, new String[][]{
-        }, delegateCobranzas);
+//        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllCobros +"/"+ultmaActualizacionCobros, new String[][]{
+//        }, delegateCobranzas);
+    }
 
-
-        /* ============================== || 9 ||========================================= */
-        CommDelegateAndroid delegateFacturas = new CommDelegateAndroid(){
+    public void sincronizarFacturas() {
+        CommDelegateAndroid delegateFacturas = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "Factura. Datos recibidos");
                 Comm.CommResponse r = response;
-                facturaList =  (FacturaList) r.getBean();
-                if(facturaList!=null) {
+                facturaList = (FacturaList) r.getBean();
+                if (facturaList != null) {
                     Log.d(TAG, "Factura. Tamaño lista " + facturaList.getList().size());
 
                     new Thread(new Runnable() {
@@ -740,7 +796,7 @@ public class SincronizarActivity extends ActionBarActivity {
                                 public void run() {
 
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -753,35 +809,37 @@ public class SincronizarActivity extends ActionBarActivity {
             }
         };
 
-        String ultmaActualizacionFactura="TODOS";
+        String ultmaActualizacionFactura = "TODOS";
 
         Configuracion confFactura = db.selectConfiguracionByClave("FACTURA_LAST_UPDATED");
-        if (confFactura.getValor() != null){
+        if (confFactura.getValor() != null) {
             ultmaActualizacionFactura = confFactura.getValor();
         }
 
         mapClaseResponse = new HashMap();
-        mapClaseResponse.put(CommReq.CommReqGetAllFacturas+"/"+ultmaActualizacionFactura, FacturaList.class.getName());
+        mapClaseResponse.put(CommReq.CommReqGetAllFacturas + "/" + ultmaActualizacionFactura, FacturaList.class.getName());
 
-        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllFacturas+"/"+ultmaActualizacionFactura, new String[][]{
+        new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllFacturas + "/" + ultmaActualizacionFactura, new String[][]{
         }, delegateFacturas);
+    }
 
-        /* ============================== || 10 ||========================================= */
-        CommDelegateAndroid delegateProductoFamilia = new CommDelegateAndroid(){
+    public void sincronizarFamiliaProducto(){
+
+        CommDelegateAndroid delegateProductoFamilia = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "Producto Familia. Datos recibidos");
                 Comm.CommResponse r = response;
-                productoFamiliaList =  (ProductoFamiliaList) r.getBean();
-                if(productoFamiliaList!=null) {
+                productoFamiliaList = (ProductoFamiliaList) r.getBean();
+                if (productoFamiliaList != null) {
                     Log.d(TAG, "Producto Familia. Tamaño lista " + productoFamiliaList.getList().size());
 
                     new Thread(new Runnable() {
@@ -798,7 +856,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -810,27 +868,29 @@ public class SincronizarActivity extends ActionBarActivity {
                 }
             }
         };
-        if (catalogoCheckbox.isChecked() ) {
+        if (catalogoCheckbox.isChecked()) {
             new Comm().requestGet(CommReq.CommReqGetAllProductFamily, new String[][]{
             }, delegateProductoFamilia);
         }
+    }
 
-        /* ============================== || 11 ||========================================= */
-        CommDelegateAndroid delegateProductoSubFamilia = new CommDelegateAndroid(){
+    public void sincronizarSubFamiliaProducto(){
+
+        CommDelegateAndroid delegateProductoSubFamilia = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "Producto Sub Familia. Datos recibidos");
                 Comm.CommResponse r = response;
-                productoSubFamiliaList =  (ProductoSubFamiliaList) r.getBean();
-                if(productoSubFamiliaList!=null) {
+                productoSubFamiliaList = (ProductoSubFamiliaList) r.getBean();
+                if (productoSubFamiliaList != null) {
                     Log.d(TAG, "Producto Sub Familia. Tamaño lista " + productoSubFamiliaList.getList().size());
 
                     new Thread(new Runnable() {
@@ -846,7 +906,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -858,27 +918,28 @@ public class SincronizarActivity extends ActionBarActivity {
                 }
             }
         };
-        if (catalogoCheckbox.isChecked() ) {
+        if (catalogoCheckbox.isChecked()) {
             new Comm().requestGet(CommReq.CommReqGetAllProductSubFamily, new String[][]{
             }, delegateProductoSubFamilia);
         }
+    }
 
-        /* ============================== || 12 ||========================================= */
-        CommDelegateAndroid delegateProductoImagen = new CommDelegateAndroid(){
+    public void sincronizarImagenesProducto(){
+        CommDelegateAndroid delegateProductoImagen = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "Producto Imagenes. Datos recibidos");
                 Comm.CommResponse r = response;
-                productoImagenList =  (ProductoImagenList) r.getBean();
-                if(productoImagenList!=null) {
+                productoImagenList = (ProductoImagenList) r.getBean();
+                if (productoImagenList != null) {
                     Log.d(TAG, "Producto Imagenes. Tamaño lista " + productoImagenList.getList().size());
 
                     new Thread(new Runnable() {
@@ -907,7 +968,7 @@ public class SincronizarActivity extends ActionBarActivity {
                                     obtenerImagenesProducto();
 
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -920,36 +981,37 @@ public class SincronizarActivity extends ActionBarActivity {
             }
         };
 
-        if (catalogoCheckbox.isChecked() ){
+        if (catalogoCheckbox.isChecked()) {
 
-            String ultmaActualizacionProductImg="TODOS";
+            String ultmaActualizacionProductImg = "TODOS";
             Configuracion confProductoImagen = db.selectConfiguracionByClave("PRODUCTO_IMG_LAST_UPDATED");
-            if (confProductoImagen.getValor() != null){
+            if (confProductoImagen.getValor() != null) {
                 ultmaActualizacionProductImg = confProductoImagen.getValor();
             }
             mapClaseResponse = new HashMap();
-            mapClaseResponse.put(CommReq.CommReqGetAllProductImages+"/"+ultmaActualizacionProductImg, ProductoImagenList.class.getName());
+            mapClaseResponse.put(CommReq.CommReqGetAllProductImages + "/" + ultmaActualizacionProductImg, ProductoImagenList.class.getName());
 
-            new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllProductImages+"/"+ultmaActualizacionProductImg, new String[][]{
+            new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllProductImages + "/" + ultmaActualizacionProductImg, new String[][]{
             }, delegateProductoImagen);
         }
+    }
 
-        /* ============================== || 13 ||========================================= */
-        CommDelegateAndroid delegateRegistroVisita = new CommDelegateAndroid(){
+    public void sincronizarVisitas(){
+        CommDelegateAndroid delegateRegistroVisita = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "Registro Visita Datos recibidos");
                 Comm.CommResponse r = response;
-                registroVisitaList =  (RegistroVisitaList) r.getBean();
-                if(registroVisitaList!=null) {
+                registroVisitaList = (RegistroVisitaList) r.getBean();
+                if (registroVisitaList != null) {
                     Log.d(TAG, "Registro Visita. Tamaño lista " + registroVisitaList.getList().size());
 
                     new Thread(new Runnable() {
@@ -968,7 +1030,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -989,29 +1051,30 @@ public class SincronizarActivity extends ActionBarActivity {
         String hoy = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
 
-        new Comm().requestGet(CommReq.CommReqGetRegistroVisita, new String[][]{
-                {"userId", userId},
-                {"fechaDesde", ayer},
-                {"fechaHasta", hoy},
+//        new Comm().requestGet(CommReq.CommReqGetRegistroVisita, new String[][]{
+//                {"userId", userId},
+//                {"fechaDesde", ayer},
+//                {"fechaHasta", hoy},
+//
+//        }, delegateRegistroVisita);
+    }
 
-        }, delegateRegistroVisita);
-
-        /* ============================== || 14 ||========================================= */
-        CommDelegateAndroid delegateEntrega = new CommDelegateAndroid(){
+    public void sincronizarEntregas(){
+        CommDelegateAndroid delegateEntrega = new CommDelegateAndroid() {
             @Override
-            public void onError(){
+            public void onError() {
                 progressBar.setVisibility(View.INVISIBLE);
                 AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
                 sincronizarBtn.setEnabled(true);
             }
 
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
 
                 Log.d(TAG, "Entrega. Datos recibidos");
                 Comm.CommResponse r = response;
-                entregaList =  (EntregaList) r.getBean();
-                if(entregaList!=null) {
+                entregaList = (EntregaList) r.getBean();
+                if (entregaList != null) {
                     Log.d(TAG, "Entrega. Tamaño lista " + entregaList.getList().size());
 
                     new Thread(new Runnable() {
@@ -1027,7 +1090,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count+"/"+getTotal()+"");
+                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
                                         mensajeTextView.setText("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
@@ -1040,15 +1103,13 @@ public class SincronizarActivity extends ActionBarActivity {
             }
         };
 
-        new Comm().requestGet(CommReq.CommReqGetAllEntrega, new String[][]{{"userId", userId}
-        }, delegateEntrega);
-
-
+//        new Comm().requestGet(CommReq.CommReqGetAllEntrega, new String[][]{{"userId", userId}
+//        }, delegateEntrega);
     }
 
-    public int getTotal () {
-        int TOTAL = 10; //10 servicios
-
+    public int getTotal() {
+        //int TOTAL = 10; //10 servicios
+        int TOTAL = 6;
         //si esta marcado catalogo son 4 servicios extras, lista imagenes, familia, subfamilia, los archivos
         if (catalogoCheckbox.isChecked())
             TOTAL = TOTAL + 4;
@@ -1116,11 +1177,11 @@ public class SincronizarActivity extends ActionBarActivity {
          * Called after the image has been downloaded
          * -> this calls a function on the main thread again
          */
-        protected void onPostExecute(HashMap result){
-            if (result != null){
+        protected void onPostExecute(HashMap result) {
+            if (result != null) {
                 Bitmap image = (Bitmap) result.get("bitmap");
                 String nombreArchivo = (String) result.get("nombreArchivo");
-                Log.d(TAG, "guardada imagen-> "+nombreArchivo );
+                Log.d(TAG, "guardada imagen-> " + nombreArchivo);
                 saveImageToInternalStorage(image, nombreArchivo);
             }
 
@@ -1128,11 +1189,11 @@ public class SincronizarActivity extends ActionBarActivity {
 
         /**
          * Actually download the Image from the _url
+         *
          * @param _url
          * @return
          */
-        private HashMap downloadImage(String _url, String nombreArchivo)
-        {
+        private HashMap downloadImage(String _url, String nombreArchivo) {
             this.url = _url.toString();
             //Prepare to download image
             URL url;
@@ -1141,7 +1202,7 @@ public class SincronizarActivity extends ActionBarActivity {
 
             //BufferedInputStream buf;
             try {
-                Log.d(TAG, "invocar URL->"+_url);
+                Log.d(TAG, "invocar URL->" + _url);
 
                 url = new URL(_url);
                 in = url.openStream();
@@ -1158,7 +1219,7 @@ public class SincronizarActivity extends ActionBarActivity {
                 if (buf != null) {
                     buf.close();
                 }
-                Log.d(TAG, "archivo obtenido correctamente, width->"+bMap.getWidth()+"x"+bMap.getHeight());
+                Log.d(TAG, "archivo obtenido correctamente, width->" + bMap.getWidth() + "x" + bMap.getHeight());
 
                 HashMap result = new HashMap();
                 result.put("bitmap", bMap);
