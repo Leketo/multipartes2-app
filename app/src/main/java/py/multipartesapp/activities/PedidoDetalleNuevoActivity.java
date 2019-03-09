@@ -235,7 +235,7 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
             }
         };
 
-        new Comm().requestGet(Comm.URL_API_MULTIP2, CommReq.CommReqGetStockProducto, new String[][]{
+        new Comm().requestGet(Comm.URL, CommReq.CommReqGetStockProducto, new String[][]{
                 {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
         }, delegate);
     }

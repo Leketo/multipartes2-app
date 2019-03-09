@@ -401,7 +401,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             JSONObject jsonObject = new JSONObject();
 
             jsonObject.accumulate("ad_client_id", "1000010");
-            jsonObject.accumulate("ad_org_id", "1000010");
+            jsonObject.accumulate("ad_org_id", "1000047");
             jsonObject.accumulate("date_order", pedido.getDate_order());
             jsonObject.accumulate("isactive", pedido.getIsactive());
             jsonObject.accumulate("client_id", pedido.getClient_id());

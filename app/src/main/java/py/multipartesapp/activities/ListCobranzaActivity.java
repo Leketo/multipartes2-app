@@ -192,10 +192,10 @@ public class ListCobranzaActivity extends ActionBarActivity {
             }
 
             TextView titleTextView = (TextView) v.findViewById(R.id.txt1_item_registro_visita);
-            titleTextView.setText(item.getNombre_cliente() + " - Factura: "+item.getInvoice_number());
+            titleTextView.setText(" - Recibo: "+item.getInvoice_number());
 
             TextView subTitleTextView = (TextView) v.findViewById(R.id.txt2_item_registro_visita);
-            subTitleTextView.setText("Cobrado por: "+item.getNombre_vendedor() + " - Monto: "+ formatearMoneda(item.getAmount().toString()));
+            subTitleTextView.setText("Cliente: "+item.getNombre_cliente() + " - Monto: "+ formatearMoneda(item.getAmount().toString()));
 
             ImageView iconItem = (ImageView) v.getTag(R.id.icon_item_registro_visita);
             if (item.getEstado_envio() == null) {

@@ -58,9 +58,11 @@ public class Comm extends Application{
 
  //   public  static String URL = "http://192.168.0.138:8080/multipartes/";
    // public  static String URL = "http://192.168.0.138:8080/";
-    public  static String URL = "http://app.multipartes.com.py/";
-	public  static String URL_API_MULTIP2 = "http://app.multipartes.com.py/multip/";
-	public  static String URL_TEST = "http://test.multipartes.com.py/";
+    public  static String URL = "http://app.multipartes.com.py/multip/";
+
+    //public  static String URL = "http://test.multipartes.com.py/multip/";
+
+	//public  static String URL_TEST = "http://test.multipartes.com.py/";
 
     public void onCreate(){
         super.onCreate();

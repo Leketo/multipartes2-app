@@ -175,7 +175,7 @@ public class SincronizarActivity extends ActionBarActivity {
         sincronizarClientes();
 
         /* ============================== || 2 ||========================================= */
-        sincronizarUsuarios();
+        //sincronizarUsuarios();
 
         /* ============================== || 3 ||========================================= */
         sincronizarFacturas();
@@ -1109,7 +1109,7 @@ public class SincronizarActivity extends ActionBarActivity {
 
     public int getTotal() {
         //int TOTAL = 10; //10 servicios
-        int TOTAL = 6;
+        int TOTAL = 5;
         //si esta marcado catalogo son 4 servicios extras, lista imagenes, familia, subfamilia, los archivos
         if (catalogoCheckbox.isChecked())
             TOTAL = TOTAL + 4;
