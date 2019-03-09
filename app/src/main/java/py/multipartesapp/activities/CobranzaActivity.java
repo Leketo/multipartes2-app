@@ -584,6 +584,7 @@ public class CobranzaActivity extends ActionBarActivity {
     private void actualizarTotalDeuda() {
         Integer totalDeudaInteger = getTotalDeuda();
         totalDeuda.setText("Gs. "+MyFormatter.formatMoney(totalDeudaInteger.toString()));
+
     }
 
     private void actualizarImporteFormaPago(){
