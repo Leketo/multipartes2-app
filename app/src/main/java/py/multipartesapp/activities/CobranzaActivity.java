@@ -174,6 +174,12 @@ public class CobranzaActivity extends ActionBarActivity {
         clienteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, itemsClientes);
         clienteAutoComplete.setAdapter(clienteAdapter);
 
+
+        //limpiar datos al entrar
+        limpiarDatos();
+
+
+
         //si proviene de Lista de Rutas, cargar el cliente en cuestion
         if (Globals.getClienteSeleccionadoRuta() != null){
             clienteSeleccionado = Globals.getClienteSeleccionadoRuta();
@@ -588,13 +594,13 @@ public class CobranzaActivity extends ActionBarActivity {
     }
 
     private void actualizarImporteFormaPago(){
-        double totAmountFp = 0;
+        Integer totAmountFp = 0;
         if(Globals.getItemCobroList() != null) {
             for (CobranzaFormaPago c : Globals.getItemCobroList()) {
                 totAmountFp += c.getAmount();
             }
         }
-        totalFormaPago.setText(String.valueOf(totAmountFp));
+        totalFormaPago.setText(MyFormatter.formatMoney(String.valueOf(totAmountFp)));
 
     }
     private Integer getTotalDeuda(){
@@ -907,6 +913,20 @@ public class CobranzaActivity extends ActionBarActivity {
         inputStream.close();
         return result;
 
+    }
+
+    private void limpiarDatos() {
+        clienteAutoComplete.setText("");
+        clienteSeleccionado = null;
+        facturaSeleccionada = null;
+        facturasFiltrados = new ArrayList<Factura>();
+        adapterDetalles.notifyDataSetChanged();
+
+        Globals.setItemCobroList(null);
+
+        actualizarImporteFormaPago();
+        actualizarTotal();
+        actualizarTotalDeuda();
     }
 
     private String crearTicket(Cobranza cobranza){
