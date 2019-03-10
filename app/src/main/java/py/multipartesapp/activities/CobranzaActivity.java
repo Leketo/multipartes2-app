@@ -554,7 +554,7 @@ public class CobranzaActivity extends ActionBarActivity {
 
             Log.d(TAG, "resultado  post: "+ result);
         } catch (Exception e) {
-            AppUtils.handleError("Error al enviar pedido.", CobranzaActivity.this);
+            AppUtils.handleError("Error al enviar cobro.", CobranzaActivity.this);
             Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
             guardarCobranzaBtn.setEnabled(true);
         }

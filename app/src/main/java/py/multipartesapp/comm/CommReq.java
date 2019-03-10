@@ -20,7 +20,7 @@ public class CommReq {
             = App + "location/save";
 
     public static final String CommReqGetAllUsers
-            = App + "admin/users";
+            = App + "user/admin/users";
 
     public static final String CommReqSendDelivery
             = App + "delivery/save";
