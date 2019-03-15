@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import py.multipartesapp.R;
 import py.multipartesapp.beans.Configuracion;
+import py.multipartesapp.comm.Comm;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.AppUtils;
 
@@ -55,6 +56,7 @@ public class ConfiguracionActivity extends ActionBarActivity {
         //si ya existe una url completar campos
         if (url.getValor() != null){
             urlEditText.setText(url.getValor());
+            Comm.URL=url.getValor();
 
             Configuracion puerto = db.selectConfiguracionByClave("PUERTO");
             puertoEditText.setText(puerto.getValor());
@@ -138,6 +140,8 @@ public class ConfiguracionActivity extends ActionBarActivity {
 
         db.insertConfiguracion(urlConfiguracion);
         db.insertConfiguracion(puertoConfiguracion);
+
+        Comm.URL=url;
 
         //Globals.setUrl(urlConfiguracion);
         //Globals.setPuerto(puertoConfiguracion);
