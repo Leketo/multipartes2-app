@@ -279,6 +279,16 @@ public class CobranzaActivity extends ActionBarActivity {
         }
     };
 
+    //despues de guardar correctamente
+    DialogInterface.OnClickListener dialogOnclicListenerAfterSave = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            //click en boton Ok
+            finish();
+        }
+    };
+
+
     public void enviarCobranza () throws JSONException {
 
         if (clienteSeleccionado == null || clienteAutoComplete.getText().toString().equals("")){
@@ -373,13 +383,15 @@ public class CobranzaActivity extends ActionBarActivity {
                 db.insertCobranzaDetalle(cd);
             }
 
-            Context context = getApplicationContext();
-            CharSequence text = "No hay conexión. Se guarda y se volverá a intentar mas tarde.";
-            int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
-            toast.show();
-            finish();
+            //Context context = getApplicationContext();
+            //CharSequence text = "No hay conexión. Se guarda y se volverá a intentar mas tarde.";
+            //int duration = Toast.LENGTH_LONG;
+            //Toast toast = Toast.makeText(context, text, duration);
+            //toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
+            //toast.show();
+
+            mostrarMensajeNoEnviado("No hay conexión. Se guarda y se volverá a intentar mas tarde.");
+            //finish();
             return;
         }
 
@@ -390,9 +402,6 @@ public class CobranzaActivity extends ActionBarActivity {
 
         //Enviar los datos al servidor
         String result=enviarCobroAlServidor(json);
-
-
-
 
     }
 
@@ -498,6 +507,7 @@ public class CobranzaActivity extends ActionBarActivity {
             } else {
                 result = "Did not work!";
             }
+            Log.d(TAG,"resultado post: "+result);
 
             if (code == 200){
                 if (result.contains("Portal Movil Tigo")){
@@ -510,18 +520,12 @@ public class CobranzaActivity extends ActionBarActivity {
 //                        db.insertCobranzaDetalle(cd);
 //                    }
 
-                    Context context = getApplicationContext();
-                    CharSequence text = "No hay conexión. Se guarda y se volverá a intentar mas tarde.";
-                    int duration = Toast.LENGTH_LONG;
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
-                    toast.show();
-                    finish();
+                    mostrarMensajeNoEnviado("No hay conexión. Se guarda y se intentará mas tarde.");
+                    //finish();
 
                     return "NO_ENVIADO_SIN_CONEXION_A_INTERNET";
-
                 }
-                Toast.makeText(getApplicationContext(), "Cobro enviado correctamente.", Toast.LENGTH_LONG).show();
+
                 guardarCobranzaBtn.setEnabled(true);
                 //guardar con estado ENVIADO
                 c.setEstado_envio("ENVIADO");
@@ -543,16 +547,14 @@ public class CobranzaActivity extends ActionBarActivity {
                 actualizarTotal();
                 actualizarTotalDeuda();
 
-
-                finish();
+                mostrarMensajeEnviado("Cobro enviado correctamente!");
+                //finish();
                 return "ENVIADO_CORRECTAMENTE";
             } else {
-                Toast.makeText(getApplicationContext(), "Error al enviar cobro .", Toast.LENGTH_LONG).show();
+                mostrarMensajeNoEnviado("No se pudo enviar el cobro. Intente más tarde.");
                 guardarCobranzaBtn.setEnabled(true);
             }
 
-
-            Log.d(TAG, "resultado  post: "+ result);
         } catch (Exception e) {
             AppUtils.handleError("Error al enviar cobro.", CobranzaActivity.this);
             Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
@@ -585,6 +587,22 @@ public class CobranzaActivity extends ActionBarActivity {
             }
         }
         return total;
+    }
+
+    private void mostrarMensajeEnviado (String msj){
+
+        String[] buttons = {"Ok"};
+        int id_icon = R.drawable.ic_check;
+        AppUtils.showWithIcon("Enviado", id_icon,msj, buttons, CobranzaActivity.this, true, dialogOnclicListenerAfterSave);
+
+    }
+
+    private void mostrarMensajeNoEnviado (String msj){
+
+        String[] buttons = {"Ok"};
+        int id_icon = R.drawable.ic_close;
+        AppUtils.showWithIcon("NO Enviado", id_icon,msj, buttons, CobranzaActivity.this, true, dialogOnclicListenerAfterSave);
+
     }
 
     private void actualizarTotalDeuda() {
@@ -928,6 +946,8 @@ public class CobranzaActivity extends ActionBarActivity {
         actualizarTotal();
         actualizarTotalDeuda();
     }
+
+
 
     private String crearTicket(Cobranza cobranza){
         SimpleDateFormat sdfdd_MM_yyyyHhMm = new SimpleDateFormat("dd/MM/yyyy");

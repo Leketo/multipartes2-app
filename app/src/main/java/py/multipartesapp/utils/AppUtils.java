@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import py.multipartesapp.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,6 +66,37 @@ public class AppUtils {
         }
         return null;
     }
+
+    public static AlertDialog showWithIcon(String title, int idIcon, String msg, String[] buttons,
+                                   Context ctx, boolean cancelable, DialogInterface.OnClickListener onClickListener) {
+        try {
+            AlertDialog.Builder b = new AlertDialog.Builder(ctx);
+            AlertDialog a = b.create();
+            a.setTitle(title);
+            a.setMessage(msg);
+            a.setIcon(idIcon);
+            a.setCancelable(cancelable);
+            if (buttons != null) {
+                if (buttons.length > 3) {
+                    throw new RuntimeException("buttons.length>3, len = "
+                            + buttons.length);
+                }
+                if (buttons.length >= 1)
+                    a.setButton(buttons[0], onClickListener);
+                if (buttons.length >= 2)
+                    a.setButton2(buttons[1], onClickListener);
+                if (buttons.length >= 3)
+                    a.setButton3(buttons[2], onClickListener);
+
+            }
+            a.show();
+            return a;
+        }catch (Exception e){
+            Log.e(TAG,"Tu código apunta a la nada :'(");
+        }
+        return null;
+    }
+
 
     public static boolean isOnline(Context context) {
         ConnectivityManager cm =
