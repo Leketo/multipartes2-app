@@ -274,7 +274,7 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
     private void agregarItem (){
 
         if (formaPagoSeleccionado.getCodigo().equals(COD_EFECTIVO)){
-            String str = montoEfectivoEditText.getText().toString();
+            String str = MyFormatter.cleanMoney(montoEfectivoEditText.getText().toString());
             if (str.equals("") || str.equals("0")){
                 String[] buttons = {"Ok"};
                 AppUtils.show(null, "Ingrese un monto valido.", buttons, CobranzaDetalleItemActivity.this, false, dialogOnclicListener);

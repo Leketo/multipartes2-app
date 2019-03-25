@@ -472,7 +472,7 @@ public class CobranzaActivity extends ActionBarActivity {
         try {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            String url = Comm.URL + "/api/cobro/registrar-cobro";
+            String url = Comm.URL + "api/cobro/registrar-cobro";
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
 
@@ -486,7 +486,7 @@ public class CobranzaActivity extends ActionBarActivity {
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
 
-            Log.d(TAG, "enviando post: "+ httpPost.toString());
+            Log.d(TAG, "enviando post: "+ url);
             Log.d(TAG, "mensaje post: "+ json);
 
             DefaultHttpClient httpclient2 = new DefaultHttpClient();

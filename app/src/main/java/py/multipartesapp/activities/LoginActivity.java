@@ -27,6 +27,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
+import py.multipartesapp.beans.Configuracion;
 import py.multipartesapp.beans.Login;
 import py.multipartesapp.beans.Session;
 import py.multipartesapp.beans.Usuario;
@@ -81,17 +82,18 @@ public class LoginActivity extends Activity {
         }
 
         //Si aun no tiene Configuracion, saltar a la pagina de Configuracion
-        /*
         Configuracion url = db.selectConfiguracionByClave("URL");
         if (url.getValor() == null){
             Intent intent = new Intent(LoginActivity.this, ConfiguracionActivity.class);
             startActivity(intent);
             finish();
+        } else {
+            Comm.URL = url.getValor();
         }
-        Globals.setUrl(url);
-        Configuracion puerto = db.selectConfiguracionByClave("PUERTO");
-        Globals.setPuerto(puerto);
-        */
+        //Globals.setUrl(url);
+        //Configuracion puerto = db.selectConfiguracionByClave("PUERTO");
+        //Globals.setPuerto(puerto);
+
 
         //Si ya esta logueado saltar al Menu principal y guardar url
         /*
@@ -102,17 +104,17 @@ public class LoginActivity extends Activity {
         } else {
         */
             //buscamos un login activo
-            Login login = db.selectLoginActive();
-            if (login.getSessionID() != null){
-                Log.d(TAG, "Ya existe un Login Activo en la BD: "+login.getSessionID());
+        Login login = db.selectLoginActive();
+        if (login.getSessionID() != null){
+            Log.d(TAG, "Ya existe un Login Activo en la BD: "+login.getSessionID());
 //                BasicClientCookie cookie = new BasicClientCookie("JSESSIONID", login.getSessionID());
 //                cookie.setDomain("186.2.196.105");
 //                cookie.setPath("/");
 //                Globals.cookieStore.addCookie(cookie);
-                Intent intent = new Intent(LoginActivity.this, Main.class);
-                startActivity(intent);
-                finish();
-            }
+            Intent intent = new Intent(LoginActivity.this, Main.class);
+            startActivity(intent);
+            finish();
+        }
         //}
 
 
@@ -134,8 +136,6 @@ public class LoginActivity extends Activity {
                 }
                 progressBar.setVisibility(View.VISIBLE);
                 login();
-
-
             }
         });
     }

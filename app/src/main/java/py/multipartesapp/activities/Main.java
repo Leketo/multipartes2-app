@@ -27,6 +27,7 @@ import com.crashlytics.android.Crashlytics;
 import java.util.List;
 
 import py.multipartesapp.R;
+import py.multipartesapp.beans.Configuracion;
 import py.multipartesapp.beans.LocationTable;
 import py.multipartesapp.beans.Session;
 import py.multipartesapp.beans.Usuario;
@@ -75,6 +76,13 @@ public class Main extends ActionBarActivity {
         setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true); //muestra el boton atras
         getSupportActionBar().setTitle("Multipartes");
+
+        //Setear URL al iniciar la pantalla Main
+        Configuracion url = db.selectConfiguracionByClave("URL");
+        if (url.getValor() != null){
+            Comm.URL = url.getValor();
+        }
+
 
         nombreUsuarioTextView = (TextView) findViewById(R.id.main_nombre_usuario);
         registroVisistasBtn = (Button) findViewById(R.id.main_btn_registroVisita);
