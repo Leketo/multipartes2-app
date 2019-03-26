@@ -6,16 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.view.*;
+import android.widget.*;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -184,27 +176,51 @@ public class ListCobranzaActivity extends ActionBarActivity {
             Cobranza item = listCobranza.get(i);
             View v = view;
             if (v == null) {
-                v = mInflater.inflate(R.layout.list_item_registro_visita, viewGroup, false);
+                v = mInflater.inflate(R.layout.list_item_cobranza, viewGroup, false);
                 //v.setTag(R.id.img_places, v.findViewById(R.id.img_places));
-                v.setTag(R.id.txt1_item_registro_visita, v.findViewById(R.id.txt1_item_registro_visita));
-                v.setTag(R.id.txt2_item_registro_visita, v.findViewById(R.id.txt2_item_registro_visita));
-                v.setTag(R.id.icon_item_registro_visita, v.findViewById(R.id.icon_item_registro_visita));
+                v.setTag(R.id.txt1_item_cobranza, v.findViewById(R.id.txt1_item_cobranza));
+                v.setTag(R.id.txt2_item_cobranza, v.findViewById(R.id.txt2_item_cobranza));
+                v.setTag(R.id.btn_item_cobranza, v.findViewById(R.id.btn_item_cobranza));
             }
 
-            TextView titleTextView = (TextView) v.findViewById(R.id.txt1_item_registro_visita);
+            TextView titleTextView = (TextView) v.findViewById(R.id.txt1_item_cobranza);
             titleTextView.setText(" - Recibo: "+item.getInvoice_number());
 
-            TextView subTitleTextView = (TextView) v.findViewById(R.id.txt2_item_registro_visita);
+            TextView subTitleTextView = (TextView) v.findViewById(R.id.txt2_item_cobranza);
             subTitleTextView.setText("Cliente: "+item.getNombre_cliente() + " - Monto: "+ formatearMoneda(item.getAmount().toString()));
 
-            ImageView iconItem = (ImageView) v.getTag(R.id.icon_item_registro_visita);
+            ImageButton iconItem = (ImageButton) v.getTag(R.id.btn_item_cobranza);
+
             if (item.getEstado_envio() == null) {
                 iconItem.setImageResource(R.drawable.ic_check);
             } else if (item.getEstado_envio().equals("ENVIADO")){
                 iconItem.setImageResource(R.drawable.ic_check);
+                iconItem.setClickable(false);
+                iconItem.setEnabled(false);
             }else if (item.getEstado_envio().equals("PENDIENTE")){
                 iconItem.setImageResource(R.drawable.ic_sync);
+
+                iconItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v1) {
+                        View parentRow = (View) v1.getParent();
+                        ViewParent viewParent = parentRow.getParent();
+                        ListView listView = (ListView) viewParent.getParent();
+                        int position = listView.getPositionForView((View) viewParent);
+
+                        Cobranza itemSelected = listCobranza.get(position);
+                        Log.d(TAG, "cobro seleccionado:"+itemSelected.getId());
+
+                        new CobranzaActivity().enviarCobranzas(getApplicationContext(), itemSelected.getId());
+                        ((BaseAdapter) listCobranzaListView.getAdapter()).notifyDataSetChanged();
+
+                    }
+                });
             }
+
+
+
+
 
             return v;
         }

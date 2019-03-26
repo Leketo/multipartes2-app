@@ -63,13 +63,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import py.multipartesapp.R;
-import py.multipartesapp.beans.Cliente;
-import py.multipartesapp.beans.Cobranza;
-import py.multipartesapp.beans.CobranzaDetalle;
-import py.multipartesapp.beans.CobranzaFormaPago;
-import py.multipartesapp.beans.Factura;
-import py.multipartesapp.beans.Session;
-import py.multipartesapp.beans.Usuario;
+import py.multipartesapp.beans.*;
 import py.multipartesapp.comm.Comm;
 import py.multipartesapp.customAutoComplete.CobranzaActivityClienteTextChangedListener;
 import py.multipartesapp.customAutoComplete.CustomAutoCompleteView;
@@ -668,34 +662,45 @@ public class CobranzaActivity extends ActionBarActivity {
     }
 
 
-    public static void enviarCobrosPendientes (Context context){
-        new CobranzaActivity().enviarCobranzas(context);
+    public static void enviarCobrosPendientes (Context context, Integer id){
+        new CobranzaActivity().enviarCobranzas(context, id);
     }
 
-    public void enviarCobranzas (Context context){
+    public void enviarCobranzas (Context context, Integer id) {
 
         db = new AppDatabase(context);
-        List<Cobranza> list = db.selectCobranzaByEstado("PENDIENTE");
-        Log.d(TAG, "============== Se encontraron " + list.size() +" Cobros PENDIENTES ");
 
-        if (list.size() > 0){
-            CharSequence text = "Enviando "+ list.size() + " Cobros ";
+        //Setear URL
+        Configuracion urlStr = db.selectConfiguracionByClave("URL");
+        if (urlStr.getValor() != null) {
+            Comm.URL = urlStr.getValor();
+        }
+
+        Cobranza cobranza = db.selectCobranzaById(id);
+        Log.d(TAG, "============== Enviar cobranza factura: " + cobranza.getId());
+
+        if (cobranza.getId() != null) {
+            CharSequence text = "Enviando cobro para " + cobranza.getNombre_cliente();
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(context, text, duration);
-            toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
+            //toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
             toast.show();
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
+
+            c = cobranza;
+        } else {
+            return;
         }
-        for (Cobranza cobranza : list){
+        //for (Cobranza c : list){
 
             InputStream inputStream = null;
             String result = "";
             try {
                 // 1. create HttpClient
                 HttpClient httpclient = new DefaultHttpClient();
-                String url = Comm.URL + "/api/charge/save";
+                String url = Comm.URL + "api/cobro/registrar-cobro";
                 // 2. make POST request to the given URL
                 HttpPost httpPost = new HttpPost(url);
                 String json = "";
@@ -716,20 +721,53 @@ public class CobranzaActivity extends ActionBarActivity {
                 jsonObject.accumulate("observation", c.getObservation());
                 jsonObject.accumulate("status", "A");
 
+                c.setAd_org_id(1000047);
+                jsonObject.accumulate("ad_org_id", c.getAd_org_id());
+
+
+                //Agregamos los detalles
+                List<CobranzaDetalle> detallesCobranza = db.selectCobranzaDetalleByCobro(cobranza.getId());
+
 
                 //Agregamos los detalles
                 JSONArray detallesJsonArray = new JSONArray();
-                List<CobranzaDetalle> detallesCobranza = db.selectCobranzaDetalleByCobro(cobranza.getId());
-
                 for (CobranzaDetalle detalle: detallesCobranza){
                     JSONObject detalleJson = new JSONObject();
                     detalleJson.put("invoice_id", detalle.getInvoice());
                     detalleJson.put("amount", detalle.getAmount());
                     detalleJson.put("cashed", detalle.getCashed());
-                    //detalleJson.put("charge_id", detalle.getCharge_id());
+
+
+                    JSONObject formaPagoJson = new JSONObject();
+
                     detallesJsonArray.put(detalleJson);
                 }
-                jsonObject.accumulate("chargesline", detallesJsonArray);
+                jsonObject.accumulate("facturasPagadas", detallesJsonArray);
+
+
+                JSONArray cobrosJsonArray = new JSONArray();
+
+                //db.selectCob
+                //Falta metodo buscar cobranza forma de pago
+                List<CobranzaFormaPago> formaPagoList2 = new ArrayList<CobranzaFormaPago>();
+
+                for (CobranzaFormaPago formaPago : formaPagoList2){
+                    JSONObject cobroJson = new JSONObject();
+                    cobroJson.put("payment_type", formaPago.getPayment_type());
+                    cobroJson.put("amount", formaPago.getAmount());
+                    cobroJson.put("bank", formaPago.getBank());
+                    cobroJson.put("check_number", formaPago.getCheck_number());
+                    cobroJson.put("expired_date", formaPago.getExpired_date());
+                    cobroJson.put("check_name", formaPago.getCheck_name());
+                    cobroJson.put("iscrossed", formaPago.getIscrossed());
+
+                    cobrosJsonArray.put(cobroJson);
+
+                }
+
+                jsonObject.accumulate("formaPago", cobrosJsonArray);
+
+
 
                 // 4. convert JSONObject to JSON to String
                 json = jsonObject.toString();
@@ -744,8 +782,8 @@ public class CobranzaActivity extends ActionBarActivity {
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
 
-                //Log.d(TAG, "enviando post: "+ httpPost.toString());
-                //Log.d(TAG, "mensaje post: "+ json);
+                Log.d(TAG, "enviando post: "+ url);
+                Log.d(TAG, "mensaje post: "+ json);
 
                 DefaultHttpClient httpclient2 = new DefaultHttpClient();
 
@@ -759,9 +797,10 @@ public class CobranzaActivity extends ActionBarActivity {
                     //guardar con estado ENVIADO
                     cobranza.setEstado_envio("ENVIADO");
                     db.updateCobranza(cobranza);
+                    Toast.makeText(context, "Cobro enviado correctamente.", Toast.LENGTH_LONG).show();
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Error al enviar cobro .", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Error al enviar cobro .", Toast.LENGTH_LONG).show();
                 }
 
                 // 9. receive response as inputStream
@@ -779,7 +818,7 @@ public class CobranzaActivity extends ActionBarActivity {
                 Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
             }
 
-        }
+        //}
     }
 
     // this function is used in CustomAutoCompleteTextChangedListener.java
