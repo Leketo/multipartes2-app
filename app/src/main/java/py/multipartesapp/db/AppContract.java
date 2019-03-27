@@ -28,6 +28,7 @@ public class AppContract {
         String FACTURA = "FACTURA";
         String PRODUCTO_FAMILIA = "PRODUCTO_FAMILIA";
         String PRODUCTO_SUB_FAMILIA = "PRODUCTO_SUB_FAMILIA";
+        String COBRANZA_FORMA_PAGO = "COBRANZA_FORMA_PAGO";
     }
 
     interface LoginColumns {
@@ -244,6 +245,17 @@ public class AppContract {
         String id_familia = "ID_FAMILIA";
     }
 
+    private interface CobranzaFormaPagoColumns {
+        String idCobranza = "ID_COBRANZA";
+        String payment_type = "PAYMENT_TYPE";
+        String amount = "AMOUNT";
+        String bank = "BANK";
+        String check_number = "CHECK_NUMBER";
+        String expired_date = "EXPIRED_DATE";
+        String check_name = "CHECK_NAME";
+        String iscrossed = "ISCROSSED";
+    }
+
     // LOGIN
     public static class Login implements LoginColumns, BaseColumns {
     }
@@ -320,5 +332,8 @@ public class AppContract {
 
     //PRODUCTO_SUB_FAMILIA
     public static class ProductoSubFamilia implements ProductoSubFamiliaColumns, BaseColumns {}
+
+    //PRODUCTO_SUB_FAMILIA
+    public static class CobranzaFormaPago implements CobranzaFormaPagoColumns, BaseColumns {}
 
 }

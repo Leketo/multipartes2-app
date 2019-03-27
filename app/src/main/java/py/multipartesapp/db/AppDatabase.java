@@ -12,26 +12,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import py.multipartesapp.beans.Cliente;
-import py.multipartesapp.beans.Cobranza;
-import py.multipartesapp.beans.CobranzaDetalle;
-import py.multipartesapp.beans.Configuracion;
-import py.multipartesapp.beans.Entrega;
-import py.multipartesapp.beans.Factura;
-import py.multipartesapp.beans.LocationTable;
-import py.multipartesapp.beans.Login;
-import py.multipartesapp.beans.Pedido;
-import py.multipartesapp.beans.PedidoDetalle;
-import py.multipartesapp.beans.PrecioCategoria;
-import py.multipartesapp.beans.PrecioVersion;
-import py.multipartesapp.beans.Producto;
-import py.multipartesapp.beans.ProductoFamilia;
-import py.multipartesapp.beans.ProductoImagen;
-import py.multipartesapp.beans.ProductoSubFamilia;
-import py.multipartesapp.beans.RegistroVisita;
-import py.multipartesapp.beans.RutaLocation;
-import py.multipartesapp.beans.Session;
-import py.multipartesapp.beans.Usuario;
+import py.multipartesapp.beans.*;
 
 /**
  * Created by Adolfo on 19/06/2015.
@@ -267,6 +248,14 @@ public class AppDatabase {
         String[] whereArgs = { };
         Cursor c = db.rawQuery(sql, whereArgs);
         return mappingCobranza(c);
+    }
+
+    public List<CobranzaFormaPago> selectCobranzaFormaPagoByIdCobro (Integer id_cobranza){
+        SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
+        String sql = " SELECT * FROM " +AppContract.Tables.COBRANZA_FORMA_PAGO + " WHERE "+ AppContract.CobranzaFormaPago.idCobranza + " = "+id_cobranza;
+        String[] whereArgs = { };
+        Cursor c = db.rawQuery(sql, whereArgs);
+        return mappingListListCobranzaFormaPago(c);
     }
 
     public PrecioVersion selectPrecioVersionByIdAndProducto (Integer idPrecioVersion, Integer idProducto){
@@ -551,6 +540,28 @@ public class AppDatabase {
         }
         cursor.close();
         return cobranza;
+    }
+
+    private List<CobranzaFormaPago> mappingListListCobranzaFormaPago(Cursor cursor){
+        List<CobranzaFormaPago> list = new ArrayList<CobranzaFormaPago>();
+        CobranzaFormaPago formaPago;
+        if(cursor.moveToFirst()) {
+            do {
+                formaPago = new CobranzaFormaPago();
+
+                formaPago.setPayment_type(cursor.getString(cursor.getColumnIndex(AppContract.CobranzaFormaPago.payment_type)));
+                formaPago.setAmount(cursor.getInt(cursor.getColumnIndex(AppContract.CobranzaFormaPago.amount)));
+                formaPago.setBank(cursor.getString(cursor.getColumnIndex(AppContract.CobranzaFormaPago.bank)));
+                formaPago.setCheck_number(cursor.getString(cursor.getColumnIndex(AppContract.CobranzaFormaPago.check_number)));
+                formaPago.setExpired_date(cursor.getString(cursor.getColumnIndex(AppContract.CobranzaFormaPago.expired_date)));
+                formaPago.setCheck_name(cursor.getString(cursor.getColumnIndex(AppContract.CobranzaFormaPago.check_name)));
+                formaPago.setIscrossed(cursor.getString(cursor.getColumnIndex(AppContract.CobranzaFormaPago.iscrossed)));
+
+                list.add(formaPago);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
     }
 
     private Factura mappingFactura(Cursor cursor){
@@ -1909,6 +1920,23 @@ public class AppDatabase {
         //Log.d("Valor Insertado", pedidoDetalle.toString());
     }
 
+
+    //Insert COBRANZA_FORMA_PAGO
+    public void insertCobranzaFormaPago(CobranzaFormaPago formaPago, Integer idCobranza){
+        SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(AppContract.CobranzaFormaPago.payment_type, formaPago.getPayment_type());
+        values.put(AppContract.CobranzaFormaPago.amount, formaPago.getAmount());
+        values.put(AppContract.CobranzaFormaPago.bank, formaPago.getBank());
+        values.put(AppContract.CobranzaFormaPago.check_number, formaPago.getCheck_number());
+        values.put(AppContract.CobranzaFormaPago.expired_date, formaPago.getExpired_date());
+        values.put(AppContract.CobranzaFormaPago.check_name, formaPago.getCheck_name());
+        values.put(AppContract.CobranzaFormaPago.iscrossed, formaPago.getIscrossed());
+
+        db.insert(AppContract.Tables.COBRANZA_FORMA_PAGO, null, values);
+        //Log.d("Valor Insertado", pedidoDetalle.toString());
+    }
+
     // Update
     public void updateCliente (Cliente cliente) {
 
@@ -2629,6 +2657,18 @@ public class AppDatabase {
                             + AppContract.ProductoSubFamilia.id_familia +  "); "
             );
             Log.d("Creo tabla","PRODUCTO_SUB_FAMILIA");
+
+            db.execSQL("CREATE VIRTUAL TABLE " + AppContract.Tables.COBRANZA_FORMA_PAGO+ " USING fts3 ("
+                    + AppContract.CobranzaFormaPago.idCobranza + ", "
+                    + AppContract.CobranzaFormaPago.payment_type + ", "
+                    + AppContract.CobranzaFormaPago.amount + ", "
+                    + AppContract.CobranzaFormaPago.bank + ", "
+                    + AppContract.CobranzaFormaPago.check_number + ", "
+                    + AppContract.CobranzaFormaPago.expired_date + ", "
+                    + AppContract.CobranzaFormaPago.check_name + ", "
+                    + AppContract.CobranzaFormaPago.iscrossed +  "); "
+            );
+            Log.d("Creo tabla","COBRANZA_FORMA_PAGO");
         }
 
         @Override
@@ -2655,6 +2695,7 @@ public class AppDatabase {
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.FACTURA);
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.PRODUCTO_FAMILIA);
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.PRODUCTO_SUB_FAMILIA);
+            db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.COBRANZA_FORMA_PAGO);
 
             onCreate(db);
         }

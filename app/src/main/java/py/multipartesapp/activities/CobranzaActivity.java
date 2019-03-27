@@ -737,7 +737,6 @@ public class CobranzaActivity extends ActionBarActivity {
                     detalleJson.put("amount", detalle.getAmount());
                     detalleJson.put("cashed", detalle.getCashed());
 
-
                     JSONObject formaPagoJson = new JSONObject();
 
                     detallesJsonArray.put(detalleJson);
