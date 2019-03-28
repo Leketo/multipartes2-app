@@ -335,7 +335,7 @@ public class CobranzaActivity extends ActionBarActivity {
                 CobranzaDetalle cd = new CobranzaDetalle();
                 cd.setAmount(p.getGrandtotal());
                 cd.setCashed(Integer.valueOf(p.getMontoCobrado()));
-                //cd.setCharge_id(c.getId());
+                cd.setCharge_id(c.getId());
                 cd.setInvoice(p.getId().toString());
 
                 cd.setItems(p.getItems());
@@ -376,15 +376,11 @@ public class CobranzaActivity extends ActionBarActivity {
             for (CobranzaDetalle cd : c.getDetalles()){
                 db.insertCobranzaDetalle(cd);
             }
+            for (CobranzaFormaPago formaPago : Globals.getItemCobroList()){
+                db.insertCobranzaFormaPago(formaPago, c.getId());
+            }
 
-            //Context context = getApplicationContext();
-            //CharSequence text = "No hay conexión. Se guarda y se volverá a intentar mas tarde.";
-            //int duration = Toast.LENGTH_LONG;
-            //Toast toast = Toast.makeText(context, text, duration);
-            //toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
-            //toast.show();
-
-            mostrarMensajeNoEnviado("No hay conexión. Se guarda y se volverá a intentar mas tarde.");
+            mostrarMensajeNoEnviado("No hay conexión. Se guarda el cobro.");
             //finish();
             return;
         }
@@ -505,7 +501,7 @@ public class CobranzaActivity extends ActionBarActivity {
 
             if (code == 200){
                 if (result.contains("Portal Movil Tigo")){
-                    Log.d(TAG, "Sin conexion, se guarda la entrega");
+                    Log.d(TAG, "Sin conexion, se guarda el cobro");
 
                     //guardar con estado PENDIENTE para su posterior envio
                     //c.setEstado_envio("PENDIENTE");
@@ -514,7 +510,7 @@ public class CobranzaActivity extends ActionBarActivity {
 //                        db.insertCobranzaDetalle(cd);
 //                    }
 
-                    mostrarMensajeNoEnviado("No hay conexión. Se guarda y se intentará mas tarde.");
+                    mostrarMensajeNoEnviado("No hay conexión. Se guarda el cobro.");
                     //finish();
 
                     return "NO_ENVIADO_SIN_CONEXION_A_INTERNET";
@@ -526,6 +522,9 @@ public class CobranzaActivity extends ActionBarActivity {
                 db.insertCobranza(c);
                 for (CobranzaDetalle cd : c.getDetalles()){
                     db.insertCobranzaDetalle(cd);
+                }
+                for (CobranzaFormaPago formaPago : Globals.getItemCobroList()){
+                    db.insertCobranzaFormaPago(formaPago, c.getId());
                 }
 
                 /* ------- limpiar datos despues de haber enviado al server - adolfo 21/02/2019  */
@@ -693,6 +692,17 @@ public class CobranzaActivity extends ActionBarActivity {
         } else {
             return;
         }
+        boolean enLinea = AppUtils.isOnline(context);
+
+        if (!enLinea) {
+            CharSequence text = "No hay conexion";
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
+        }
+
+
         //for (Cobranza c : list){
 
             InputStream inputStream = null;
@@ -737,8 +747,6 @@ public class CobranzaActivity extends ActionBarActivity {
                     detalleJson.put("amount", detalle.getAmount());
                     detalleJson.put("cashed", detalle.getCashed());
 
-                    JSONObject formaPagoJson = new JSONObject();
-
                     detallesJsonArray.put(detalleJson);
                 }
                 jsonObject.accumulate("facturasPagadas", detallesJsonArray);
@@ -748,7 +756,7 @@ public class CobranzaActivity extends ActionBarActivity {
 
                 //db.selectCob
                 //Falta metodo buscar cobranza forma de pago
-                List<CobranzaFormaPago> formaPagoList2 = new ArrayList<CobranzaFormaPago>();
+                List<CobranzaFormaPago> formaPagoList2 = db.selectCobranzaFormaPagoByIdCobro(c.getId());
 
                 for (CobranzaFormaPago formaPago : formaPagoList2){
                     JSONObject cobroJson = new JSONObject();

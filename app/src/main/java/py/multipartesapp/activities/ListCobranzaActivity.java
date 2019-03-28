@@ -3,6 +3,7 @@ package py.multipartesapp.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -199,6 +200,8 @@ public class ListCobranzaActivity extends ActionBarActivity {
                 iconItem.setEnabled(false);
             }else if (item.getEstado_envio().equals("PENDIENTE")){
                 iconItem.setImageResource(R.drawable.ic_sync);
+                iconItem.setClickable(true);
+                iconItem.setEnabled(true);
 
                 iconItem.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -212,7 +215,18 @@ public class ListCobranzaActivity extends ActionBarActivity {
                         Log.d(TAG, "cobro seleccionado:"+itemSelected.getId());
 
                         new CobranzaActivity().enviarCobranzas(getApplicationContext(), itemSelected.getId());
-                        ((BaseAdapter) listCobranzaListView.getAdapter()).notifyDataSetChanged();
+
+                        // recargar despues de 3 seg. para iconos del listado
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                // Actions to do after 10 seconds
+                                userId = db.selectUsuarioLogeado().getUserId();
+                                listCobranza = db.selectCobranzaByIdVendedor(userId, Globals.ordenCobros);
+                                ((BaseAdapter) listCobranzaListView.getAdapter()).notifyDataSetChanged();
+                                Log.d(TAG, "recargar lista de cobro");
+                            }
+                        }, 6000);
 
                     }
                 });

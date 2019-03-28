@@ -1925,6 +1925,7 @@ public class AppDatabase {
     public void insertCobranzaFormaPago(CobranzaFormaPago formaPago, Integer idCobranza){
         SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(AppContract.CobranzaFormaPago.idCobranza, idCobranza);
         values.put(AppContract.CobranzaFormaPago.payment_type, formaPago.getPayment_type());
         values.put(AppContract.CobranzaFormaPago.amount, formaPago.getAmount());
         values.put(AppContract.CobranzaFormaPago.bank, formaPago.getBank());

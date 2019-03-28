@@ -61,7 +61,7 @@ public class Comm extends Application{
     //URL LOGIN PRODUCCION
 	//public  static String URL = "http://app.multipartes.com.py/";
 
-	// Login funciona
+	// test
 	//public  static String URL = "http://test.multipartes.com.py/multip/";
 	public  static String URL = "";
 
