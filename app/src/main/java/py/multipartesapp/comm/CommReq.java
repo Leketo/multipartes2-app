@@ -28,6 +28,8 @@ public class CommReq {
     public static final String CommReqGetAllOrders
             = App + "order/summary";
 
+    public static final String CommReqEnviarPedido=App+"/multip/api/order/save";
+
     public static final String CommReqGetAllProduct
             = App + "product/summary";
 

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.gson.JsonObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -226,14 +227,39 @@ public class LoginActivity extends Activity {
     }
 
 
-    public  void getUsuarioLogeadoNuevo(){
+    public  void getUsuarioLogeadoNuevo(String token){
 
         Log.d(TAG, "getUsuarioLogeadoNuevo. Datos recibidos");
+        Log.d(TAG, "=============== Se logueo bien se llama a currentUser");
+        CommDelegateAndroid delegateGetUsuario = new CommDelegateAndroid(){
+            @Override
+            public void onError(){
+                Log.e(TAG, this.exception.getMessage());
+                //AppUtils.handleError(this.exception.getMessage(), LoginActivity.this);
+            }
+            @Override
+            public void onSuccess(){
+                Log.d(TAG, "Usuario. Datos recibidos");
+                Comm.CommResponse r = response;
+                Session session = null;
 
-        Intent intent = new Intent(LoginActivity.this, Main.class);
-        startActivity(intent);
-        finish();
+                try {
+                    session = (Session) r.getBean();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "Usuario Logueado. Datos recibidos: "+ session.toString());
+                db.insertSession(session);
 
+                Intent intent = new Intent(LoginActivity.this, Main.class);
+                startActivity(intent);
+                finish();
+            }
+        };
+
+        new Comm().requestGet(CommReq.CommReqGetUserLoged, new String[][]{
+                {"username",usernameEditText.getText().toString()}
+        }, delegateGetUsuario);
     }
 
     public  void getUsuarioLogeado(){
@@ -280,6 +306,7 @@ public class LoginActivity extends Activity {
             String url = Comm.URL + "erp/api/authenticate";
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
+
 
             // 5. set json to StringEntity
             StringEntity se = new StringEntity(json, HTTP.ASCII);
@@ -333,6 +360,7 @@ public class LoginActivity extends Activity {
                 /* si llego hasta aca, login correcto */
                 JSONObject resultJson = new JSONObject(result);
                 Log.d(TAG, resultJson.get("id_token").toString());
+                String token=resultJson.get("id_token").toString();
 
                 Login login = new Login();
                 login.setUserName(usernameEditText.getText().toString());
@@ -342,7 +370,9 @@ public class LoginActivity extends Activity {
 
                 Globals.setIsLogged(true);
                 db.insertLogin(login);
-                getUsuarioLogeado();
+//                getUsuarioLogeado();
+                getDatosUsuario(token);
+
 
 
                 return "ENVIADO_CORRECTAMENTE";
@@ -354,6 +384,77 @@ public class LoginActivity extends Activity {
             Log.d(TAG, "resultado  post: "+ result);
         } catch (Exception e) {
             AppUtils.handleError("Error al enviar login.", LoginActivity.this);
+            Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
+        }
+        return "ENVIADO_CORRECTAMENTE";
+
+    }
+
+    private String getDatosUsuario(String token){
+        InputStream inputStream = null;
+        String result = "";
+        try {
+            // 1. create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            String url = Comm.URL + "erp/api/account";
+            // 2. make POST request to the given URL
+            HttpGet httpPost = new HttpGet(url);
+
+
+            // 7. Set some headers to inform server about the type of the content
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+            httpPost.setHeader("Authorization", "Bearer "+token);
+
+            Log.d(TAG, "obtener datos usuario: "+ url);
+
+            DefaultHttpClient httpclient2 = new DefaultHttpClient();
+
+            // 8. Execute POST request to the given URL
+            HttpResponse httpResponse = httpclient2.execute(httpPost);
+
+            int code = httpResponse.getStatusLine().getStatusCode();
+            //si llega 401 es error de login
+            Log.d(TAG, "responde code: "+code);
+
+            // 9. receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // 10. convert inputstream to string
+            if(inputStream != null) {
+                result = convertInputStreamToString(inputStream);
+            } else {
+                result = "Did not work!";
+            }
+
+            if (code == 200){
+
+
+                /* si llego hasta aca, login correcto */
+                JSONObject resultJson = new JSONObject(result);
+                Log.d(TAG, resultJson.get("id").toString());
+                int userId=Integer.parseInt(resultJson.get("id").toString());
+
+                Session session = new Session();
+                session.setUserId(userId);
+                
+                session.setSession(token);
+                db.insertSession(session);
+
+                Intent intent = new Intent(LoginActivity.this, Main.class);
+                startActivity(intent);
+                finish();
+
+
+                return "ENVIADO_CORRECTAMENTE";
+            } else {
+                AppUtils.handleError("Acceso denegado.", LoginActivity.this);
+                progressBar.setVisibility(View.GONE);
+            }
+
+            Log.d(TAG, "resultado  post: "+ result);
+        } catch (Exception e) {
+            AppUtils.handleError("Error al obtener datos de usuario.", LoginActivity.this);
             Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
         }
         return "ENVIADO_CORRECTAMENTE";

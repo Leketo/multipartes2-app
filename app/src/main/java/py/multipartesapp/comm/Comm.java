@@ -476,6 +476,34 @@ public class Comm extends Application{
             }
         }, delegate);
     }
+
+
+	public void requestGetUrl(final String api_url,final String req, final Map params, final CommDelegate delegate){
+
+
+		execute(new CommRunnable() {
+
+			public CommResponse run() throws CommException {
+
+				String commandURL = req;
+				commandURL = sanitateUrl(commandURL);
+				String response;
+				Object object = null;
+				try {
+					response = get(delegate, req, api_url + commandURL, params);
+					object = objectFromResponse(req,response);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				if( object instanceof Bean ){
+					return new CommResponse((Bean) object);
+				} else {
+					return new CommResponse(object);
+				}
+			}
+		}, delegate);
+
+	}
 	
 	
 	private static Object objectFromResponse(String req, String response) {
