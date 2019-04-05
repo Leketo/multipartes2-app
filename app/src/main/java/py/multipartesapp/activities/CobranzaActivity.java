@@ -866,6 +866,8 @@ public class CobranzaActivity extends ActionBarActivity {
         // create a new ImageView for each item referenced by the Adapter
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
+            //final ViewHolder holder;
+
 
             Factura item = facturasFiltrados.get(i);
             View v = view;
@@ -880,7 +882,10 @@ public class CobranzaActivity extends ActionBarActivity {
                 v.setTag(R.id.check_item_cobranza_btn, v.findViewById(R.id.check_item_cobranza_btn));
 
             }
-            final CheckBox cbItem = (CheckBox) v.getTag(R.id.check_item_cobranza_btn);
+
+            CheckBox cbItem = (CheckBox) v.getTag(R.id.check_item_cobranza_btn);
+            cbItem.setChecked(facturasFiltrados.get(i).isSelected());
+
             TextView nroFactura = (TextView) v.findViewById(R.id.txt1_item_cobranza_nro_factura);
             nroFactura.setText(item.getNroFacturaImprimir());
 
@@ -903,13 +908,15 @@ public class CobranzaActivity extends ActionBarActivity {
                 @Override
                 public void onFocusChange(View v1, boolean hasFocus) {
                     if(!hasFocus){
+                        View parentRow = (View) v1.getParent();
+                        ViewParent viewParent = parentRow.getParent();
+                        ListView listView = (ListView) viewParent.getParent();
+                        int position = listView.getPositionForView((View) viewParent);
                         /*Actualizar monto en la lista*/
-                        if(cbItem.isChecked()) {
-                            View parentRow = (View) v1.getParent();
-                            ViewParent viewParent = parentRow.getParent();
-                            ListView listView = (ListView) viewParent.getParent();
-                            int position = listView.getPositionForView((View) viewParent);
+                        if (facturasFiltrados.get(position).isSelected()){
+                        //if(cbItem.isChecked()) {
                             String montoCob = montoCobrado.getText().toString();
+
                             if(!montoCob.isEmpty()) {
                                 facturasFiltrados.get(position).setMontoCobrado(montoCob);
                                 //todo: calcular total
@@ -928,6 +935,25 @@ public class CobranzaActivity extends ActionBarActivity {
                     ListView listView = (ListView) viewParent.getParent();
                     int position = listView.getPositionForView((View) viewParent);
                     String montoCob = montoCobrado.getText().toString();
+
+
+                    if (facturasFiltrados.get(position).isSelected()){
+                        facturasFiltrados.get(position).setSelected(false);
+                        facturasFiltrados.get(position).setMontoCobrado("0");
+                        //todo: calcular total
+                        actualizarTotal();
+
+                    }
+                    else {
+                        facturasFiltrados.get(position).setSelected(true);
+                        if(!montoCob.isEmpty()) {
+                            facturasFiltrados.get(position).setMontoCobrado(montoCob);
+                            //todo: calcular total
+                            actualizarTotal();
+                            facturaSeleccionada = facturasFiltrados.get(position);
+                        }
+                    }
+                    /*
                     if(cbItem.isChecked()){
                         if(!montoCob.isEmpty()) {
                             facturasFiltrados.get(position).setMontoCobrado(montoCob);
@@ -940,10 +966,7 @@ public class CobranzaActivity extends ActionBarActivity {
                         //todo: calcular total
                         actualizarTotal();
                     }
-
-
-
-
+                    */
 
                 }
             });

@@ -23,6 +23,8 @@ public class Factura extends Bean {
 
     String montoCobrado;
 
+    boolean isSelected;
+
 
     private List<CobranzaFormaPago> items;
 
@@ -131,5 +133,13 @@ public class Factura extends Bean {
 
     public void setItems(List<CobranzaFormaPago> items) {
         this.items = items;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }
