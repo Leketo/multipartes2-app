@@ -38,6 +38,7 @@ import java.util.List;
 import py.multipartesapp.R;
 import py.multipartesapp.beans.Cliente;
 import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommReq;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.DownloaderPdf;
 
@@ -193,7 +194,7 @@ public class ConsultaClienteActivity extends ActionBarActivity  {
                 }
 
                 //DESCOMENTAR ESTA LINEA
-                DownloaderPdf.DownloadFile(Comm.URL + "api/report/extracto?clientId="+clienteSeleccionado.getId()+"&userId=0&format=pdf", file);
+                DownloaderPdf.DownloadFile(Comm.URL+CommReq.CommReqConsultaEstadoCuenta+"?clientId="+clienteSeleccionado.getId()+"&userId=0&format=pdf", file);
                 //DownloaderPdf.DownloadFile("http://www.pdf995.com/samples/pdf.pdf", file);
 
 

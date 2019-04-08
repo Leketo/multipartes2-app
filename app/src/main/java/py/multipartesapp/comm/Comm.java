@@ -119,8 +119,7 @@ public class Comm extends Application{
         {CommReq.CommReqGetAllProductSubFamily, ProductoSubFamiliaList.class.getName()},
 		{CommReq.CommReqGetAllProductImages, ProductoImagenList.class.getName()},
 		{CommReq.CommReqGetRegistroVisita, RegistroVisitaList.class.getName()},
-		{CommReq.CommReqGetAllEntrega, EntregaList.class.getName()},
-			{CommReq.CommReqGetStockProducto, StockList.class.getName()}
+		{CommReq.CommReqGetAllEntrega, EntregaList.class.getName()}, {CommReq.CommReqGetStockProducto, StockList.class.getName()}
 
 
 	};

@@ -392,7 +392,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         try {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            String url = CommReq.CommReqEnviarPedido;
+            String url = Comm.URL+CommReq.CommReqEnviarPedido;
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
             String json = "";
@@ -754,7 +754,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             try {
                 // 1. create HttpClient
                 HttpClient httpclient = new DefaultHttpClient();
-                String url = CommReq.CommReqEnviarPedido;
+                String url = Comm.URL+CommReq.CommReqEnviarPedido;
                 // 2. make POST request to the given URL
                 HttpPost httpPost = new HttpPost(url);
                 String json = "";
