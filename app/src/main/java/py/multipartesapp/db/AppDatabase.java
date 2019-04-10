@@ -31,6 +31,7 @@ import py.multipartesapp.beans.ProductoSubFamilia;
 import py.multipartesapp.beans.RegistroVisita;
 import py.multipartesapp.beans.RutaLocation;
 import py.multipartesapp.beans.Session;
+import py.multipartesapp.beans.StockDTO;
 import py.multipartesapp.beans.Usuario;
 
 /**
@@ -1420,8 +1421,25 @@ public class AppDatabase {
 
         db.insert(AppContract.Tables.PRODUCTO, null, values);
         //Log.d("Valor Insertado", precioVersion.toString());
+        insertarStockProducto(producto);
+
     }
 
+    public void insertarStockProducto(Producto producto){
+        SQLiteDatabase db =mDatabaseOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        for (StockDTO stockDTO :producto.getListaStock()){
+            values.put(AppContract.StockProducto.m_product_id,stockDTO.getProducto().getM_product_id());
+            values.put(AppContract.StockProducto.desc_m_product_id,stockDTO.getProducto().getName());
+            values.put(AppContract.StockProducto.m_locator_id,stockDTO.getLocator().getM_locator_id());
+            values.put(AppContract.StockProducto.desc_m_locator,stockDTO.getLocator().getM_locator_value());
+            values.put(AppContract.StockProducto.stock_disponible,stockDTO.getStock_disponible());
+            db.insert(AppContract.Tables.STOCK_PRODUCTO,null,values);
+        }
+
+
+    }
     //Insert FACTURA
     public void insertFactura(Factura factura){
         SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
@@ -1568,6 +1586,9 @@ public class AppDatabase {
                 insStmt.bindLong(5, p.getIdFamilia());
                 insStmt.bindLong(6, p.getIdSubFamilia());
                 insStmt.bindLong(7, p.getStock());
+
+                insertarStockProducto(p);
+
                 insStmt.executeInsert();
             }
             db.setTransactionSuccessful();
@@ -2313,6 +2334,11 @@ public class AppDatabase {
         //db.close();
     }
 
+    public void deleteStockProducto(){
+        SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
+        db.delete(AppContract.Tables.STOCK_PRODUCTO, null, null);
+    }
+
     //Cuenta las filas de una tabla
     public int count(Cursor c){
         int result = 0;
@@ -2452,7 +2478,7 @@ public class AppDatabase {
             Log.d("Creo tabla","SESSION");
 
             db.execSQL("CREATE VIRTUAL TABLE " + AppContract.Tables.LOCATION + " USING fts3 ("
-                            + AppContract.Location.id + " integer primary key autoincrement, "
+                            + AppContract.Location.id + " INTEGER primary key autoincrement, "
                             + AppContract.Location.latitude + ", "
                             + AppContract.Location.longitude + ", "
                             + AppContract.Location.date + ", "
@@ -2629,6 +2655,17 @@ public class AppDatabase {
                             + AppContract.ProductoSubFamilia.id_familia +  "); "
             );
             Log.d("Creo tabla","PRODUCTO_SUB_FAMILIA");
+
+            db.execSQL("CREATE VIRTUAL TABLE " +AppContract.Tables.STOCK_PRODUCTO+" USING fts3("
+                    +AppContract.StockProducto.m_product_id+","
+                    +AppContract.StockProducto.desc_m_product_id+","
+                    +AppContract.StockProducto.ad_org_id+","
+                    +AppContract.StockProducto.desc_ad_org+","
+                    +AppContract.StockProducto.m_locator_id+","
+                    +AppContract.StockProducto.desc_m_locator+","
+                    +AppContract.StockProducto.stock_disponible);
+
+            Log.d("Crear tabla", "STOCK_PRODUCTO");
         }
 
         @Override
@@ -2655,6 +2692,7 @@ public class AppDatabase {
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.FACTURA);
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.PRODUCTO_FAMILIA);
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.PRODUCTO_SUB_FAMILIA);
+            db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.STOCK_PRODUCTO);
 
             onCreate(db);
         }

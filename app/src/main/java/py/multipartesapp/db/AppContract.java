@@ -28,7 +28,9 @@ public class AppContract {
         String FACTURA = "FACTURA";
         String PRODUCTO_FAMILIA = "PRODUCTO_FAMILIA";
         String PRODUCTO_SUB_FAMILIA = "PRODUCTO_SUB_FAMILIA";
+        String STOCK_PRODUCTO="STOCK_PRODUCTO";
     }
+
 
     interface LoginColumns {
         String userName = "USER_NAME";
@@ -244,6 +246,17 @@ public class AppContract {
         String id_familia = "ID_FAMILIA";
     }
 
+    interface StockProductoColumns{
+        String m_product_id="M_PRODUCT_ID";
+        String desc_m_product_id="DESC_M_PRODUCT_ID";
+        String m_locator_id="M_LOCATOR_ID";
+        String desc_m_locator="DESC_M_LOCATOR";
+        String ad_org_id="AD_ORG_ID";
+        String desc_ad_org="DESC_AD_ORG";
+        String stock_disponible="STOCK_DISPONIBLE";
+    }
+
+
     // LOGIN
     public static class Login implements LoginColumns, BaseColumns {
     }
@@ -320,5 +333,8 @@ public class AppContract {
 
     //PRODUCTO_SUB_FAMILIA
     public static class ProductoSubFamilia implements ProductoSubFamiliaColumns, BaseColumns {}
+
+    //STOCK_PRODUCTO
+    public static class StockProducto implements  StockProductoColumns,BaseColumns{}
 
 }

@@ -456,6 +456,10 @@ public class SincronizarActivity extends ActionBarActivity {
                             } else {
                                 Log.d(TAG, "Se eliminará la tabla Productos...");
                                 db.deleteProducto();
+
+                                Log.d(TAG, "Se eliminará la tabla Stock Productos...");
+                                db.deleteStockProducto();
+
                                 Log.d(TAG, "Eliminacion exitosa");
                                 db.insertProductoLista(productoList.getList(), getApplicationContext());
                                 productoList.getList().clear();
