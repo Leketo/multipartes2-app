@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import py.multipartesapp.R;
 import py.multipartesapp.beans.Configuracion;
+import py.multipartesapp.comm.Comm;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.AppUtils;
 
@@ -54,7 +55,8 @@ public class ConfiguracionActivity extends ActionBarActivity {
 
         //si ya existe una url completar campos
         if (url.getValor() != null){
-            urlEditText.setText(url.getValor());
+            urlEditText.setText(url.getValor().replace("http://",""));
+            Comm.URL=url.getValor();
 
             Configuracion puerto = db.selectConfiguracionByClave("PUERTO");
             puertoEditText.setText(puerto.getValor());
@@ -116,7 +118,7 @@ public class ConfiguracionActivity extends ActionBarActivity {
 
     private void guardarConfiguracion(){
 
-        if (urlEditText.getText().toString().isEmpty() || puertoEditText.getText().toString().isEmpty()){
+        if (urlEditText.getText().toString().isEmpty() ){
             String[] buttons = {"Ok"};
             AppUtils.show(null, "Complete todos los campos", buttons, ConfiguracionActivity.this, false, dialogOnclicListener);
             return;
@@ -124,7 +126,7 @@ public class ConfiguracionActivity extends ActionBarActivity {
         //borramos toda la configuracion
         db.deleteConfiguracion();
 
-        String url = urlEditText.getText().toString().trim();
+        String url = "http://"+urlEditText.getText().toString().trim();
         String puerto = puertoEditText.getText().toString().trim();
 
 
@@ -137,12 +139,14 @@ public class ConfiguracionActivity extends ActionBarActivity {
         puertoConfiguracion.setValor(puerto);
 
         db.insertConfiguracion(urlConfiguracion);
-        db.insertConfiguracion(puertoConfiguracion);
+        //db.insertConfiguracion(puertoConfiguracion);
+
+        Comm.URL=url;
 
         //Globals.setUrl(urlConfiguracion);
         //Globals.setPuerto(puertoConfiguracion);
 
-        Toast.makeText(getApplicationContext(), "Configuracion guardada.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Configuracion guardada." + urlConfiguracion.getValor(), Toast.LENGTH_LONG).show();
 
         Intent intent = new Intent(ConfiguracionActivity.this, LoginActivity.class);
         startActivity(intent);

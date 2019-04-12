@@ -5,11 +5,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.InputType;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,6 +35,7 @@ import py.multipartesapp.customAutoComplete.CustomAutoCompleteView;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.AppUtils;
 import py.multipartesapp.utils.Globals;
+import py.multipartesapp.utils.MyFormatter;
 
 /**
  * Created by Adolfo on 18/10/2015.
@@ -202,6 +203,56 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
         });
         setDateTimeField();
 
+
+        // formatear inLine a formato moneda efectivo
+        montoEfectivoEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable text) {
+                if (text.toString().length() > 0){
+                    montoEfectivoEditText.removeTextChangedListener(this);
+                    String montoFormateado = MyFormatter.formatMoney(montoEfectivoEditText.getText().toString());
+                    montoEfectivoEditText.setText(montoFormateado);
+                    montoEfectivoEditText.addTextChangedListener(this);
+                    montoEfectivoEditText.setSelection(montoFormateado.length());
+                }
+            }
+        });
+
+        // formatear inLine a formato moneda cheque
+        montoChequeEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable text) {
+                if (text.toString().length() > 0){
+                    montoChequeEditText.removeTextChangedListener(this);
+                    String montoFormateado = MyFormatter.formatMoney(montoChequeEditText.getText().toString());
+                    montoChequeEditText.setText(montoFormateado);
+                    montoChequeEditText.addTextChangedListener(this);
+                    montoChequeEditText.setSelection(montoFormateado.length());
+                }
+            }
+        });
+
+
         cargarPagoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,7 +274,7 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
     private void agregarItem (){
 
         if (formaPagoSeleccionado.getCodigo().equals(COD_EFECTIVO)){
-            String str = montoEfectivoEditText.getText().toString();
+            String str = MyFormatter.cleanMoney(montoEfectivoEditText.getText().toString());
             if (str.equals("") || str.equals("0")){
                 String[] buttons = {"Ok"};
                 AppUtils.show(null, "Ingrese un monto valido.", buttons, CobranzaDetalleItemActivity.this, false, dialogOnclicListener);
@@ -256,8 +307,8 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
             }
         }
 
-
-        Integer montoIngresado = Integer.valueOf(montoEfectivoEditText.getText().toString());
+        String montoIngresadoString = MyFormatter.cleanMoney(montoEfectivoEditText.getText().toString());
+        Integer montoIngresado = Integer.valueOf(montoIngresadoString);
         //CobranzaActivity.facturaSeleccionada.setMontoCobrado(montoIngresado.toString());
         //CobranzaActivity.facturaSeleccionada.setItems();
 
@@ -273,11 +324,13 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
 
 
         if (formaPagoSeleccionado.getCodigo().equals(COD_EFECTIVO)){
-            Integer montoEfectivo = Integer.valueOf(montoEfectivoEditText.getText().toString());
+            String montoEfectrivoString = MyFormatter.cleanMoney(montoEfectivoEditText.getText().toString());
+            Integer montoEfectivo = Integer.valueOf(montoEfectrivoString);
             itemCobro.setAmount(montoEfectivo);
 
         }  else if (formaPagoSeleccionado.getCodigo().equals(COD_CHEQUE)){
-            Integer montoCheque = Integer.valueOf(montoChequeEditText.getText().toString());
+            String montoChequeString = MyFormatter.cleanMoney(montoChequeEditText.getText().toString());
+            Integer montoCheque = Integer.valueOf(montoChequeString);
             itemCobro.setAmount(montoCheque);
             itemCobro.setBank(bancoSeleccionado);
             itemCobro.setCheck_number(nroChequeEditText.getText().toString());

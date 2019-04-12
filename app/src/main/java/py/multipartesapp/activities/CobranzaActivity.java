@@ -63,13 +63,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import py.multipartesapp.R;
-import py.multipartesapp.beans.Cliente;
-import py.multipartesapp.beans.Cobranza;
-import py.multipartesapp.beans.CobranzaDetalle;
-import py.multipartesapp.beans.CobranzaFormaPago;
-import py.multipartesapp.beans.Factura;
-import py.multipartesapp.beans.Session;
-import py.multipartesapp.beans.Usuario;
+import py.multipartesapp.beans.*;
 import py.multipartesapp.comm.Comm;
 import py.multipartesapp.customAutoComplete.CobranzaActivityClienteTextChangedListener;
 import py.multipartesapp.customAutoComplete.CustomAutoCompleteView;
@@ -174,6 +168,12 @@ public class CobranzaActivity extends ActionBarActivity {
         clienteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, itemsClientes);
         clienteAutoComplete.setAdapter(clienteAdapter);
 
+
+        //limpiar datos al entrar
+        limpiarDatos();
+
+
+
         //si proviene de Lista de Rutas, cargar el cliente en cuestion
         if (Globals.getClienteSeleccionadoRuta() != null){
             clienteSeleccionado = Globals.getClienteSeleccionadoRuta();
@@ -273,6 +273,16 @@ public class CobranzaActivity extends ActionBarActivity {
         }
     };
 
+    //despues de guardar correctamente
+    DialogInterface.OnClickListener dialogOnclicListenerAfterSave = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            //click en boton Ok
+            finish();
+        }
+    };
+
+
     public void enviarCobranza () throws JSONException {
 
         if (clienteSeleccionado == null || clienteAutoComplete.getText().toString().equals("")){
@@ -325,7 +335,7 @@ public class CobranzaActivity extends ActionBarActivity {
                 CobranzaDetalle cd = new CobranzaDetalle();
                 cd.setAmount(p.getGrandtotal());
                 cd.setCashed(Integer.valueOf(p.getMontoCobrado()));
-                //cd.setCharge_id(c.getId());
+                cd.setCharge_id(c.getId());
                 cd.setInvoice(p.getId().toString());
 
                 cd.setItems(p.getItems());
@@ -359,21 +369,19 @@ public class CobranzaActivity extends ActionBarActivity {
         imprimir(print);
         if (!enLinea){
             Log.d(TAG, "Sin conexion, se guarda el cobro");
-            /*
+
             //guardar con estado PENDIENTE para su posterior envio
             c.setEstado_envio("PENDIENTE");
             db.insertCobranza(c);
             for (CobranzaDetalle cd : c.getDetalles()){
                 db.insertCobranzaDetalle(cd);
-            }*/
+            }
+            for (CobranzaFormaPago formaPago : Globals.getItemCobroList()){
+                db.insertCobranzaFormaPago(formaPago, c.getId());
+            }
 
-            Context context = getApplicationContext();
-            CharSequence text = "No hay conexión. Se guarda y se volverá a intentar mas tarde.";
-            int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
-            toast.show();
-            finish();
+            mostrarMensajeNoEnviado("No hay conexión. Se guarda el cobro.");
+            //finish();
             return;
         }
 
@@ -384,9 +392,6 @@ public class CobranzaActivity extends ActionBarActivity {
 
         //Enviar los datos al servidor
         String result=enviarCobroAlServidor(json);
-
-
-
 
     }
 
@@ -457,7 +462,7 @@ public class CobranzaActivity extends ActionBarActivity {
         try {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            String url = Comm.URL + "/api/cobro/registrar-cobro";
+            String url = Comm.URL + "api/cobro/registrar-cobro";
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
 
@@ -471,7 +476,7 @@ public class CobranzaActivity extends ActionBarActivity {
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
 
-            Log.d(TAG, "enviando post: "+ httpPost.toString());
+            Log.d(TAG, "enviando post: "+ url);
             Log.d(TAG, "mensaje post: "+ json);
 
             DefaultHttpClient httpclient2 = new DefaultHttpClient();
@@ -492,10 +497,11 @@ public class CobranzaActivity extends ActionBarActivity {
             } else {
                 result = "Did not work!";
             }
+            Log.d(TAG,"resultado post: "+result);
 
             if (code == 200){
                 if (result.contains("Portal Movil Tigo")){
-                    Log.d(TAG, "Sin conexion, se guarda la entrega");
+                    Log.d(TAG, "Sin conexion, se guarda el cobro");
 
                     //guardar con estado PENDIENTE para su posterior envio
                     //c.setEstado_envio("PENDIENTE");
@@ -504,24 +510,21 @@ public class CobranzaActivity extends ActionBarActivity {
 //                        db.insertCobranzaDetalle(cd);
 //                    }
 
-                    Context context = getApplicationContext();
-                    CharSequence text = "No hay conexión. Se guarda y se volverá a intentar mas tarde.";
-                    int duration = Toast.LENGTH_LONG;
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
-                    toast.show();
-                    finish();
+                    mostrarMensajeNoEnviado("No hay conexión. Se guarda el cobro.");
+                    //finish();
 
                     return "NO_ENVIADO_SIN_CONEXION_A_INTERNET";
-
                 }
-                Toast.makeText(getApplicationContext(), "Cobro enviado correctamente.", Toast.LENGTH_LONG).show();
+
                 guardarCobranzaBtn.setEnabled(true);
                 //guardar con estado ENVIADO
                 c.setEstado_envio("ENVIADO");
                 db.insertCobranza(c);
                 for (CobranzaDetalle cd : c.getDetalles()){
                     db.insertCobranzaDetalle(cd);
+                }
+                for (CobranzaFormaPago formaPago : Globals.getItemCobroList()){
+                    db.insertCobranzaFormaPago(formaPago, c.getId());
                 }
 
                 /* ------- limpiar datos despues de haber enviado al server - adolfo 21/02/2019  */
@@ -537,18 +540,16 @@ public class CobranzaActivity extends ActionBarActivity {
                 actualizarTotal();
                 actualizarTotalDeuda();
 
-
-                finish();
+                mostrarMensajeEnviado("Cobro enviado correctamente!");
+                //finish();
                 return "ENVIADO_CORRECTAMENTE";
             } else {
-                Toast.makeText(getApplicationContext(), "Error al enviar cobro .", Toast.LENGTH_LONG).show();
+                mostrarMensajeNoEnviado("No se pudo enviar el cobro. Intente más tarde.");
                 guardarCobranzaBtn.setEnabled(true);
             }
 
-
-            Log.d(TAG, "resultado  post: "+ result);
         } catch (Exception e) {
-            AppUtils.handleError("Error al enviar pedido.", CobranzaActivity.this);
+            AppUtils.handleError("Error al enviar cobro.", CobranzaActivity.this);
             Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
             guardarCobranzaBtn.setEnabled(true);
         }
@@ -581,19 +582,36 @@ public class CobranzaActivity extends ActionBarActivity {
         return total;
     }
 
+    private void mostrarMensajeEnviado (String msj){
+
+        String[] buttons = {"Ok"};
+        int id_icon = R.drawable.ic_check;
+        AppUtils.showWithIcon("Enviado", id_icon,msj, buttons, CobranzaActivity.this, true, dialogOnclicListenerAfterSave);
+
+    }
+
+    private void mostrarMensajeNoEnviado (String msj){
+
+        String[] buttons = {"Ok"};
+        int id_icon = R.drawable.ic_close;
+        AppUtils.showWithIcon("NO Enviado", id_icon,msj, buttons, CobranzaActivity.this, true, dialogOnclicListenerAfterSave);
+
+    }
+
     private void actualizarTotalDeuda() {
         Integer totalDeudaInteger = getTotalDeuda();
         totalDeuda.setText("Gs. "+MyFormatter.formatMoney(totalDeudaInteger.toString()));
+
     }
 
     private void actualizarImporteFormaPago(){
-        double totAmountFp = 0;
+        Integer totAmountFp = 0;
         if(Globals.getItemCobroList() != null) {
             for (CobranzaFormaPago c : Globals.getItemCobroList()) {
                 totAmountFp += c.getAmount();
             }
         }
-        totalFormaPago.setText(String.valueOf(totAmountFp));
+        totalFormaPago.setText(MyFormatter.formatMoney(String.valueOf(totAmountFp)));
 
     }
     private Integer getTotalDeuda(){
@@ -643,34 +661,56 @@ public class CobranzaActivity extends ActionBarActivity {
     }
 
 
-    public static void enviarCobrosPendientes (Context context){
-        new CobranzaActivity().enviarCobranzas(context);
+    public static void enviarCobrosPendientes (Context context, Integer id){
+        new CobranzaActivity().enviarCobranzas(context, id);
     }
 
-    public void enviarCobranzas (Context context){
+    public void enviarCobranzas (Context context, Integer id) {
 
         db = new AppDatabase(context);
-        List<Cobranza> list = db.selectCobranzaByEstado("PENDIENTE");
-        Log.d(TAG, "============== Se encontraron " + list.size() +" Cobros PENDIENTES ");
 
-        if (list.size() > 0){
-            CharSequence text = "Enviando "+ list.size() + " Cobros ";
+        //Setear URL
+        Configuracion urlStr = db.selectConfiguracionByClave("URL");
+        if (urlStr.getValor() != null) {
+            Comm.URL = urlStr.getValor();
+        }
+
+        Cobranza cobranza = db.selectCobranzaById(id);
+        Log.d(TAG, "============== Enviar cobranza factura: " + cobranza.getId());
+
+        if (cobranza.getId() != null) {
+            CharSequence text = "Enviando cobro para " + cobranza.getNombre_cliente();
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(context, text, duration);
-            toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
+            //toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
             toast.show();
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
+
+            c = cobranza;
+        } else {
+            return;
         }
-        for (Cobranza cobranza : list){
+        boolean enLinea = AppUtils.isOnline(context);
+
+        if (!enLinea) {
+            CharSequence text = "No hay conexion";
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
+        }
+
+
+        //for (Cobranza c : list){
 
             InputStream inputStream = null;
             String result = "";
             try {
                 // 1. create HttpClient
                 HttpClient httpclient = new DefaultHttpClient();
-                String url = Comm.URL + "/api/charge/save";
+                String url = Comm.URL + "api/cobro/registrar-cobro";
                 // 2. make POST request to the given URL
                 HttpPost httpPost = new HttpPost(url);
                 String json = "";
@@ -691,20 +731,50 @@ public class CobranzaActivity extends ActionBarActivity {
                 jsonObject.accumulate("observation", c.getObservation());
                 jsonObject.accumulate("status", "A");
 
+                c.setAd_org_id(1000047);
+                jsonObject.accumulate("ad_org_id", c.getAd_org_id());
+
+
+                //Agregamos los detalles
+                List<CobranzaDetalle> detallesCobranza = db.selectCobranzaDetalleByCobro(cobranza.getId());
+
 
                 //Agregamos los detalles
                 JSONArray detallesJsonArray = new JSONArray();
-                List<CobranzaDetalle> detallesCobranza = db.selectCobranzaDetalleByCobro(cobranza.getId());
-
                 for (CobranzaDetalle detalle: detallesCobranza){
                     JSONObject detalleJson = new JSONObject();
                     detalleJson.put("invoice_id", detalle.getInvoice());
                     detalleJson.put("amount", detalle.getAmount());
                     detalleJson.put("cashed", detalle.getCashed());
-                    //detalleJson.put("charge_id", detalle.getCharge_id());
+
                     detallesJsonArray.put(detalleJson);
                 }
-                jsonObject.accumulate("chargesline", detallesJsonArray);
+                jsonObject.accumulate("facturasPagadas", detallesJsonArray);
+
+
+                JSONArray cobrosJsonArray = new JSONArray();
+
+                //db.selectCob
+                //Falta metodo buscar cobranza forma de pago
+                List<CobranzaFormaPago> formaPagoList2 = db.selectCobranzaFormaPagoByIdCobro(c.getId());
+
+                for (CobranzaFormaPago formaPago : formaPagoList2){
+                    JSONObject cobroJson = new JSONObject();
+                    cobroJson.put("payment_type", formaPago.getPayment_type());
+                    cobroJson.put("amount", formaPago.getAmount());
+                    cobroJson.put("bank", formaPago.getBank());
+                    cobroJson.put("check_number", formaPago.getCheck_number());
+                    cobroJson.put("expired_date", formaPago.getExpired_date());
+                    cobroJson.put("check_name", formaPago.getCheck_name());
+                    cobroJson.put("iscrossed", formaPago.getIscrossed());
+
+                    cobrosJsonArray.put(cobroJson);
+
+                }
+
+                jsonObject.accumulate("formaPago", cobrosJsonArray);
+
+
 
                 // 4. convert JSONObject to JSON to String
                 json = jsonObject.toString();
@@ -719,8 +789,8 @@ public class CobranzaActivity extends ActionBarActivity {
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
 
-                //Log.d(TAG, "enviando post: "+ httpPost.toString());
-                //Log.d(TAG, "mensaje post: "+ json);
+                Log.d(TAG, "enviando post: "+ url);
+                Log.d(TAG, "mensaje post: "+ json);
 
                 DefaultHttpClient httpclient2 = new DefaultHttpClient();
 
@@ -734,9 +804,10 @@ public class CobranzaActivity extends ActionBarActivity {
                     //guardar con estado ENVIADO
                     cobranza.setEstado_envio("ENVIADO");
                     db.updateCobranza(cobranza);
+                    Toast.makeText(context, "Cobro enviado correctamente.", Toast.LENGTH_LONG).show();
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Error al enviar cobro .", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Error al enviar cobro .", Toast.LENGTH_LONG).show();
                 }
 
                 // 9. receive response as inputStream
@@ -754,7 +825,7 @@ public class CobranzaActivity extends ActionBarActivity {
                 Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
             }
 
-        }
+        //}
     }
 
     // this function is used in CustomAutoCompleteTextChangedListener.java
@@ -795,6 +866,8 @@ public class CobranzaActivity extends ActionBarActivity {
         // create a new ImageView for each item referenced by the Adapter
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
+            //final ViewHolder holder;
+
 
             Factura item = facturasFiltrados.get(i);
             View v = view;
@@ -809,7 +882,10 @@ public class CobranzaActivity extends ActionBarActivity {
                 v.setTag(R.id.check_item_cobranza_btn, v.findViewById(R.id.check_item_cobranza_btn));
 
             }
-            final CheckBox cbItem = (CheckBox) v.getTag(R.id.check_item_cobranza_btn);
+
+            CheckBox cbItem = (CheckBox) v.getTag(R.id.check_item_cobranza_btn);
+            cbItem.setChecked(facturasFiltrados.get(i).isSelected());
+
             TextView nroFactura = (TextView) v.findViewById(R.id.txt1_item_cobranza_nro_factura);
             nroFactura.setText(item.getNroFacturaImprimir());
 
@@ -832,13 +908,15 @@ public class CobranzaActivity extends ActionBarActivity {
                 @Override
                 public void onFocusChange(View v1, boolean hasFocus) {
                     if(!hasFocus){
+                        View parentRow = (View) v1.getParent();
+                        ViewParent viewParent = parentRow.getParent();
+                        ListView listView = (ListView) viewParent.getParent();
+                        int position = listView.getPositionForView((View) viewParent);
                         /*Actualizar monto en la lista*/
-                        if(cbItem.isChecked()) {
-                            View parentRow = (View) v1.getParent();
-                            ViewParent viewParent = parentRow.getParent();
-                            ListView listView = (ListView) viewParent.getParent();
-                            int position = listView.getPositionForView((View) viewParent);
+                        if (facturasFiltrados.get(position).isSelected()){
+                        //if(cbItem.isChecked()) {
                             String montoCob = montoCobrado.getText().toString();
+
                             if(!montoCob.isEmpty()) {
                                 facturasFiltrados.get(position).setMontoCobrado(montoCob);
                                 //todo: calcular total
@@ -857,6 +935,25 @@ public class CobranzaActivity extends ActionBarActivity {
                     ListView listView = (ListView) viewParent.getParent();
                     int position = listView.getPositionForView((View) viewParent);
                     String montoCob = montoCobrado.getText().toString();
+
+
+                    if (facturasFiltrados.get(position).isSelected()){
+                        facturasFiltrados.get(position).setSelected(false);
+                        facturasFiltrados.get(position).setMontoCobrado("0");
+                        //todo: calcular total
+                        actualizarTotal();
+
+                    }
+                    else {
+                        facturasFiltrados.get(position).setSelected(true);
+                        if(!montoCob.isEmpty()) {
+                            facturasFiltrados.get(position).setMontoCobrado(montoCob);
+                            //todo: calcular total
+                            actualizarTotal();
+                            facturaSeleccionada = facturasFiltrados.get(position);
+                        }
+                    }
+                    /*
                     if(cbItem.isChecked()){
                         if(!montoCob.isEmpty()) {
                             facturasFiltrados.get(position).setMontoCobrado(montoCob);
@@ -869,10 +966,7 @@ public class CobranzaActivity extends ActionBarActivity {
                         //todo: calcular total
                         actualizarTotal();
                     }
-
-
-
-
+                    */
 
                 }
             });
@@ -907,6 +1001,22 @@ public class CobranzaActivity extends ActionBarActivity {
         return result;
 
     }
+
+    private void limpiarDatos() {
+        clienteAutoComplete.setText("");
+        clienteSeleccionado = null;
+        facturaSeleccionada = null;
+        facturasFiltrados = new ArrayList<Factura>();
+        adapterDetalles.notifyDataSetChanged();
+
+        Globals.setItemCobroList(null);
+
+        actualizarImporteFormaPago();
+        actualizarTotal();
+        actualizarTotalDeuda();
+    }
+
+
 
     private String crearTicket(Cobranza cobranza){
         SimpleDateFormat sdfdd_MM_yyyyHhMm = new SimpleDateFormat("dd/MM/yyyy");

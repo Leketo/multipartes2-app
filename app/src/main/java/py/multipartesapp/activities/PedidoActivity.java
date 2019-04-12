@@ -53,6 +53,7 @@ import py.multipartesapp.beans.PrecioCategoria;
 import py.multipartesapp.beans.Producto;
 import py.multipartesapp.beans.Session;
 import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommReq;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.AppUtils;
 import py.multipartesapp.utils.Globals;
@@ -391,7 +392,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         try {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            String url = Comm.URL + "/api/order/save";
+            String url = Comm.URL+CommReq.CommReqEnviarPedido;
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
             String json = "";
@@ -401,7 +402,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             JSONObject jsonObject = new JSONObject();
 
             jsonObject.accumulate("ad_client_id", "1000010");
-            jsonObject.accumulate("ad_org_id", "1000010");
+            jsonObject.accumulate("ad_org_id", "1000047");
             jsonObject.accumulate("date_order", pedido.getDate_order());
             jsonObject.accumulate("isactive", pedido.getIsactive());
             jsonObject.accumulate("client_id", pedido.getClient_id());
@@ -753,7 +754,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             try {
                 // 1. create HttpClient
                 HttpClient httpclient = new DefaultHttpClient();
-                String url = Comm.URL + "/api/order/save";
+                String url = Comm.URL+CommReq.CommReqEnviarPedido;
                 // 2. make POST request to the given URL
                 HttpPost httpPost = new HttpPost(url);
                 String json = "";
@@ -762,7 +763,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
                 JSONObject jsonObject = new JSONObject();
 
                 jsonObject.accumulate("ad_client_id", "1000010");
-                jsonObject.accumulate("ad_org_id", "1000010");
+                jsonObject.accumulate("ad_org_id", "1000047");
                 jsonObject.accumulate("date_order", pedido.getDate_order());
                 jsonObject.accumulate("isactive", pedido.getIsactive());
                 jsonObject.accumulate("client_id", pedido.getClient_id());

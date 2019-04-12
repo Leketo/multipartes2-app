@@ -28,7 +28,11 @@ public class AppContract {
         String FACTURA = "FACTURA";
         String PRODUCTO_FAMILIA = "PRODUCTO_FAMILIA";
         String PRODUCTO_SUB_FAMILIA = "PRODUCTO_SUB_FAMILIA";
+<<<<<<< HEAD
         String STOCK_PRODUCTO="STOCK_PRODUCTO";
+=======
+        String COBRANZA_FORMA_PAGO = "COBRANZA_FORMA_PAGO";
+>>>>>>> feature/cobros-app
     }
 
 
@@ -246,6 +250,7 @@ public class AppContract {
         String id_familia = "ID_FAMILIA";
     }
 
+<<<<<<< HEAD
     interface StockProductoColumns{
         String m_product_id="M_PRODUCT_ID";
         String desc_m_product_id="DESC_M_PRODUCT_ID";
@@ -257,6 +262,19 @@ public class AppContract {
     }
 
 
+=======
+    private interface CobranzaFormaPagoColumns {
+        String idCobranza = "ID_COBRANZA";
+        String payment_type = "PAYMENT_TYPE";
+        String amount = "AMOUNT";
+        String bank = "BANK";
+        String check_number = "CHECK_NUMBER";
+        String expired_date = "EXPIRED_DATE";
+        String check_name = "CHECK_NAME";
+        String iscrossed = "ISCROSSED";
+    }
+
+>>>>>>> feature/cobros-app
     // LOGIN
     public static class Login implements LoginColumns, BaseColumns {
     }
@@ -334,7 +352,12 @@ public class AppContract {
     //PRODUCTO_SUB_FAMILIA
     public static class ProductoSubFamilia implements ProductoSubFamiliaColumns, BaseColumns {}
 
+<<<<<<< HEAD
     //STOCK_PRODUCTO
     public static class StockProducto implements  StockProductoColumns,BaseColumns{}
+=======
+    //PRODUCTO_SUB_FAMILIA
+    public static class CobranzaFormaPago implements CobranzaFormaPagoColumns, BaseColumns {}
+>>>>>>> feature/cobros-app
 
 }

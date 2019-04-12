@@ -2,7 +2,7 @@ package py.multipartesapp.comm;
 
 public class CommReq {
 
-	private static final String App = "api/";
+	private static final String App = "multip/api/";
 
 	public static final String CommReqLogin
             = "j_spring_security_check";
@@ -20,13 +20,15 @@ public class CommReq {
             = App + "location/save";
 
     public static final String CommReqGetAllUsers
-            = App + "admin/users";
+            = App + "user/admin/users";
 
     public static final String CommReqSendDelivery
             = App + "delivery/save";
 
     public static final String CommReqGetAllOrders
             = App + "order/summary";
+
+    public static final String CommReqEnviarPedido=App+"/order/save";
 
     public static final String CommReqGetAllProduct
             = App + "product/summary";
@@ -75,6 +77,8 @@ public class CommReq {
             = App + "delivery/summary";
 
     public static final String CommReqGetStockProducto=App+"product/stock-producto/";
+
+    public static final String  CommReqConsultaEstadoCuenta="api/report/extracto";
 
 
 

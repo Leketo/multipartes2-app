@@ -51,16 +51,21 @@ public class Comm extends Application{
     private static Context context;
 
     public static HashMap<String,String> extras = new HashMap<String,String>();
-    private static String password = "elefante_login_num1";
-    private static String clientSecret = "zPaBp4G84kQmLbMeG1tcaE4/6N2tMeIu7nzBzKFQbxLrmY/wLg5uK8pprthHqTspsVaBC0YkP7HKbeewdt/UwmD+Sj+PF4trJ/0di1uZe6+/4Ulk0oY9E7X0nlUqmKiyiGABPKGHmVz7kZfd8M6Vr4/zohS5iWtJSJCSVfNujHzHsE+YP9/VDFlCwhZzC6V/kIKk74+lUJDpV/36jlWj0Q==";
-    private static MessageDigest _md_sha1;
+     private static MessageDigest _md_sha1;
 
 
  //   public  static String URL = "http://192.168.0.138:8080/multipartes/";
    // public  static String URL = "http://192.168.0.138:8080/";
-    public  static String URL = "http://app.multipartes.com.py/";
-	public  static String URL_API_MULTIP2 = "http://app.multipartes.com.py/multip/";
-	public  static String URL_TEST = "http://test.multipartes.com.py/";
+    //public  static String URL = "http://app.multipartes.com.py/multip/";
+
+    //URL LOGIN PRODUCCION
+	//public  static String URL = "http://app.multipartes.com.py/";
+
+	// test
+	//public  static String URL = "http://test.multipartes.com.py/multip/";
+	public  static String URL = "";
+
+	//public  static String URL_TEST = "http://test.multipartes.com.py/";
 
     public void onCreate(){
         super.onCreate();
@@ -87,10 +92,10 @@ public class Comm extends Application{
         }
     }
 
-    public static String generateSign(String tstamp, String deviceId) {
-        String ssign = tstamp+","+deviceId+","+clientSecret+","+password;
-        return getSHA1HexEncoded(ssign.getBytes());
-    }
+//    public static String generateSign(String tstamp, String deviceId) {
+//        String ssign = tstamp+","+deviceId+","+clientSecret+","+password;
+//        return getSHA1HexEncoded(ssign.getBytes());
+//    }
 
     public interface CommAccessTokenDelegate{
 		public void commAccessTokenInvalid(Comm comm, CommException ex);
@@ -114,8 +119,7 @@ public class Comm extends Application{
         {CommReq.CommReqGetAllProductSubFamily, ProductoSubFamiliaList.class.getName()},
 		{CommReq.CommReqGetAllProductImages, ProductoImagenList.class.getName()},
 		{CommReq.CommReqGetRegistroVisita, RegistroVisitaList.class.getName()},
-		{CommReq.CommReqGetAllEntrega, EntregaList.class.getName()},
-			{CommReq.CommReqGetStockProducto, StockList.class.getName()}
+		{CommReq.CommReqGetAllEntrega, EntregaList.class.getName()}, {CommReq.CommReqGetStockProducto, StockList.class.getName()}
 
 
 	};
@@ -301,7 +305,7 @@ public class Comm extends Application{
 	}
 
 //	private String getUnexpectedErrMsg() {
-//		return "Disculpe los inconvenientes, ocurriÔøΩ un error inesperado";
+//		return "Disculpe los inconvenientes, ocurrio un error inesperado";
 //	}
 //	static Properties messages;
 //	static Object mMutex = new Object();
@@ -471,6 +475,34 @@ public class Comm extends Application{
             }
         }, delegate);
     }
+
+
+	public void requestGetUrl(final String api_url,final String req, final Map params, final CommDelegate delegate){
+
+
+		execute(new CommRunnable() {
+
+			public CommResponse run() throws CommException {
+
+				String commandURL = req;
+				commandURL = sanitateUrl(commandURL);
+				String response;
+				Object object = null;
+				try {
+					response = get(delegate, req, api_url + commandURL, params);
+					object = objectFromResponse(req,response);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				if( object instanceof Bean ){
+					return new CommResponse((Bean) object);
+				} else {
+					return new CommResponse(object);
+				}
+			}
+		}, delegate);
+
+	}
 	
 	
 	private static Object objectFromResponse(String req, String response) {

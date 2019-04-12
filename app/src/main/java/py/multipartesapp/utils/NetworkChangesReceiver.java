@@ -96,7 +96,7 @@ public class NetworkChangesReceiver extends BroadcastReceiver {
                 new PedidoActivity().enviarPedidos(context);
 
                 Log.d(TAG, "Verificando existencia de Cobranzas Pendientes..");
-                new CobranzaActivity().enviarCobranzas(context);
+                //new CobranzaActivity().enviarCobranzas(context);
             }
         }else {
             Log.d(TAG,"No está conectado a ninguna red");
