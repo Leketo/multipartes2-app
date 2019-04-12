@@ -12,7 +12,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
 import py.multipartesapp.beans.Cliente;
 import py.multipartesapp.beans.Cobranza;
 import py.multipartesapp.beans.CobranzaDetalle;
@@ -34,9 +33,7 @@ import py.multipartesapp.beans.RutaLocation;
 import py.multipartesapp.beans.Session;
 import py.multipartesapp.beans.StockDTO;
 import py.multipartesapp.beans.Usuario;
-=======
 import py.multipartesapp.beans.*;
->>>>>>> feature/cobros-app
 
 /**
  * Created by Adolfo on 19/06/2015.
@@ -264,6 +261,17 @@ public class AppDatabase {
         String[] whereArgs = { };
         Cursor c = db.rawQuery(sql, whereArgs);
         return mappingProducto(c);
+    }
+
+
+    public List<StockDTO> selectStockPorProducto(String id_producto){
+
+        SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
+        String sql = " SELECT * FROM " +AppContract.Tables.STOCK_PRODUCTO + " WHERE "+ AppContract.StockProducto.m_product_id + " = "+id_producto;
+        String[] whereArgs = { };
+        Cursor c = db.rawQuery(sql, whereArgs);
+        return mappingStockDTO(c);
+
     }
 
     public Cobranza selectCobranzaById (Integer id_cobranza){
@@ -546,6 +554,33 @@ public class AppDatabase {
         }
         cursor.close();
         return producto;
+    }
+
+    public List<StockDTO> mappingStockDTO(Cursor cursor){
+        List<StockDTO> listStock= new ArrayList<>();
+
+        do{
+            if(cursor.moveToFirst()){
+                StockDTO stockDTO= new StockDTO();
+
+                Producto producto = new Producto();
+                producto.setM_product_id(cursor.getInt(cursor.getColumnIndex(AppContract.StockProducto.m_product_id)));
+                stockDTO.setProducto(producto);
+
+                stockDTO.setStock_disponible(cursor.getInt(cursor.getColumnIndex(AppContract.StockProducto.stock_disponible)));
+
+                LocatorDTO locatorDTO=new LocatorDTO();
+                locatorDTO.setM_locator_id(cursor.getString(cursor.getColumnIndex(AppContract.StockProducto.m_locator_id)));
+                locatorDTO.setM_locator_value(cursor.getString(cursor.getColumnIndex(AppContract.StockProducto.desc_m_locator)));
+                stockDTO.setLocator(locatorDTO);
+
+                listStock.add(stockDTO);
+            }
+        }while(cursor.moveToNext());
+
+        cursor.close();
+
+        return listStock;
     }
 
     private Cobranza mappingCobranza(Cursor cursor){
@@ -1474,6 +1509,8 @@ public class AppDatabase {
 
 
     }
+
+
     //Insert FACTURA
     public void insertFactura(Factura factura){
         SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
@@ -2708,7 +2745,7 @@ public class AppDatabase {
             );
             Log.d("Creo tabla","PRODUCTO_SUB_FAMILIA");
 
-<<<<<<< HEAD
+
             db.execSQL("CREATE VIRTUAL TABLE " +AppContract.Tables.STOCK_PRODUCTO+" USING fts3("
                     +AppContract.StockProducto.m_product_id+","
                     +AppContract.StockProducto.desc_m_product_id+","
@@ -2719,7 +2756,7 @@ public class AppDatabase {
                     +AppContract.StockProducto.stock_disponible);
 
             Log.d("Crear tabla", "STOCK_PRODUCTO");
-=======
+
             db.execSQL("CREATE VIRTUAL TABLE " + AppContract.Tables.COBRANZA_FORMA_PAGO+ " USING fts3 ("
                     + AppContract.CobranzaFormaPago.idCobranza + ", "
                     + AppContract.CobranzaFormaPago.payment_type + ", "
@@ -2731,7 +2768,6 @@ public class AppDatabase {
                     + AppContract.CobranzaFormaPago.iscrossed +  "); "
             );
             Log.d("Creo tabla","COBRANZA_FORMA_PAGO");
->>>>>>> feature/cobros-app
         }
 
         @Override
@@ -2758,11 +2794,8 @@ public class AppDatabase {
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.FACTURA);
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.PRODUCTO_FAMILIA);
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.PRODUCTO_SUB_FAMILIA);
-<<<<<<< HEAD
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.STOCK_PRODUCTO);
-=======
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.COBRANZA_FORMA_PAGO);
->>>>>>> feature/cobros-app
 
             onCreate(db);
         }

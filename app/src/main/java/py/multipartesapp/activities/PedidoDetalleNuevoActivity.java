@@ -137,7 +137,6 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
                     */
                 }
 
-                //stockProductoTxtView.setText("ASU:"+sumaAsu+" / SUC.:"+sumaSucursales);
             }
         });
 
@@ -183,61 +182,55 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
 
     public void obtenerStockArticulo(){
         StockDTO stockDTO= new StockDTO();
-//        Producto producto = new Producto();
-//        producto.setCodinterno("");
-//        producto.setM_product_id(0);
-//        producto.setName("");
-//        stockDTO.setProducto(producto);
-//        LocatorDTO locatorDTO = new LocatorDTO();
-//        locatorDTO.setM_locator_id("");
-//
-//        locatorDTO.setM_locator_value("");
-//        stockDTO.setLocator(locatorDTO);
-//        stockDTO.setStock_disponible(0);
 
         listStock= new ArrayList<>();
 
-
-
         //obtener el stock del producto haciendo la llamada al servicio stock-productos
-        CommDelegateAndroid delegate = new CommDelegateAndroid(){
-            @Override
-            public void onError(){
-                Log.e(TAG, this.exception.getMessage());
+//        CommDelegateAndroid delegate = new CommDelegateAndroid(){
+//            @Override
+//            public void onError(){
+//                Log.e(TAG, this.exception.getMessage());
+//            }
+//            @Override
+//            public void onSuccess(){
+//                Log.d(TAG, "Datos de producto");
+//                Comm.CommResponse r = response;
+//
+//                StockList stockList=(StockList) r.getBean();
+//
+//                listStock=stockList.getList();
+//
+//                procesarStock(listStock);
+//
+//            }
+//        };
+//
+//        new Comm().requestGet(Comm.URL, CommReq.CommReqGetStockProducto, new String[][]{
+//                {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
+//        }, delegate);
+
+        //obtenemos el stock consultando a la tabla de Stock
+
+        listStock=db.selectStockPorProducto(productoSeleccionado.getM_product_id().toString());
+        procesarStock(listStock);
+
+    }
+
+    private void procesarStock(List<StockDTO> listStock){
+        int sumaAsu=0;
+        int sumaSucursales=0;
+        for(StockDTO stockDTO: listStock){
+            //TODO verificar por sucursal
+            if(stockDTO.getLocator().getM_locator_value().contains("ASU")){
+                sumaAsu=sumaAsu+stockDTO.getStock_disponible();
+            }else{
+                sumaSucursales=sumaSucursales+stockDTO.getStock_disponible();
             }
-            @Override
-            public void onSuccess(){
-                Log.d(TAG, "Datos de producto");
-                Comm.CommResponse r = response;
+        }
+        Log.d(TAG, "setear stock producto seleccionado ASU: " +sumaAsu);
+        productoSeleccionado.setStock(sumaAsu);
 
-                StockList stockList=(StockList) r.getBean();
-
-                listStock=stockList.getList();
-
-                int sumaAsu=0;
-                int sumaSucursales=0;
-
-                for(StockDTO stockDTO: listStock){
-                    //TODO Verificar por sucursal
-                    if(stockDTO.getLocator().getM_locator_value().contains("ASU")){
-                        sumaAsu=sumaAsu+stockDTO.getStock_disponible();
-                    }else{
-                        sumaSucursales=sumaSucursales+stockDTO.getStock_disponible();
-                    }
-                }
-
-                // Setear el stock, solo el de ASU para validar al guardar. adolfo 24-02-2019
-                Log.d(TAG, "setear stock producto seleccionado ASU: " +sumaAsu);
-                productoSeleccionado.setStock(sumaAsu);
-
-                stockProductoTxtView.setText("ASU:"+sumaAsu+" / SUC.:"+sumaSucursales);
-
-            }
-        };
-
-        new Comm().requestGet(Comm.URL, CommReq.CommReqGetStockProducto, new String[][]{
-                {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
-        }, delegate);
+        stockProductoTxtView.setText("ASU:"+sumaAsu+" / SUC.:"+sumaSucursales);
     }
 
     private void agregarDetalle (){
