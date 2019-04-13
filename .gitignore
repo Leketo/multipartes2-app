@@ -9,3 +9,5 @@
 *.orig
 .idea/
 .idea/**
+*.apk
+*.aab

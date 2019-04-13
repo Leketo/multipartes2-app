@@ -32,6 +32,7 @@
                 android:text=""
                 android:gravity="center"/>
 
+            <!--Boton Registro de Visita-->
             <LinearLayout
                 android:id="@+id/fila_1"
                 android:layout_width="match_parent"
@@ -55,8 +56,8 @@
                         <Button
                             android:id="@+id/main_btn_registroVisita"
                             style="@style/button"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="200dp"
+                            android:layout_height="80dp"
                             android:drawableTop="@drawable/ic_registrar_visita_gris"
                             android:text="Registro Visita"
                             android:textSize="14sp"></Button>
@@ -64,32 +65,10 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
-
-                        <Button
-                            android:id="@+id/main_btn_entrega"
-                            style="@style/button"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:drawableTop="@drawable/ic_pedidos"
-                            android:text="Entregas"
-                            android:textSize="14sp"></Button>
-                    </LinearLayout>
-                </LinearLayout>
-
-
             </LinearLayout>
+            <!--Fin Boton Registro de Visita-->
 
+            <!--Boton Sincronizar datos-->
             <LinearLayout
                 android:id="@+id/fila_2"
                 android:layout_width="match_parent"
@@ -114,8 +93,8 @@
                         <Button
                             android:id="@+id/main_btn_sincronizar_datos"
                             style="@style/button"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="200dp"
+                            android:layout_height="80dp"
                             android:drawableTop="@drawable/ic_sync"
                             android:text="Sincronizar Datos"
                             android:textSize="14sp"></Button>
@@ -123,6 +102,20 @@
                     </LinearLayout>
                 </LinearLayout>
 
+
+            </LinearLayout>
+            <!--Fin Boton Sincronizar datos-->
+
+            <!--Boton Pedido-->
+            <LinearLayout
+                android:id="@+id/fila_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fila_1"
+                android:orientation="horizontal"
+                android:paddingTop="20dp"
+                android:weightSum="10">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -136,45 +129,10 @@
                         android:orientation="vertical">
 
                         <Button
-                            android:id="@+id/main_btn_rutas"
-                            style="@style/button"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:drawableTop="@drawable/ic_rutas"
-                            android:text="Recorrido"
-                            android:textSize="14sp"></Button>
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/fila_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/fila_2"
-                android:orientation="horizontal"
-                android:paddingTop="20dp"
-                android:weightSum="10">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:weightSum="5"
-                    android:layout_weight="5"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:orientation="horizontal">
-
-                        <Button
                             android:id="@+id/main_btn_pedido"
                             style="@style/button"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
+                            android:layout_width="200dp"
+                            android:layout_height="80dp"
                             android:drawableTop="@drawable/ic_pedidos2"
                             android:text="Pedidos"
                             android:textSize="14sp"></Button>
@@ -182,38 +140,17 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:weightSum="5"
-                    android:layout_weight="5"
-                    android:gravity="center"
-                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/main_btn_cobranza"
-                            style="@style/button"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:drawableTop="@drawable/ic_cobranza"
-                            android:text="Cobros"
-                            android:textSize="14sp"></Button>
-
-                    </LinearLayout>
-                </LinearLayout>
             </LinearLayout>
+            <!--Fin Boton Pedido-->
 
+
+            <!--Boton Cobro-->
             <LinearLayout
-                android:id="@+id/fila_4"
+                android:id="@+id/fila_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/fila_3"
+                android:layout_below="@id/fila_1"
                 android:orientation="horizontal"
                 android:paddingTop="20dp"
                 android:weightSum="10">
@@ -231,16 +168,75 @@
                         android:orientation="vertical">
 
                         <Button
-                            android:id="@+id/main_btn_catalogo"
+                            android:id="@+id/main_btn_cobranza"
                             style="@style/button"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:drawableTop="@drawable/ic_catalogo"
-                            android:text="Catalogo"
+                            android:layout_width="200dp"
+                            android:layout_height="80dp"
+                            android:drawableTop="@drawable/ic_cobranza"
+                            android:text="Cobros"
                             android:textSize="14sp"></Button>
 
                     </LinearLayout>
                 </LinearLayout>
+
+
+            </LinearLayout>
+            <!--Fin Boton Cobro-->
+
+        <!--Boton Catalogo-->
+            <LinearLayout
+                android:id="@+id/fila_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:weightSum="10"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <Button
+                                android:id="@+id/main_btn_catalogo"
+                                style="@style/button"
+                                android:layout_width="200dp"
+                                android:layout_height="80dp"
+                                android:drawableTop="@drawable/ic_catalogo"
+                                android:text="Catalogo"
+                                android:textSize="14sp"></Button>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </LinearLayout>
+            <!--Fin Boton Catalogo-->
+
+
+            <!--Boton Consultas-->
+            <LinearLayout
+            android:id="@+id/fila_6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:weightSum="10"
+               >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -263,8 +259,8 @@
                             <Button
                                 android:id="@+id/main_btn_consultas"
                                 style="@style/button"
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
+                                android:layout_width="200dp"
+                                android:layout_height="80dp"
                                 android:drawableTop="@drawable/ic_buscar"
                                 android:text="Consultas"
                                 android:textSize="14sp"></Button>
@@ -274,33 +270,58 @@
 
                 </LinearLayout>
             </LinearLayout>
+            <!--Fin boton Consultas-->
 
+
+            <!--Boton Test-->
             <LinearLayout
-                android:id="@+id/fila_5"
+                android:id="@+id/fila_7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingTop="10dp"
-                android:weightSum="10">
+                android:weightSum="10"
+                >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
+                    android:layout_weight="5"
+                    android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/main_btn_crear_ruta"
-                        style="@style/button"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:drawableTop="@drawable/ic_visitado"
-                        android:text="Crear Ruta"
-                        android:textSize="14sp"></Button>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <Button
+                                android:id="@+id/main_btn_test"
+
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="Force Crash!"
+                                android:onClick="forceCrash"
+                                android:layout_centerVertical="true"
+                                android:layout_centerHorizontal="true" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
 
                 </LinearLayout>
-
             </LinearLayout>
+            <!--Fin boton Consultas-->
+
+
+
+
 
 
         </LinearLayout>

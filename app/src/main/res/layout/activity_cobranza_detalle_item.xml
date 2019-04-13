@@ -195,13 +195,13 @@
                     android:layout_marginRight="8dp"
                     android:text="Banco:"/>
 
-                <py.multipartes2.customAutoComplete.CustomAutoCompleteView
+                <py.multipartesapp.customAutoComplete.CustomAutoCompleteView
                     android:id="@+id/cobranza_detalle_banco_autocomplete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableRight="@drawable/ic_close"
                     android:completionThreshold="1" >
-                </py.multipartes2.customAutoComplete.CustomAutoCompleteView>
+                </py.multipartesapp.customAutoComplete.CustomAutoCompleteView>
             </LinearLayout>
 
             <LinearLayout

@@ -1,23 +1,70 @@
 apply plugin: 'com.android.application'
 
-android {
+apply plugin: 'io.fabric'
 
-    compileSdkVersion 22
-    buildToolsVersion '27'
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
+ext.versionMajor = 3
+ext.versionMinor = 5
+ext.versionPatch = 25
+ext.versionClassifier = null
+ext.isSnapshot = false
+ext.minimumSdkVersion = 22
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://raw.github.com/xujiaao/mvn-repository/master/releases' }
+
+    }
+
+    dependencies {
+        // These docs use an open ended version so that our plugin
+        // can be updated quickly in response to Android tooling updates
+
+        // We recommend changing it to the latest version from our changelog:
+        // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
+        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.github.xujiaao:aarLinkSources:1.0.0'
+
+    }
+}
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'appreleasedkey'
+            keyPassword 'lfesplo2015'
+            storeFile file('/Users/wtoledo/repo/multip/keystore/multip.jks')
+            storePassword 'lfesplo2015'
+        }
+    }
+    compileSdkVersion 26
+    buildToolsVersion '28.0.3'
     compileOptions {
         encoding "UTF-8"
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+
+
     }
-
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
     defaultConfig {
-
-        applicationId 'py.multipartes2'
+        applicationId 'py.multipartesapp'
         minSdkVersion 14
-        targetSdkVersion 21
-        versionCode 3
-        versionName "3.0"
+        targetSdkVersion 26
+        minSdkVersion project.ext.minimumSdkVersion
+        versionCode generateVersionCode()
+        versionName generateVersionName()
         multiDexEnabled true
+        signingConfig signingConfigs.config
 
     }
     buildTypes {
@@ -25,20 +72,63 @@ android {
             //runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
     }
     productFlavors {
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+
+    useLibrary 'org.apache.http.legacy'
+}
+
+
+private Integer generateVersionCode() {
+    return ext.minimumSdkVersion * 10000000 + ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
+}
+
+private String generateVersionName() {
+    String versionName = "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
+    if (ext.versionClassifier == null && ext.isSnapshot) {
+        ext.versionClassifier = "SNAPSHOT"
+    }
+
+    if (ext.versionClassifier != null) {
+        versionName += "-" + ext.versionClassifier
+    }
+    return versionName;
 }
 
 dependencies {
     compile files('libs/agptekbtsdk.jar')
-    compile 'com.android.support:appcompat-v7:21.+'
+    compile 'com.android.support:appcompat-v7:22.+'
     compile 'org.apache.httpcomponents:httpclient:4.3.6'
-    compile 'com.android.support:support-v13:21.+'
+    compile 'com.android.support:support-v13:22.+'
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'commons-codec:commons-codec:1.5'
     compile 'com.google.guava:guava:18.0'
     compile 'com.google.android.gms:play-services:4.2.42'
     compile 'com.google.maps.android:android-maps-utils:0.4+'
     compile 'com.github.barteksc:android-pdf-viewer:2.3.0'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+    compile('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
+        transitive = true;
+    }
+//    compile 'com.jaspersoft.android.sdk:js-android-sdk-client:1.9'
+//    compile 'com.jaspersoft.android.sdk:js-android-sdk-ui:1.9'
+//    caarLinkSources "com.jaspersoft.android.sdk:js-android-sdk-client:1.9:sources@jar"
+
 }

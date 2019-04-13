@@ -33,13 +33,13 @@
                 android:layout_height="wrap_content"
                 android:text="Cliente: "/>
 
-            <py.multipartes2.customAutoComplete.CustomAutoCompleteView
+            <py.multipartesapp.customAutoComplete.CustomAutoCompleteView
                 android:id="@+id/cobranza_cliente_autocomplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/ic_close"
                 android:completionThreshold="1" >
-            </py.multipartes2.customAutoComplete.CustomAutoCompleteView>
+            </py.multipartesapp.customAutoComplete.CustomAutoCompleteView>
 
         </LinearLayout>
 
@@ -67,6 +67,7 @@
                 android:id="@+id/cobranza_nro_factura"
                 android:layout_width="0dp"
                 android:layout_weight="7.5"
+                android:inputType="number"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
@@ -179,7 +180,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="6"
+                android:layout_weight="5"
                 android:textSize="9pt"
                 android:textStyle="bold"
                 android:text="Total cobrado:"/>
@@ -187,7 +188,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
+                android:layout_weight="5"
                 android:id="@+id/cobranza_total_cobrado"
                 android:gravity="right"
                 android:background="@color/accent_material_dark"

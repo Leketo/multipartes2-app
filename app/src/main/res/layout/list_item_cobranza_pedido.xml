@@ -65,6 +65,7 @@
             android:textSize="12sp"
             android:layout_gravity="center_vertical"
             android:numeric="integer"
+            android:enabled="true"
             android:text="0"/>
     </LinearLayout>
 
