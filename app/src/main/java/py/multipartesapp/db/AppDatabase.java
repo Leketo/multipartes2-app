@@ -1417,7 +1417,7 @@ public class AppDatabase {
 
 
     //Insert PRODUCTO
-    public void insertProducto(Producto producto){
+    public void  insertProducto(Producto producto){
         SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 

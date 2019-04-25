@@ -67,6 +67,8 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
     private ListView stockListView;
 
+    private TextView idProductoTextView;
+
 
 
 
@@ -81,6 +83,7 @@ public class ConsultaStockActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //muestra el boton atras
         getSupportActionBar().setTitle("Consulta Producto");
 
+        idProductoTextView=(TextView) findViewById(R.id.id_producto);
 
         productoAutoComplete = (CustomAutoCompleteView) findViewById(R.id.consulta_stock_producto_autocomplete);
 
@@ -102,7 +105,7 @@ public class ConsultaStockActivity extends ActionBarActivity {
         stockListView=(ListView) findViewById(R.id.stock_list);
 
         StockDTO stockDTO= new StockDTO();
-        Producto producto = new Producto();
+        final Producto producto = new Producto();
         producto.setCodinterno("");
         producto.setM_product_id(0);
         producto.setName("");
@@ -142,7 +145,10 @@ public class ConsultaStockActivity extends ActionBarActivity {
                 //productoSeleccionado = productosFiltrados.get(position);
 
 
+
                 productoSeleccionado=productosFiltrados.get(0);
+
+                idProductoTextView.setText(productoSeleccionado.getM_product_id());
 
                 //obtener el stock del producto haciendo la llamada al servicio stock-productos
                 CommDelegateAndroid delegate = new CommDelegateAndroid(){
