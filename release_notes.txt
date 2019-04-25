@@ -1,0 +1,3 @@
+#Changelog
+
+Se agrego la opcion de sincronizar el stock de los productos

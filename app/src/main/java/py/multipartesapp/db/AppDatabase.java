@@ -12,6 +12,27 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.Cobranza;
+import py.multipartesapp.beans.CobranzaDetalle;
+import py.multipartesapp.beans.Configuracion;
+import py.multipartesapp.beans.Entrega;
+import py.multipartesapp.beans.Factura;
+import py.multipartesapp.beans.LocationTable;
+import py.multipartesapp.beans.Login;
+import py.multipartesapp.beans.Pedido;
+import py.multipartesapp.beans.PedidoDetalle;
+import py.multipartesapp.beans.PrecioCategoria;
+import py.multipartesapp.beans.PrecioVersion;
+import py.multipartesapp.beans.Producto;
+import py.multipartesapp.beans.ProductoFamilia;
+import py.multipartesapp.beans.ProductoImagen;
+import py.multipartesapp.beans.ProductoSubFamilia;
+import py.multipartesapp.beans.RegistroVisita;
+import py.multipartesapp.beans.RutaLocation;
+import py.multipartesapp.beans.Session;
+import py.multipartesapp.beans.StockDTO;
+import py.multipartesapp.beans.Usuario;
 import py.multipartesapp.beans.*;
 
 /**
@@ -240,6 +261,17 @@ public class AppDatabase {
         String[] whereArgs = { };
         Cursor c = db.rawQuery(sql, whereArgs);
         return mappingProducto(c);
+    }
+
+
+    public List<StockDTO> selectStockPorProducto(String id_producto){
+
+        SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
+        String sql = " SELECT * FROM " +AppContract.Tables.STOCK_PRODUCTO + " WHERE "+ AppContract.StockProducto.m_product_id + " = "+id_producto;
+        String[] whereArgs = { };
+        Cursor c = db.rawQuery(sql, whereArgs);
+        return mappingStockDTO(c);
+
     }
 
     public Cobranza selectCobranzaById (Integer id_cobranza){
@@ -522,6 +554,33 @@ public class AppDatabase {
         }
         cursor.close();
         return producto;
+    }
+
+    public List<StockDTO> mappingStockDTO(Cursor cursor){
+        List<StockDTO> listStock= new ArrayList<>();
+
+        do{
+            if(cursor.moveToFirst()){
+                StockDTO stockDTO= new StockDTO();
+
+                Producto producto = new Producto();
+                producto.setM_product_id(cursor.getInt(cursor.getColumnIndex(AppContract.StockProducto.m_product_id)));
+                stockDTO.setProducto(producto);
+
+                stockDTO.setStock_disponible(cursor.getInt(cursor.getColumnIndex(AppContract.StockProducto.stock_disponible)));
+
+                LocatorDTO locatorDTO=new LocatorDTO();
+                locatorDTO.setM_locator_id(cursor.getString(cursor.getColumnIndex(AppContract.StockProducto.m_locator_id)));
+                locatorDTO.setM_locator_value(cursor.getString(cursor.getColumnIndex(AppContract.StockProducto.desc_m_locator)));
+                stockDTO.setLocator(locatorDTO);
+
+                listStock.add(stockDTO);
+            }
+        }while(cursor.moveToNext());
+
+        cursor.close();
+
+        return listStock;
     }
 
     private Cobranza mappingCobranza(Cursor cursor){
@@ -1431,7 +1490,26 @@ public class AppDatabase {
 
         db.insert(AppContract.Tables.PRODUCTO, null, values);
         //Log.d("Valor Insertado", precioVersion.toString());
+        insertarStockProducto(producto);
+
     }
+
+    public void insertarStockProducto(Producto producto){
+        SQLiteDatabase db =mDatabaseOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        for (StockDTO stockDTO :producto.getListaStock()){
+            values.put(AppContract.StockProducto.m_product_id,stockDTO.getProducto().getM_product_id());
+            values.put(AppContract.StockProducto.desc_m_product_id,stockDTO.getProducto().getName());
+            values.put(AppContract.StockProducto.m_locator_id,stockDTO.getLocator().getM_locator_id());
+            values.put(AppContract.StockProducto.desc_m_locator,stockDTO.getLocator().getM_locator_value());
+            values.put(AppContract.StockProducto.stock_disponible,stockDTO.getStock_disponible());
+            db.insert(AppContract.Tables.STOCK_PRODUCTO,null,values);
+        }
+
+
+    }
+
 
     //Insert FACTURA
     public void insertFactura(Factura factura){
@@ -1579,6 +1657,9 @@ public class AppDatabase {
                 insStmt.bindLong(5, p.getIdFamilia());
                 insStmt.bindLong(6, p.getIdSubFamilia());
                 insStmt.bindLong(7, p.getStock());
+
+                insertarStockProducto(p);
+
                 insStmt.executeInsert();
             }
             db.setTransactionSuccessful();
@@ -2342,6 +2423,11 @@ public class AppDatabase {
         //db.close();
     }
 
+    public void deleteStockProducto(){
+        SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
+        db.delete(AppContract.Tables.STOCK_PRODUCTO, null, null);
+    }
+
     //Cuenta las filas de una tabla
     public int count(Cursor c){
         int result = 0;
@@ -2481,7 +2567,7 @@ public class AppDatabase {
             Log.d("Creo tabla","SESSION");
 
             db.execSQL("CREATE VIRTUAL TABLE " + AppContract.Tables.LOCATION + " USING fts3 ("
-                            + AppContract.Location.id + " integer primary key autoincrement, "
+                            + AppContract.Location.id + " INTEGER primary key autoincrement, "
                             + AppContract.Location.latitude + ", "
                             + AppContract.Location.longitude + ", "
                             + AppContract.Location.date + ", "
@@ -2659,6 +2745,18 @@ public class AppDatabase {
             );
             Log.d("Creo tabla","PRODUCTO_SUB_FAMILIA");
 
+
+            db.execSQL("CREATE VIRTUAL TABLE " +AppContract.Tables.STOCK_PRODUCTO+" USING fts3("
+                    +AppContract.StockProducto.m_product_id+","
+                    +AppContract.StockProducto.desc_m_product_id+","
+                    +AppContract.StockProducto.ad_org_id+","
+                    +AppContract.StockProducto.desc_ad_org+","
+                    +AppContract.StockProducto.m_locator_id+","
+                    +AppContract.StockProducto.desc_m_locator+","
+                    +AppContract.StockProducto.stock_disponible);
+
+            Log.d("Crear tabla", "STOCK_PRODUCTO");
+
             db.execSQL("CREATE VIRTUAL TABLE " + AppContract.Tables.COBRANZA_FORMA_PAGO+ " USING fts3 ("
                     + AppContract.CobranzaFormaPago.idCobranza + ", "
                     + AppContract.CobranzaFormaPago.payment_type + ", "
@@ -2696,6 +2794,7 @@ public class AppDatabase {
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.FACTURA);
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.PRODUCTO_FAMILIA);
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.PRODUCTO_SUB_FAMILIA);
+            db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.STOCK_PRODUCTO);
             db.execSQL("DROP TABLE IF EXISTS " + AppContract.Tables.COBRANZA_FORMA_PAGO);
 
             onCreate(db);

@@ -28,8 +28,10 @@ public class AppContract {
         String FACTURA = "FACTURA";
         String PRODUCTO_FAMILIA = "PRODUCTO_FAMILIA";
         String PRODUCTO_SUB_FAMILIA = "PRODUCTO_SUB_FAMILIA";
+        String STOCK_PRODUCTO="STOCK_PRODUCTO";
         String COBRANZA_FORMA_PAGO = "COBRANZA_FORMA_PAGO";
     }
+
 
     interface LoginColumns {
         String userName = "USER_NAME";
@@ -245,6 +247,17 @@ public class AppContract {
         String id_familia = "ID_FAMILIA";
     }
 
+    interface StockProductoColumns{
+        String m_product_id="M_PRODUCT_ID";
+        String desc_m_product_id="DESC_M_PRODUCT_ID";
+        String m_locator_id="M_LOCATOR_ID";
+        String desc_m_locator="DESC_M_LOCATOR";
+        String ad_org_id="AD_ORG_ID";
+        String desc_ad_org="DESC_AD_ORG";
+        String stock_disponible="STOCK_DISPONIBLE";
+    }
+
+
     private interface CobranzaFormaPagoColumns {
         String idCobranza = "ID_COBRANZA";
         String payment_type = "PAYMENT_TYPE";
@@ -333,7 +346,10 @@ public class AppContract {
     //PRODUCTO_SUB_FAMILIA
     public static class ProductoSubFamilia implements ProductoSubFamiliaColumns, BaseColumns {}
 
-    //PRODUCTO_SUB_FAMILIA
-    public static class CobranzaFormaPago implements CobranzaFormaPagoColumns, BaseColumns {}
+    //STOCK_PRODUCTO
+    public static class StockProducto implements  StockProductoColumns,BaseColumns{}
 
+    //COBRANZA FORMA DE PAGO
+
+    public  static  class CobranzaFormaPago implements CobranzaFormaPagoColumns,BaseColumns{}
 }

@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Created by Adolfo on 15/01/2016.
  */
@@ -17,6 +19,7 @@ public class Producto extends Bean {
 
     Integer idFamilia;
     Integer idSubFamilia;
+    List<StockDTO> listaStock;
 
 
     @Override
@@ -96,5 +99,11 @@ public class Producto extends Bean {
         return name + " - " + codinterno;
     }
 
+    public List<StockDTO> getListaStock() {
+        return listaStock;
+    }
 
+    public void setListaStock(List<StockDTO> listaStock) {
+        this.listaStock = listaStock;
+    }
 }

@@ -9,6 +9,7 @@ public class StockDTO extends Bean {
 
     private Producto producto;
     private LocatorDTO locator;
+
     private int stock_disponible;
 
     public Producto getProducto() {
