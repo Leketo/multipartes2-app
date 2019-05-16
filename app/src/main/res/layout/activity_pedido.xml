@@ -15,6 +15,24 @@
         app:contentInsetStart="0dp">
     </android.support.v7.widget.Toolbar>
 
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        app:SpinKit_Color="@color/theme_primary"
+        android:visibility="gone" />
+
+    <!--<ProgressBar-->
+        <!--android:id="@+id/indeterminateBar"-->
+        <!--style="@android:style/Widget.ProgressBar.Horizontal"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:progress="25"/>-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,6 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="buscar nombre o ruc..."
+
                 android:drawableRight="@drawable/ic_close">
             </AutoCompleteTextView>
 
@@ -85,20 +104,47 @@
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"/>
 
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/pedido_agregar_detalle"
-            android:textSize="10pt"
-            android:text="+"
-            android:layout_gravity="right"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:weightSum="4">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:id="@+id/lbl_pedido_nro_pedido"
+                android:layout_gravity="center_vertical"
+                android:text="Pedido: #"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:id="@+id/pedido_nropedido_interno"
+                android:layout_gravity="center_vertical"
+                android:text="" />
+
+            <Button
+                android:id="@+id/pedido_agregar_detalle"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_gravity="right"
+                android:text="+"
+                android:textSize="10pt" />
+        </LinearLayout>
+
+
 
         <ListView
             android:id="@+id/pedido_detalle_list"
             android:layout_width="match_parent"
             android:layout_height="250dp">
         </ListView>
-        
+
 
         <View
             android:layout_width="match_parent"
@@ -131,12 +177,28 @@
                 android:text="Gs. 0"/>
         </LinearLayout>
 
-        <Button
-            style="@style/button"
-            android:id="@+id/guardar_pedido"
-            android:text="Guardar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="374dp"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/guardar_pedido"
+                style="@style/button"
+                android:layout_width="151dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="Guardar" />
+
+            <Button
+                android:id="@+id/enviar_pedido"
+                style="@style/button"
+                android:layout_width="146dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="Enviar" />
+        </LinearLayout>
+
+
 
     </LinearLayout>
 

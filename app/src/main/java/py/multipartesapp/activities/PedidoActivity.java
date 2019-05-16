@@ -23,8 +23,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.Circle;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -71,10 +75,15 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
     private ImageAdapter adapterDetalles;
     private Button agregarDetalleBtn;
     private TextView totalGeneral;
+    private TextView nroPedidoTextView;
     private Button guardarPedidoBtn;
+    private Button enviarPedidoBtn;
     private PedidoDetalle detalleSeleccionado;
     private TextView categoriaClienteTextView;
     private TextView creditoClienteTextView;
+
+    private ProgressBar progressBar;
+    private Sprite progressStyle;
 
     private SimpleDateFormat dateFormatter;
     DecimalFormat formateador = new DecimalFormat("###,###.##");
@@ -87,7 +96,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pedido);
 
-        if (Build.VERSION.SDK_INT > 9){
+        if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
@@ -98,17 +107,28 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //muestra el boton atras
         getSupportActionBar().setTitle("Pedido");
 
+        //progressBar = (ProgressBar)findViewById(R.id.indeterminateBar);
+        progressStyle = new Circle();
+
+        progressStyle.setVisible(false,true);
+        progressStyle.setBounds(0,0,100,100);
+
         clienteTextView = (AutoCompleteTextView) findViewById(R.id.pedido_cliente);
         detallesListView = (ListView) findViewById(R.id.pedido_detalle_list);
         agregarDetalleBtn = (Button) findViewById(R.id.pedido_agregar_detalle);
         totalGeneral = (TextView) findViewById(R.id.pedido_total);
         guardarPedidoBtn = (Button) findViewById(R.id.guardar_pedido);
+        enviarPedidoBtn = (Button) findViewById(R.id.enviar_pedido);
         categoriaClienteTextView = (TextView) findViewById(R.id.pedido_categoria_cliente);
         creditoClienteTextView = (TextView) findViewById(R.id.pedido_cred_disponible);
+        nroPedidoTextView = (TextView) findViewById(R.id.pedido_nropedido_interno);
+
+        enviarPedidoBtn.setEnabled(false);
+
 
         detallesList = new ArrayList<PedidoDetalle>();
 
-        if (db.countCliente() == 0){
+        if (db.countCliente() == 0) {
             Toast.makeText(getApplicationContext(), "Favor sincronizar datos primero.", Toast.LENGTH_LONG).show();
         }
 
@@ -120,20 +140,19 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         //simple_spinner_dropdown_item
         clienteTextView.setAdapter(adapterClientes);
 
-        adapterDetalles = new ImageAdapter (this);
+        adapterDetalles = new ImageAdapter(this);
         detallesListView.setAdapter(adapterDetalles);
 
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
 
         //Si proviene desde Activity Ruta, cargar el cliente en cuestion
-        if (Globals.getClienteSeleccionadoRuta() != null){
+        if (Globals.getClienteSeleccionadoRuta() != null) {
             clienteSeleccionado = Globals.getClienteSeleccionadoRuta();
             Globals.setClienteSeleccionadoPedido(clienteSeleccionado);
             mostrarDatosCliente(clienteSeleccionado);
 
             Globals.setClienteSeleccionadoRuta(null);
         }
-
 
 
         clienteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -158,12 +177,12 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             @Override
             public void onClick(View v) {
 
-                if (clienteSeleccionado == null){
+                if (clienteSeleccionado == null) {
                     String[] buttons = {"Ok"};
                     AppUtils.show(null, "Seleccione un cliente", buttons, PedidoActivity.this, false, dialogOnclicListener);
                     return;
                 }
-                if (detallesList.size() == 15){
+                if (detallesList.size() == 15) {
                     String[] buttons = {"Ok"};
                     AppUtils.show(null, "Solo se pueden agregar hasta 15 productos en el Pedido.", buttons, PedidoActivity.this, false, dialogOnclicListener);
                     return;
@@ -179,16 +198,29 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             @Override
             public void onClick(View v) {
 
-                guardarPedidoBtn.setEnabled(false);
+
+                //guardarPedidoBtn.setEnabled(false);
                 //progressBar.setVisibility(View.VISIBLE);
-                if (guardarPedidoBtn.getText().equals("Actualizar")){
+
+                if (nroPedidoTextView.getText().length() > 0) {
                     actualizarPedido();
                 } else {
-                    enviarPedido();
+                    guardarPedido();
                 }
+
+
             }
         });
 
+
+        enviarPedidoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //guardarPedidoBtn.setEnabled(false);
+                //progressBar.setVisibility(View.VISIBLE);
+                enviarPedido();
+            }
+        });
         detallesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
@@ -239,7 +271,10 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 
 
         //si solo se va mostrar o editar los datos
-        if (Globals.accion_pedido != null){
+        if (Globals.accion_pedido != null) {
+
+            nroPedidoTextView.setText("" + Globals.getPedidoSeleccionado().getId());
+
             Cliente c = db.selectClienteById(Globals.getPedidoSeleccionado().getClient_id());
             clienteSeleccionado = c;
             Globals.setClienteSeleccionadoPedido(clienteSeleccionado);
@@ -248,6 +283,8 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             List<PedidoDetalle> detalles = db.selectPedidoDetalleByPedido(Globals.pedidoSeleccionado.getId());
             detallesList = detalles;
             adapterDetalles.notifyDataSetChanged();
+
+
             actualizarSumaTotalDetalles();
 
             //ocultar teclado
@@ -255,11 +292,14 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             hideSoftKeyboard();
 
 
-            if (Globals.accion_pedido.equals("VER")){
+            if (Globals.accion_pedido.equals("VER")) {
                 guardarPedidoBtn.setVisibility(View.GONE);
                 agregarDetalleBtn.setVisibility(View.GONE);
+                enviarPedidoBtn.setEnabled(false);
+                clienteTextView.setEnabled(false);
             } else {
                 guardarPedidoBtn.setText("Actualizar");
+                enviarPedidoBtn.setEnabled(true);
             }
             Globals.setAccion_pedido(null);
             //Globals.setPedidoSeleccionado(null);
@@ -267,21 +307,21 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
     }
 
     public void hideSoftKeyboard() {
-        if(getCurrentFocus()!=null) {
+        if (getCurrentFocus() != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
     }
 
-    private void actualizarPedido (){
-        if (clienteSeleccionado == null || clienteTextView.getText().equals("")){
+    private void actualizarPedido() {
+        if (clienteSeleccionado == null || clienteTextView.getText().equals("")) {
             String[] buttons = {"Ok"};
             AppUtils.show(null, "Seleccione un cliente", buttons, PedidoActivity.this, false, dialogOnclicListener);
             guardarPedidoBtn.setEnabled(true);
             return;
         }
 
-        if (detallesList.isEmpty()){
+        if (detallesList.isEmpty()) {
             String[] buttons = {"Ok"};
             AppUtils.show(null, "El pedido no tiene productos.", buttons, PedidoActivity.this, false, dialogOnclicListener);
             guardarPedidoBtn.setEnabled(true);
@@ -298,7 +338,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 
         //insertar nuevos detalles
         pedido.setDetalles(detallesList);
-        for (PedidoDetalle detalle : pedido.getDetalles()){
+        for (PedidoDetalle detalle : pedido.getDetalles()) {
             detalle.setOrder_id(pedido.getId());
             db.insertPedidoDetalle(detalle);
         }
@@ -306,24 +346,25 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         Context context = getApplicationContext();
         CharSequence text = "Pedido actualizado.";
         Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
+        toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
         toast.show();
 
-        finish();
-        enviarPedidos(context);
+//        finish();
+        //enviarPedidos(context);
         return;
     }
 
-    private void enviarPedido (){
+    private void enviarPedido() {
 
-        if (clienteSeleccionado == null || clienteTextView.getText().equals("")){
+
+        if (clienteSeleccionado == null || clienteTextView.getText().equals("")) {
             String[] buttons = {"Ok"};
             AppUtils.show(null, "Seleccione un cliente", buttons, PedidoActivity.this, false, dialogOnclicListener);
             guardarPedidoBtn.setEnabled(true);
             return;
         }
 
-        if (detallesList.isEmpty()){
+        if (detallesList.isEmpty()) {
             String[] buttons = {"Ok"};
             AppUtils.show(null, "El pedido no tiene productos.", buttons, PedidoActivity.this, false, dialogOnclicListener);
             guardarPedidoBtn.setEnabled(true);
@@ -331,68 +372,29 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         }
 
         boolean enLinea = AppUtils.isOnline(getApplicationContext());
-        Log.d(TAG,"Conexión a internet: " + enLinea);
+        Log.d(TAG, "Conexión a internet: " + enLinea);
 
 
-        // 1. Creamos la cabecera
-        Pedido pedido = new Pedido();
-        pedido.setTotal(getSumaTotalDetalles());
-        pedido.setIsactive("Y");
-        pedido.setIsinvoiced("N");
-        pedido.setClient_id(clienteSeleccionado.getId());
-
-        String fechaPedido = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        pedido.setDate_order(fechaPedido);
-        //usuario logueado
-        Session sessionLogueado = db.selectUsuarioLogeado();
-        pedido.setUser_id(sessionLogueado.getUserId());
+//        if (nroPedidoTextView.getText().length() > 0) {
+//            actualizarPedido();
+//        } else {
+//            guardarPedido();
+//        }
 
 
-        //2. Agregamos los detalles
+        Pedido pedido = Globals.getPedidoSeleccionado();
+
         pedido.setDetalles(detallesList);
 
-        if (!enLinea){
-            Log.d(TAG, "Sin conexion, se guarda el pedido");
-            //guardar con estado PENDIENTE para su posterior envio
-            pedido.setEstado_envio("PENDIENTE");
-            //Obtener ultimo id usado
-            Pedido ultimoPedido = db.selectLastPedido();
-            if (ultimoPedido.getId() != null){
-                pedido.setId(ultimoPedido.getId()+1);
-            }else {
-                pedido.setId(1);
-            }
-
-            //restar debito del cliente
-            Integer total = pedido.getTotal();
-            Integer creditoDisponible = clienteSeleccionado.getCredito_disponible().intValue();
-            Double saldo = Double.valueOf (creditoDisponible - total);
-            clienteSeleccionado.setCredito_disponible(saldo);
-            db.updateCliente(clienteSeleccionado);
-
-            db.insertPedido(pedido);
-            //insertamos los detalles de pedido
-            for (PedidoDetalle detalle : pedido.getDetalles()){
-                detalle.setOrder_id(pedido.getId());
-                db.insertPedidoDetalle(detalle);
-            }
-
-            Context context = getApplicationContext();
-            CharSequence text = "No hay conexión. Se guarda y se volverá a intentar mas tarde.";
-            int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
-            toast.show();
-            finish();
-            return;
-        }
+        progressStyle.start();
+        progressStyle.setVisible(true,true);
 
         InputStream inputStream = null;
         String result = "";
         try {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            String url = Comm.URL+CommReq.CommReqEnviarPedido;
+            String url = Comm.URL + CommReq.CommReqEnviarPedido;
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
             String json = "";
@@ -414,7 +416,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 
             //Agregamos los detalles
             JSONArray detallesJsonArray = new JSONArray();
-            for (PedidoDetalle detalle: pedido.getDetalles()){
+            for (PedidoDetalle detalle : pedido.getDetalles()) {
                 JSONObject detalleJson = new JSONObject();
                 detalleJson.put("isactive", detalle.getIsactive());
                 detalleJson.put("product_id", detalle.getProduct_id());
@@ -440,8 +442,8 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
 
-            Log.d(TAG, "enviando post: "+ httpPost.toString());
-            Log.d(TAG, "mensaje post: "+ json);
+            Log.d(TAG, "enviando post: " + httpPost.toString());
+            Log.d(TAG, "mensaje post: " + json);
 
             DefaultHttpClient httpclient2 = new DefaultHttpClient();
 
@@ -450,82 +452,129 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 
             int code = httpResponse.getStatusLine().getStatusCode();
             //si llega 401 es error de login
-            Log.d(TAG, "responde code: "+code);
+            Log.d(TAG, "responde code: " + code);
 
             // 9. receive response as inputStream
             inputStream = httpResponse.getEntity().getContent();
 
             // 10. convert inputstream to string
-            if(inputStream != null) {
+            if (inputStream != null) {
                 result = convertInputStreamToString(inputStream);
             } else {
                 result = "Did not work!";
             }
 
-            if (code == 200){
+            if (code == 200) {
 
-                if (result.contains("Portal Movil Tigo")){
+                if (result.contains("Portal Movil Tigo")) {
                     Log.d(TAG, "Sin conexion, se guarda el pedido");
-                    //guardar con estado PENDIENTE para su posterior envio
-                    pedido.setEstado_envio("PENDIENTE");
-                    //Obtener ultimo id usado
-                    Pedido ultimoPedido = db.selectLastPedido();
-                    if (ultimoPedido.getId() != null){
-                        pedido.setId(ultimoPedido.getId()+1);
-                    }else {
-                        pedido.setId(1);
-                    }
-
-                    //restar debito del cliente
-                    Integer total = pedido.getTotal();
-                    Integer creditoDisponible = clienteSeleccionado.getCredito_disponible().intValue();
-                    Double saldo = Double.valueOf (creditoDisponible - total);
-                    clienteSeleccionado.setCredito_disponible(saldo);
-                    db.updateCliente(clienteSeleccionado);
-
-                    db.insertPedido(pedido);
-                    //insertamos los detalles de pedido
-                    for (PedidoDetalle detalle : pedido.getDetalles()){
-                        detalle.setOrder_id(pedido.getId());
-                        db.insertPedidoDetalle(detalle);
-                    }
 
                     Context context = getApplicationContext();
                     CharSequence text = "No hay conexión. Se guarda y se volverá a intentar mas tarde.";
                     int duration = Toast.LENGTH_LONG;
                     Toast toast = Toast.makeText(context, text, duration);
-                    toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
+                    toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
                     toast.show();
                     finish();
                     return;
                 }
 
                 Toast.makeText(getApplicationContext(), "Pedido enviado correctamente.", Toast.LENGTH_LONG).show();
-                guardarPedidoBtn.setEnabled(true);
-                //guardar con estado ENVIADO
+                //Marcamos como enviado
                 pedido.setEstado_envio("ENVIADO");
+                db.updatePedido(pedido);
 
-                //restar debito del cliente
-                Integer total = pedido.getTotal();
-                Integer creditoDisponible = clienteSeleccionado.getCredito_disponible().intValue();
-                Double saldo = Double.valueOf (creditoDisponible - total);
-                clienteSeleccionado.setCredito_disponible(saldo);
-                db.updateCliente(clienteSeleccionado);
+                enviarPedidoBtn.setEnabled(false);
+                progressStyle.stop();
+                progressStyle.setVisible(false,true);
 
-                db.insertPedido(pedido);
                 finish();
+
+
             } else {
-                Toast.makeText(getApplicationContext(), "Error al enviar pedido .", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Error al enviar el pedido .", Toast.LENGTH_LONG).show();
                 guardarPedidoBtn.setEnabled(true);
             }
 
 
-            Log.d(TAG, "resultado  post: "+ result);
+            Log.d(TAG, "resultado  post: " + result);
         } catch (Exception e) {
             AppUtils.handleError("Error al enviar pedido.", PedidoActivity.this);
             Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
             guardarPedidoBtn.setEnabled(true);
         }
+
+
+        progressStyle.stop();
+        progressStyle.setVisible(false,true);
+
+    }
+
+    public void guardarPedido() {
+
+
+        // 1. Creamos la cabecera
+        Pedido pedido = new Pedido();
+        pedido.setTotal(getSumaTotalDetalles());
+        pedido.setIsactive("Y");
+        pedido.setIsinvoiced("N");
+        pedido.setClient_id(clienteSeleccionado.getId());
+
+        String fechaPedido = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        pedido.setDate_order(fechaPedido);
+        //usuario logueado
+        Session sessionLogueado = db.selectUsuarioLogeado();
+        pedido.setUser_id(sessionLogueado.getUserId());
+
+
+        //2. Agregamos los detalles
+        pedido.setDetalles(detallesList);
+
+
+        Log.d(TAG, "Sin conexion, se guarda el pedido");
+        //guardar con estado PENDIENTE para su posterior envio
+        pedido.setEstado_envio("PENDIENTE");
+        //Obtener ultimo id usado
+        Pedido ultimoPedido = db.selectLastPedido();
+        int nro_pedido = 1;
+        if (ultimoPedido.getId() != null) {
+            nro_pedido = ultimoPedido.getId() + 1;
+            pedido.setId(nro_pedido);
+        } else {
+            pedido.setId(nro_pedido);
+        }
+
+
+        //restar debito del cliente
+
+        Integer total = pedido.getTotal();
+        Integer creditoDisponible = clienteSeleccionado.getCredito_disponible().intValue();
+        Double saldo = Double.valueOf(creditoDisponible - total);
+        clienteSeleccionado.setCredito_disponible(saldo);
+        db.updateCliente(clienteSeleccionado);
+
+        db.insertPedido(pedido);
+
+        nroPedidoTextView.setText("" + nro_pedido);
+        //insertamos los detalles de pedido
+        for (PedidoDetalle detalle : pedido.getDetalles()) {
+            detalle.setOrder_id(pedido.getId());
+            db.insertPedidoDetalle(detalle);
+        }
+
+        //habilito el boton de enviar pedido
+        enviarPedidoBtn.setEnabled(true);
+
+        Context context = getApplicationContext();
+        CharSequence text = "Su pedido se ha guardado correctamente.";
+
+        Globals.setPedidoSeleccionado(pedido);
+
+
+        int duration = Toast.LENGTH_LONG;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+        toast.show();
 
 
     }
@@ -540,16 +589,16 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
     DialogInterface.OnClickListener dialogOnclicListenerEliminarDetalle = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            Log.d(TAG, "Clic en : "+ which);
+            Log.d(TAG, "Clic en : " + which);
             //Si=-1, No = -2
-            if (which == -1){
-               detallesList.remove(detalleSeleccionado);
-               adapterDetalles.notifyDataSetChanged();
-               actualizarSumaTotalDetalles();
+            if (which == -1) {
+                detallesList.remove(detalleSeleccionado);
+                adapterDetalles.notifyDataSetChanged();
+                actualizarSumaTotalDetalles();
 
                 Integer creditoDisponible = clienteSeleccionado.getCredito_disponible().intValue();
                 Integer total = getSumaTotalDetalles();
-                Double saldo = Double.valueOf (creditoDisponible - total);
+                Double saldo = Double.valueOf(creditoDisponible - total);
                 String saldoFormateado = MyFormatter.formatMoney(String.valueOf(saldo.intValue()));
                 creditoClienteTextView.setText(saldoFormateado);
             }
@@ -559,7 +608,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
     @Override
     protected void onResume() {
         //actualizar lista de detalle
-        if (Globals.getNuevoPedidoDetalle() != null){
+        if (Globals.getNuevoPedidoDetalle() != null) {
             detallesList.add(Globals.getNuevoPedidoDetalle());
             adapterDetalles.notifyDataSetChanged();
 
@@ -569,7 +618,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 
             Integer creditoDisponible = clienteSeleccionado.getCredito_disponible().intValue();
             Integer total = getSumaTotalDetalles();
-            Double saldo = Double.valueOf (creditoDisponible - total);
+            Double saldo = Double.valueOf(creditoDisponible - total);
             String saldoFormateado = MyFormatter.formatMoney(String.valueOf(saldo.intValue()));
             creditoClienteTextView.setText(saldoFormateado);
 
@@ -606,7 +655,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 
     }
 
-    private void mostrarDatosCliente (Cliente cliente){
+    private void mostrarDatosCliente(Cliente cliente) {
         clienteTextView.setText(cliente.toString());
         //mostrar categoria cliente
         PrecioCategoria precioCategoria = db.selectPrecioCategoriaById(cliente.getCategoria_precio());
@@ -618,27 +667,26 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
     }
 
 
-
-    private Integer getSumaTotalDetalles (){
+    private Integer getSumaTotalDetalles() {
         Integer total = 0;
-        for (PedidoDetalle detalle : detallesList){
-            if (detalle.getTotal() != null){
+        for (PedidoDetalle detalle : detallesList) {
+            if (detalle.getTotal() != null) {
                 total = total + detalle.getTotal();
             }
         }
         return total;
     }
 
-    private void actualizarSumaTotalDetalles (){
+    private void actualizarSumaTotalDetalles() {
         String sumaTotal = getSumaTotalDetalles().toString();
-        totalGeneral.setText("Gs. "+formatearMoneda(sumaTotal));
+        totalGeneral.setText("Gs. " + formatearMoneda(sumaTotal));
     }
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String line = "";
         String result = "";
-        while((line = bufferedReader.readLine()) != null)
+        while ((line = bufferedReader.readLine()) != null)
             result += line;
 
         inputStream.close();
@@ -646,20 +694,20 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 
     }
 
-    public String formatearMoneda (String valor){
+    public String formatearMoneda(String valor) {
         String formatted = "";
         String valorLimpio = limpiarMoneda(valor);
-        if (!valorLimpio.isEmpty()){
-            int  i = Integer.valueOf(valorLimpio);
+        if (!valorLimpio.isEmpty()) {
+            int i = Integer.valueOf(valorLimpio);
             formatted = formateador.format(i).toString();
         }
         return formatted;
     }
 
-    public String limpiarMoneda (String valor){
-        String valorLimpio = valor.replaceAll("[.]","");
-        valorLimpio = valorLimpio.replaceAll("[,]","");
-        return  valorLimpio;
+    public String limpiarMoneda(String valor) {
+        String valorLimpio = valor.replaceAll("[.]", "");
+        valorLimpio = valorLimpio.replaceAll("[,]", "");
+        return valorLimpio;
     }
 
     //On click de la Fecha
@@ -712,13 +760,13 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             TextView titleTextView = (TextView) v.findViewById(R.id.txt1_item_pedido_detalle);
 
             Producto p = db.selectProductById(item.getProduct_id());
-            titleTextView.setText(p.getName() + " - "+p.getCodinterno());
+            titleTextView.setText(p.getName() + " - " + p.getCodinterno());
 
             TextView precioUnitarioTextView = (TextView) v.findViewById(R.id.precio_item_pedido_detalle);
-            precioUnitarioTextView.setText("Precio: "+item.getPrice());
+            precioUnitarioTextView.setText("Precio: " + item.getPrice());
 
             TextView subTitleTextView = (TextView) v.findViewById(R.id.cantidad_item_pedido_detalle);
-            subTitleTextView.setText("Cantidad: " +item.getQuantity());
+            subTitleTextView.setText("Cantidad: " + item.getQuantity());
 
             TextView totalTextView = (TextView) v.findViewById(R.id.total_item_pedido_detalle);
             totalTextView.setText(formatearMoneda(item.getTotal().toString()));
@@ -727,34 +775,34 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         }
     }
 
-    public static void enviarPedidosPendientes (Context context){
+    public static void enviarPedidosPendientes(Context context) {
         new PedidoActivity().enviarPedidos(context);
     }
 
-    public void enviarPedidos (Context context){
+    public void enviarPedidos(Context context) {
 
         db = new AppDatabase(context);
         List<Pedido> list = db.selectPedidoByEstado("PENDIENTE");
-        Log.d(TAG, "============== Se encontraron " + list.size() +" Pedidos PENDIENTES ");
+        Log.d(TAG, "============== Se encontraron " + list.size() + " Pedidos PENDIENTES ");
 
-        if (list.size() > 0){
-            CharSequence text = "Enviando "+ list.size() + " Pedidos ";
+        if (list.size() > 0) {
+            CharSequence text = "Enviando " + list.size() + " Pedidos ";
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(context, text, duration);
-            toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
+            toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        for (Pedido pedido : list){
+        for (Pedido pedido : list) {
 
             InputStream inputStream = null;
             String result = "";
             try {
                 // 1. create HttpClient
                 HttpClient httpclient = new DefaultHttpClient();
-                String url = Comm.URL+CommReq.CommReqEnviarPedido;
+                String url = Comm.URL + CommReq.CommReqEnviarPedido;
                 // 2. make POST request to the given URL
                 HttpPost httpPost = new HttpPost(url);
                 String json = "";
@@ -777,7 +825,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
                 JSONArray detallesJsonArray = new JSONArray();
                 List<PedidoDetalle> detalles = db.selectPedidoDetalleByPedido(pedido.getId());
 
-                for (PedidoDetalle detalle: detalles){
+                for (PedidoDetalle detalle : detalles) {
                     JSONObject detalleJson = new JSONObject();
                     detalleJson.put("isactive", detalle.getIsactive());
                     detalleJson.put("product_id", detalle.getProduct_id());
@@ -810,19 +858,19 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 
                 int code = httpResponse.getStatusLine().getStatusCode();
                 //si llega 401 es error de login
-                Log.d(TAG, "responde code envio pedido pendiente: "+code);
+                Log.d(TAG, "responde code envio pedido pendiente: " + code);
 
                 // 9. receive response as inputStream
                 inputStream = httpResponse.getEntity().getContent();
 
                 // 10. convert inputstream to string
-                if(inputStream != null) {
+                if (inputStream != null) {
                     result = convertInputStreamToString(inputStream);
                 } else {
                     result = "Did not work!";
                 }
-                if (code == 200){
-                    if (result.contains("Portal Movil Tigo")){
+                if (code == 200) {
+                    if (result.contains("Portal Movil Tigo")) {
                         Log.e(TAG, "Error al enviar peido. Sin saldo tigo");
                         return;
                     }
@@ -834,7 +882,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
                 }
 
 
-                Log.d(TAG, "resultado  post: "+ result);
+                Log.d(TAG, "resultado  post: " + result);
             } catch (Exception e) {
                 AppUtils.handleError("Error al enviar pedido.", PedidoActivity.this);
                 Log.e(TAG, e.getStackTrace().toString() + e.getMessage());

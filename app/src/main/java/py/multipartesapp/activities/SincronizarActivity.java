@@ -175,7 +175,7 @@ public class SincronizarActivity extends ActionBarActivity {
         sincronizarClientes();
 
         /* ============================== || 2 ||========================================= */
-        //sincronizarUsuarios();
+        sincronizarUsuarios();
 
         /* ============================== || 3 ||========================================= */
         sincronizarFacturas();
@@ -343,7 +343,7 @@ public class SincronizarActivity extends ActionBarActivity {
                 }
             }
         };
-        new Comm().requestGet(CommReq.CommReqGetAllUsers, new String[][]{
+        new Comm().requestGet(CommReq.CommReqGetAllUsersTeckel, new String[][]{
         }, delegateUsuarios);
     }
 
@@ -452,17 +452,25 @@ public class SincronizarActivity extends ActionBarActivity {
 
                             //Si ya existe actualizar
                             if (db.countProduct() > 0) {
+                                Log.d(TAG,"Actualizar: Cant. Stock Producto: "+ db.countStockProducto());
                                 db.insertOrUpdateProductoList(productoList.getList());
+
+
                             } else {
                                 Log.d(TAG, "Se eliminará la tabla Productos...");
                                 db.deleteProducto();
 
-                                Log.d(TAG, "Se eliminará la tabla Stock Productos...");
+                                Log.d(TAG, "Se eliminará los datos de la  tabla Stock Productos...");
                                 db.deleteStockProducto();
 
-                                Log.d(TAG, "Eliminacion exitosa");
+                                Log.d(TAG,"Insertar: Cant. Stock Producto: "+db.countStockProducto());
+
                                 db.insertProductoLista(productoList.getList(), getApplicationContext());
                                 productoList.getList().clear();
+
+                                //imprimimos la cantidad de stock del producto
+                                Log.d(TAG,"Insertar: Cant. Stock Producto Nuevo: "+ db.countStockProducto());
+
                             }
 
                             Log.d(TAG, "Productos. Registros insertados exitosamente");

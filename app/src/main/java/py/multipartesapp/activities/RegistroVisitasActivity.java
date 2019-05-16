@@ -457,7 +457,7 @@ public class RegistroVisitasActivity extends ActionBarActivity implements View.O
         try {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            String url = Comm.URL + "/api/visit/visit/save";
+            String url = Comm.URL + "multip/api/visit/visit/save";
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
 

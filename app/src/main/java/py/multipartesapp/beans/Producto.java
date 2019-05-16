@@ -1,9 +1,12 @@
 package py.multipartesapp.beans;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +27,14 @@ public class Producto extends Bean {
 
     @Override
     public void initWithJson(JSONObject o) throws JSONException {
+        JSONArray jsonArray = o.getJSONArray("listaStock");
+        ArrayList<StockDTO> array = new ArrayList<StockDTO>();
+        Log.d("Tamaño List --------> ", jsonArray.length() + "");
+        for( int i = 0; i < jsonArray.length(); i++){ //jsonArray.length()
+            StockDTO stockObject = (StockDTO) new StockDTO().fromJSON(jsonArray.getJSONObject(i));
+            array.add(stockObject);
+        }
+        setListaStock(array);
 
         m_product_id = getInteger(o, "m_product_id");
         name = getString(o, "name");
@@ -32,6 +43,14 @@ public class Producto extends Bean {
         codinterno = getString(o, "codinterno");
         idFamilia = getInteger(o, "m_product_family_id");
         idSubFamilia = getInteger(o, "m_product_subfamily_id");
+        //////////////////////
+
+//
+//        for( int i = 0; i < jsonArray.length(); i++){
+//            StockDTO object = (StockDTO) new StockDTO().fromJSON(jsonArray.getJSONObject(i));
+//            array.add(object);
+//        }
+//        setListaStock(array);
     }
 
     @Override

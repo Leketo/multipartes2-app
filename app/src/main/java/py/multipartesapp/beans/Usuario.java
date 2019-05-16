@@ -20,13 +20,15 @@ public class Usuario extends Bean {
     @Override
     public void initWithJson(JSONObject o) throws JSONException {
         id = getInteger(o, "id");
-        mail = getString(o, "mail");
-        name = getString(o, "name");
-        lastname = getString(o, "lastname");
-        password = getString(o, "password");
-        state = getString(o, "state");
-        role = getString(o, "role");
-        userCellphone = getString(o, "userCellphone");
+        mail = getString(o, "login");
+        name = getString(o, "firstName");
+        lastname = getString(o, "lastName");
+        //password = getString(o, "password");
+        password="";
+        state = getString(o, "activated");
+        role = getString(o, "tipo_usuario");
+        userCellphone="";
+        //userCellphone = getString(o, "userCellphone");
 
     }
 

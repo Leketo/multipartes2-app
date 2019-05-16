@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import py.multipartesapp.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import py.multipartesapp.beans.Login;
+import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommReq;
 
 /**
  * Created by Adolfo on 11/06/2015.
@@ -61,14 +64,14 @@ public class AppUtils {
             }
             a.show();
             return a;
-        }catch (Exception e){
-            Log.e(TAG,"Tu código apunta a la nada :'(");
+        } catch (Exception e) {
+            Log.e(TAG, "Tu código apunta a la nada :'(");
         }
         return null;
     }
 
     public static AlertDialog showWithIcon(String title, int idIcon, String msg, String[] buttons,
-                                   Context ctx, boolean cancelable, DialogInterface.OnClickListener onClickListener) {
+                                           Context ctx, boolean cancelable, DialogInterface.OnClickListener onClickListener) {
         try {
             AlertDialog.Builder b = new AlertDialog.Builder(ctx);
             AlertDialog a = b.create();
@@ -91,41 +94,46 @@ public class AppUtils {
             }
             a.show();
             return a;
-        }catch (Exception e){
-            Log.e(TAG,"Tu código apunta a la nada :'(");
+        } catch (Exception e) {
+            Log.e(TAG, "Error al mostrar el mensaje de alerta");
+            e.printStackTrace();
+
         }
         return null;
     }
 
 
     public static boolean isOnline(Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        Boolean conectadoRed = netInfo != null && netInfo.isConnectedOrConnecting();
-        servidorEnLinea = false;
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
 
-        return conectadoRed;
-        /*
-        if (conectadoRed){
-            CommDelegateAndroid delegate = new CommDelegateAndroid() {
-                @Override
-                public void onError() {
-                    //handleError(this.exception);
-                    Log.d(TAG, "Sin conexión al servidor");
-                }
-                @Override
-                public void onSuccess() {
-
-                    servidorEnLinea = true;
-                }
-            };
-            new Comm().requestGet(CommReq.CommReqStatusTestValidConn, new String[][]{
-            }, delegate);
-
-            Log.d(TAG,"Servidor en linea -> "+ servidorEnLinea);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
         }
-        return  false ; */
+
+        boolean isConnected = false;
+
+        if(haveConnectedMobile || haveConnectedWifi){
+            try {
+                Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
+                int returnVal = p1.waitFor();
+                boolean reachable = (returnVal == 0);
+                return reachable;
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+
+        return false;
     }
 
     public static Login openLoginFile(Context ctx) {
@@ -156,29 +164,28 @@ public class AppUtils {
                     fi.close();
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
-                };
+                }
+                ;
             }
         }
         return null;
     }
 
-    public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
-    {
+    public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality) {
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
         image.compress(compressFormat, quality, byteArrayOS);
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
     }
 
-    public static Bitmap decodeBase64(String input)
-    {
+    public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-    public static List<String> getListaNombresByIdProducto (String[] files, String idProducto){
+    public static List<String> getListaNombresByIdProducto(String[] files, String idProducto) {
         List<String> result = new ArrayList<String>();
-        for (String name : files){
-            if (name.contains(idProducto)){
+        for (String name : files) {
+            if (name.contains(idProducto)) {
                 result.add(name);
             }
         }

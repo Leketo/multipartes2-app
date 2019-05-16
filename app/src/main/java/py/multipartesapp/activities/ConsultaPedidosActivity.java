@@ -32,6 +32,7 @@ import java.util.Locale;
 import py.multipartesapp.R;
 import py.multipartesapp.beans.Session;
 import py.multipartesapp.comm.Comm;
+import py.multipartesapp.comm.CommReq;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.AppUtils;
 import py.multipartesapp.utils.DownloaderPdf;
@@ -134,7 +135,7 @@ public class ConsultaPedidosActivity extends ActionBarActivity implements View.O
                     e.printStackTrace();
                 }
 
-                String url = Comm.URL + "api/report/pedidos/detalle?from="+desde+"&to="+hasta+"&clientId=0&userId="+session.getUserId()+"&format=pdf";
+                String url = Comm.URL + CommReq.CommReqConsultaPedidos+ "/detalle?from="+desde+"&to="+hasta+"&clientId=0&userId="+session.getUserId()+"&format=pdf";
                 Log.d(TAG, url);
 
                 DownloaderPdf.DownloadFile(url, file);

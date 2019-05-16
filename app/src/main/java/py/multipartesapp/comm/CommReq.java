@@ -4,6 +4,8 @@ public class CommReq {
 
 	private static final String App = "multip/api/";
 
+    private static final String Teckel = "erp/api/";
+
 	public static final String CommReqLogin
             = "j_spring_security_check";
 
@@ -21,6 +23,9 @@ public class CommReq {
 
     public static final String CommReqGetAllUsers
             = App + "user/admin/users";
+
+    public static final String CommReqGetAllUsersTeckel
+            = Teckel + "users";
 
     public static final String CommReqSendDelivery
             = App + "delivery/save";
@@ -78,7 +83,11 @@ public class CommReq {
 
     public static final String CommReqGetStockProducto=App+"product/stock-producto/";
 
+    //Reportes
+
     public static final String  CommReqConsultaEstadoCuenta="api/report/extracto";
+
+    public static final String CommReqConsultaPedidos="api/report/pedidos";
 
 
 

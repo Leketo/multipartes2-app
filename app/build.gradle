@@ -8,10 +8,10 @@ repositories {
 
 ext.versionMajor = 3
 ext.versionMinor = 5
-ext.versionPatch = 25
+ext.versionPatch = 29
 ext.versionClassifier = null
 ext.isSnapshot = false
-ext.minimumSdkVersion = 22
+ext.minimumSdkVersion = 19
 
 buildscript {
     repositories {
@@ -45,8 +45,8 @@ android {
     buildToolsVersion '28.0.3'
     compileOptions {
         encoding "UTF-8"
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
 
 
     }
@@ -75,6 +75,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
             debuggable true
+            resValue("string", "PORT_NUMBER", "8555")
         }
     }
     productFlavors {
@@ -92,6 +93,9 @@ android {
     }
 
     useLibrary 'org.apache.http.legacy'
+
+
+
 }
 
 
@@ -121,14 +125,24 @@ dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'com.google.android.gms:play-services:4.2.42'
     compile 'com.google.maps.android:android-maps-utils:0.4+'
-    compile 'com.github.barteksc:android-pdf-viewer:2.3.0'
+    //    compile 'com.github.barteksc:android-pdf-viewer:2.3.0'
+    compile 'com.github.barteksc:android-pdf-viewer:2.8.2'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true;
     }
-//    compile 'com.jaspersoft.android.sdk:js-android-sdk-client:1.9'
-//    compile 'com.jaspersoft.android.sdk:js-android-sdk-ui:1.9'
-//    caarLinkSources "com.jaspersoft.android.sdk:js-android-sdk-client:1.9:sources@jar"
+    compile 'org.apache.sshd:sshd-core:0.6.0'
+    compile 'org.slf4j:slf4j-simple:1.6.2'
+    compile 'org.bouncycastle:bcprov-jdk16:1.46'
+    compile('io.socket:socket.io-client:0.8.3') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
 
+    implementation 'com.github.ybq:Android-SpinKit:1.2.0'
 }
+
+// debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
+

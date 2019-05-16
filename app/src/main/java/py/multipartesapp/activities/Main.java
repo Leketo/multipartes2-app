@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,8 +25,22 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
+import org.apache.sshd.SshServer;
+import org.apache.sshd.common.NamedFactory;
+import org.apache.sshd.server.Command;
+import org.apache.sshd.server.PasswordAuthenticator;
+import org.apache.sshd.server.command.ScpCommandFactory;
+import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.apache.sshd.server.session.ServerSession;
+import org.apache.sshd.server.sftp.SftpSubsystem;
+import org.apache.sshd.server.shell.ProcessShellFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
 import py.multipartesapp.R;
 import py.multipartesapp.beans.Configuracion;
 import py.multipartesapp.beans.LocationTable;
@@ -37,6 +52,7 @@ import py.multipartesapp.comm.CommReq;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.locationServices.LocationService;
 import py.multipartesapp.utils.Globals;
+import py.multipartesapp.utils.control.ControlService;
 
 
 public class Main extends ActionBarActivity {
@@ -69,6 +85,9 @@ public class Main extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Fabric.with(this, new Crashlytics());
+
         setContentView(R.layout.activity_main);
 
         /* Configuracion ActionBar*/
@@ -95,7 +114,7 @@ public class Main extends ActionBarActivity {
 //        crearRutaBtn = (Button) findViewById(R.id.main_btn_crear_ruta);
         consultasBtn = (Button) findViewById(R.id.main_btn_consultas);
 
-        testBtn =(Button) findViewById(R.id.main_btn_test);
+//        testBtn =(Button) findViewById(R.id.main_btn_test);
 
         versionName=(TextView) findViewById(R.id.versionName);
 
@@ -154,15 +173,15 @@ public class Main extends ActionBarActivity {
                 startActivity(intent);
             }
         });
-
-        testBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-//                Intent intent = new Intent(Main.this, RutaLocationNewActivity.class);
-//                startActivity(intent);
-            }
-        });
+//
+//        testBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+////                Intent intent = new Intent(Main.this, RutaLocationNewActivity.class);
+////                startActivity(intent);
+//            }
+//        });
 
         consultasBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,13 +216,17 @@ public class Main extends ActionBarActivity {
             e.printStackTrace();
         }
 
-
-        String [] permisos= {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        String [] permisos= {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
         solicitarPermisos(permisos);
 
+        startCheckLocationService();
 
-       startCheckLocationService();
+        startService(new Intent(this, ControlService.class));
     }
+
+
+
+
 
     private void logUser(Usuario usuario) {
 
@@ -277,10 +300,10 @@ public class Main extends ActionBarActivity {
             }
         }
         Log.d(TAG, "=====================State checkLocation running: " + servicioCorriendo);
-//        if (!servicioCorriendo) {
-//            Intent mServiceIntent = new Intent(this, LocationService.class);
-//            startService(mServiceIntent);
-//        }
+        if (!servicioCorriendo) {
+            Intent mServiceIntent = new Intent(this, LocationService.class);
+            startService(mServiceIntent);
+        }
     }
 
     @Override

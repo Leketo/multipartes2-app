@@ -267,7 +267,7 @@ public class AppDatabase {
     public List<StockDTO> selectStockPorProducto(String id_producto){
 
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
-        String sql = " SELECT * FROM " +AppContract.Tables.STOCK_PRODUCTO + " WHERE "+ AppContract.StockProducto.m_product_id + " = "+id_producto;
+        String sql = " SELECT * FROM " +AppContract.Tables.STOCK_PRODUCTO + " WHERE "+ AppContract.StockProducto.m_product_id + " = "+id_producto+"";
         String[] whereArgs = { };
         Cursor c = db.rawQuery(sql, whereArgs);
         return mappingStockDTO(c);
@@ -323,7 +323,7 @@ public class AppDatabase {
     public List<Pedido> selectPedidoByUser(Integer userId, String order){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM "+AppContract.Tables.PEDIDO + " WHERE " + AppContract.Pedido.user_id + "= " + userId
-                +" ORDER BY "+AppContract.Pedido.date_order + " "+ order , null);
+                +" ORDER BY "+AppContract.Pedido.date_order + " "+ order + ", " + AppContract.Pedido.id + " " + order , null);
         return mappingListPedido(c);
     }
 
@@ -558,26 +558,27 @@ public class AppDatabase {
 
     public List<StockDTO> mappingStockDTO(Cursor cursor){
         List<StockDTO> listStock= new ArrayList<>();
+        StockDTO stockDTO;
+        if(cursor.moveToFirst()) {
+            do {
+//                if (cursor.moveToFirst()) {
+                    stockDTO = new StockDTO();
 
-        do{
-            if(cursor.moveToFirst()){
-                StockDTO stockDTO= new StockDTO();
+                    Producto producto = new Producto();
+                    producto.setM_product_id(cursor.getInt(cursor.getColumnIndex(AppContract.StockProducto.m_product_id)));
+                    stockDTO.setProducto(producto);
 
-                Producto producto = new Producto();
-                producto.setM_product_id(cursor.getInt(cursor.getColumnIndex(AppContract.StockProducto.m_product_id)));
-                stockDTO.setProducto(producto);
+                    stockDTO.setStock_disponible(cursor.getInt(cursor.getColumnIndex(AppContract.StockProducto.stock_disponible)));
 
-                stockDTO.setStock_disponible(cursor.getInt(cursor.getColumnIndex(AppContract.StockProducto.stock_disponible)));
+                    LocatorDTO locatorDTO = new LocatorDTO();
+                    locatorDTO.setM_locator_id(cursor.getString(cursor.getColumnIndex(AppContract.StockProducto.m_locator_id)));
+                    locatorDTO.setM_locator_value(cursor.getString(cursor.getColumnIndex(AppContract.StockProducto.desc_m_locator)));
+                    stockDTO.setLocator(locatorDTO);
 
-                LocatorDTO locatorDTO=new LocatorDTO();
-                locatorDTO.setM_locator_id(cursor.getString(cursor.getColumnIndex(AppContract.StockProducto.m_locator_id)));
-                locatorDTO.setM_locator_value(cursor.getString(cursor.getColumnIndex(AppContract.StockProducto.desc_m_locator)));
-                stockDTO.setLocator(locatorDTO);
-
-                listStock.add(stockDTO);
-            }
-        }while(cursor.moveToNext());
-
+                    listStock.add(stockDTO);
+//                }
+            } while (cursor.moveToNext());
+        }
         cursor.close();
 
         return listStock;
@@ -1109,15 +1110,24 @@ public class AppDatabase {
     }
 
     public void insertOrUpdateProductoList (List<Producto> productoList) {
+        Log.d(TAG,"Cant Productos: "+productoList.size());
         for (Producto p: productoList){
             Producto tmp = selectProductById(p.getM_product_id());
             //insertar
             if (tmp.getM_product_id() == null){
                 insertProducto(p);
-            //actualizar
+
             } else {
                 updateProducto(p);
             }
+
+            Log.d(TAG,"Producto"+p.getName()+ " "+p.getM_product_id());
+            Log.d(TAG,"Eliminamos el Stock del Producto");
+            deleteStockProductoByID(p.getM_product_id());
+
+            //insertamos el nuevo stock
+            Log.d(TAG,"Insertar Stock Producto");
+            insertarStockProducto(p);
         }
     }
 
@@ -1490,23 +1500,29 @@ public class AppDatabase {
 
         db.insert(AppContract.Tables.PRODUCTO, null, values);
         //Log.d("Valor Insertado", precioVersion.toString());
-        insertarStockProducto(producto);
+
 
     }
 
     public void insertarStockProducto(Producto producto){
+        Log.d(TAG,"insertar stock de producto"+producto.getM_product_id()+" "+producto.getName());
         SQLiteDatabase db =mDatabaseOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        for (StockDTO stockDTO :producto.getListaStock()){
-            values.put(AppContract.StockProducto.m_product_id,stockDTO.getProducto().getM_product_id());
-            values.put(AppContract.StockProducto.desc_m_product_id,stockDTO.getProducto().getName());
-            values.put(AppContract.StockProducto.m_locator_id,stockDTO.getLocator().getM_locator_id());
-            values.put(AppContract.StockProducto.desc_m_locator,stockDTO.getLocator().getM_locator_value());
-            values.put(AppContract.StockProducto.stock_disponible,stockDTO.getStock_disponible());
-            db.insert(AppContract.Tables.STOCK_PRODUCTO,null,values);
-        }
+        //Log.d(TAG,producto.getM_product_id()+" - Cant. Stock Producto: ");
 
+        Log.d(TAG,producto.getM_product_id()+" - Cant. Stock Producto: "+producto.getListaStock().size());
+
+        if(producto.getListaStock()!=null){
+            for (StockDTO stockDTO :producto.getListaStock()){
+                values.put(AppContract.StockProducto.m_product_id,stockDTO.getProducto().getM_product_id());
+                values.put(AppContract.StockProducto.desc_m_product_id,stockDTO.getProducto().getName());
+                values.put(AppContract.StockProducto.m_locator_id,stockDTO.getLocator().getM_locator_id());
+                values.put(AppContract.StockProducto.desc_m_locator,stockDTO.getLocator().getM_locator_value());
+                values.put(AppContract.StockProducto.stock_disponible,stockDTO.getStock_disponible());
+                db.insert(AppContract.Tables.STOCK_PRODUCTO,null,values);
+            }
+        }
 
     }
 
@@ -1642,8 +1658,9 @@ public class AppDatabase {
                 + AppContract.Producto.name+ ","
                 + AppContract.Producto.price+ ","
                 + AppContract.Producto.id_familia+ ","
-                + AppContract.Producto.id_subfamilia + ","
-                + AppContract.Producto.stock  + ") VALUES (?, ?, ?, ?, ?, ?, ?);");
+                + AppContract.Producto.id_subfamilia //+ ","
+//                + AppContract.Producto.stock
+                + ") VALUES (?, ?, ?, ?, ?, ?);");
 
         db.beginTransaction();
         try {
@@ -1656,7 +1673,7 @@ public class AppDatabase {
                 insStmt.bindLong(4, p.getPrice());
                 insStmt.bindLong(5, p.getIdFamilia());
                 insStmt.bindLong(6, p.getIdSubFamilia());
-                insStmt.bindLong(7, p.getStock());
+//                insStmt.bindLong(7, p.getStock());
 
                 insertarStockProducto(p);
 
@@ -1667,6 +1684,8 @@ public class AppDatabase {
             db.endTransaction();
             //AppDatabase.getInstance().closeDatabase();
         }
+
+        //db.close();
     }
 
     //Insert ENTREGA LISTA
@@ -2099,6 +2118,9 @@ public class AppDatabase {
             //throw new RuntimeException("");
             Log.e(TAG, "Error al actualizar PRODUCTO. Se actualizo mas de 1 fila: "+cant_row);
         }
+
+        //db.close();
+
     }
 
     // Update
@@ -2377,7 +2399,7 @@ public class AppDatabase {
         SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
         int result = db.delete(AppContract.Tables.LOCATION, "LATITUDE='"+locationTable.getLatitude()+"' AND LONGITUDE='"+locationTable.getLongitude()+"'"
                 ,null);
-       // db.close();
+       //db.close();
     }
 
     public void deleteProducto(){
@@ -2395,7 +2417,7 @@ public class AppDatabase {
     public void deletePedidoSinEstado(){
         SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
         db.delete(AppContract.Tables.PEDIDO, null, null);
-        //db.close();
+       // db.close();
     }
 
     public void deletePedidoDetalle(){
@@ -2408,7 +2430,7 @@ public class AppDatabase {
         SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
         int count = db.delete(AppContract.Tables.PEDIDO_DETALLE, AppContract.PedidoDetalle.order_id+"="+idPedido, null);
         Log.d(TAG, "total de detalles eliminados: "+count);
-        //db.close();
+       // db.close();
     }
 
     public void deleteCobranza(){
@@ -2426,6 +2448,11 @@ public class AppDatabase {
     public void deleteStockProducto(){
         SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
         db.delete(AppContract.Tables.STOCK_PRODUCTO, null, null);
+    }
+
+    public void deleteStockProductoByID(Integer m_product_id){
+        SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
+        db.delete(AppContract.Tables.STOCK_PRODUCTO, AppContract.StockProducto.m_product_id+"='"+m_product_id+"'", null);
     }
 
     //Cuenta las filas de una tabla
@@ -2486,6 +2513,20 @@ public class AppDatabase {
     public int countPedido(){
         SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery("select count(*) from " + AppContract.Tables.PEDIDO, null);
+        return count(cursor);
+    }
+
+    //Count Stock de Producto
+    public int countStockProducto(){
+        SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select count(*) from " + AppContract.Tables.STOCK_PRODUCTO, null);
+        return count(cursor);
+    }
+
+    //Count Stock de Producto Por ID
+    public int countStockProductoByID(int m_product_id){
+        SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select count(*) from " + AppContract.Tables.STOCK_PRODUCTO+" where M_PRODUCT_ID="+m_product_id, null);
         return count(cursor);
     }
 
@@ -2746,16 +2787,20 @@ public class AppDatabase {
             Log.d("Creo tabla","PRODUCTO_SUB_FAMILIA");
 
 
-            db.execSQL("CREATE VIRTUAL TABLE " +AppContract.Tables.STOCK_PRODUCTO+" USING fts3("
+            db.execSQL("CREATE TABLE " +AppContract.Tables.STOCK_PRODUCTO+" ("
+                    +" id INTEGER PRIMARY KEY AUTOINCREMENT ,"+""
                     +AppContract.StockProducto.m_product_id+","
                     +AppContract.StockProducto.desc_m_product_id+","
                     +AppContract.StockProducto.ad_org_id+","
                     +AppContract.StockProducto.desc_ad_org+","
                     +AppContract.StockProducto.m_locator_id+","
                     +AppContract.StockProducto.desc_m_locator+","
-                    +AppContract.StockProducto.stock_disponible);
+                    +AppContract.StockProducto.stock_disponible+");");
 
             Log.d("Crear tabla", "STOCK_PRODUCTO");
+
+            db.execSQL("CREATE UNIQUE INDEX idx_stock_producto ON " +AppContract.Tables.STOCK_PRODUCTO+" (id);");
+
 
             db.execSQL("CREATE VIRTUAL TABLE " + AppContract.Tables.COBRANZA_FORMA_PAGO+ " USING fts3 ("
                     + AppContract.CobranzaFormaPago.idCobranza + ", "

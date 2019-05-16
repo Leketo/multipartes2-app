@@ -41,24 +41,25 @@
             android:text="Stock Producto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"/>
 
-        <!--<Button-->
-            <!--style="@style/button"-->
-            <!--android:id="@+id/consultas_visitas"-->
-            <!--android:text="Mis Visitas"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginBottom="8dp"/>-->
+        <Button
+            style="@style/button"
+            android:id="@+id/consultas_visitas"
+            android:text="Mis Visitas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
 
-        <!--<Button-->
-            <!--style="@style/button"-->
-            <!--android:id="@+id/consultas_entregas"-->
-            <!--android:text="Mis Entregas"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:layout_marginBottom="8dp"/>-->
+        <Button
+            style="@style/button"
+            android:id="@+id/consultas_entregas"
+            android:text="Mis Entregas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
 
         <Button
             style="@style/button"
@@ -69,14 +70,14 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"/>
 
-        <!--<Button-->
-            <!--style="@style/button"-->
-            <!--android:id="@+id/consultas_cobranzas"-->
-            <!--android:text="Mis Cobros"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:layout_marginBottom="8dp"/>-->
+        <Button
+            style="@style/button"
+            android:id="@+id/consultas_cobranzas"
+            android:text="Mis Cobros"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
 
 
 

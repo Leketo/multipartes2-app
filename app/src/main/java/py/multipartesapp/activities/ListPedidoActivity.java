@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.ParseException;
 import java.util.List;
 
 import py.multipartesapp.R;
@@ -25,6 +26,7 @@ import py.multipartesapp.beans.Cliente;
 import py.multipartesapp.beans.Pedido;
 import py.multipartesapp.beans.Session;
 import py.multipartesapp.db.AppDatabase;
+import py.multipartesapp.utils.DateUtils;
 import py.multipartesapp.utils.Globals;
 
 /**
@@ -102,10 +104,10 @@ public class ListPedidoActivity extends ActionBarActivity {
                 Pedido pedido = (Pedido) listPedido.get(position);
                 Globals.setPedidoSeleccionado(pedido);
 
-                if (pedido.getIsactive().equals("Y")){
-                    Globals.setAccion_pedido("EDITAR");
-                }else{
+                if (pedido.getEstado_envio().equalsIgnoreCase("ENVIADO")){
                     Globals.setAccion_pedido("VER");
+                }else{
+                    Globals.setAccion_pedido("EDITAR");
                 }
 
 
@@ -201,7 +203,12 @@ public class ListPedidoActivity extends ActionBarActivity {
                 cobrado = "SI";
             else
                 cobrado = "NO";
-            subTitleTextView.setText("Fecha: "+ item.getDate_order() + " - Cobrado: "+cobrado);
+
+            try {
+                subTitleTextView.setText("Fecha: "+ DateUtils.convertDateFromServer(item.getDate_order()) );
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
             ImageView iconItem = (ImageView) v.getTag(R.id.icon_item_registro_visita);
             if (item.getEstado_envio() == null) {

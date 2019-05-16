@@ -63,7 +63,11 @@ public class Comm extends Application{
 
 	// test
 	//public  static String URL = "http://test.multipartes.com.py/multip/";
-	public  static String URL = "http://teckel.multipartes.com.py/";
+	public  static String URL = "";
+
+	//public  static String ControlURL = "http://tckl.multipartes.com.py:42474";
+	public  static String ControlURL = "http://192.168.0.11:42474";
+
 
 	//public  static String URL_TEST = "http://test.multipartes.com.py/";
 
