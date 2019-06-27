@@ -8,7 +8,7 @@ repositories {
 
 ext.versionMajor = 3
 ext.versionMinor = 5
-ext.versionPatch = 29
+ext.versionPatch = 33
 ext.versionClassifier = null
 ext.isSnapshot = false
 ext.minimumSdkVersion = 19
@@ -141,6 +141,7 @@ dependencies {
     }
 
     implementation 'com.github.ybq:Android-SpinKit:1.2.0'
+    //compile 'com.hypertrack:hyperlog:0.0.10'
 }
 
 // debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'

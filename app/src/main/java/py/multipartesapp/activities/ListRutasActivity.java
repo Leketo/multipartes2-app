@@ -87,11 +87,11 @@ public class ListRutasActivity extends ActionBarActivity {
         filtroSpinner = (Spinner) findViewById(R.id.list_rutas_spinner_filtro);
 
         List<String> listFiltros = new ArrayList<>();
-        listFiltros.add("TODOS");
-        listFiltros.add("PENDIENTES");
-        listFiltros.add("ENTREGAS");
-        listFiltros.add("PEDIDOS");
-        listFiltros.add("COBROS");
+//        listFiltros.add("TODOS");
+//        listFiltros.add("PENDIENTES");
+//        listFiltros.add("ENTREGAS");
+//        listFiltros.add("PEDIDOS");
+//        listFiltros.add("COBROS");
         listFiltros.add("VISITAS");
 
         ArrayAdapter<String> filtroAdapter = new ArrayAdapter<String>
@@ -246,12 +246,13 @@ public class ListRutasActivity extends ActionBarActivity {
 
             SimpleDateFormat inputFecha = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
             SimpleDateFormat outputFecha = new SimpleDateFormat("dd-MM-yyyy");
-            String fecha = null;
-            try {
-                fecha = outputFecha.format(inputFecha.parse(item.getDate()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+//            String fecha = null;
+//            try {
+//                fecha = outputFecha.format(inputFecha.parse(item.getDate()));
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            String dateString = new SimpleDateFormat("dd-MM-yyyy").format(new Date(item.getDate()));
 
             //Configuramos los botones de entrada y salida
             Button entradaBtn = (Button) v.getTag(R.id.item_ruta_entrada_btn);
@@ -380,7 +381,8 @@ public class ListRutasActivity extends ActionBarActivity {
                         }
                     });
                 } else if (item.getType().equals("VISITA")) {
-                    actionBtn.setText("Reg Visita");
+                    actionBtn.setText("Completar");
+                    actionBtn.setVisibility(View.GONE);
                     actionBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -393,8 +395,12 @@ public class ListRutasActivity extends ActionBarActivity {
                             Cliente c = db.selectClienteById(ruta.getClient_id());
                             Globals.setClienteSeleccionadoRuta(c);
 
-                            Intent intent = new Intent(ListRutasActivity.this, RegistroVisitasActivity.class);
-                            startActivity(intent);
+                            ruta.setStatus("V");
+                            db.updateRutaLocation(ruta);
+                            Toast.makeText(getApplicationContext(), "Completado con exito", Toast.LENGTH_LONG).show();
+
+//                            Intent intent = new Intent(ListRutasActivity.this, RegistroVisitasActivity.class);
+//                            startActivity(intent);
                         }
                     });
                 }
@@ -430,6 +436,7 @@ public class ListRutasActivity extends ActionBarActivity {
     public void marcarSalida (int position){
         RutaLocation rutaLocation = listRutas.get(position);
         rutaLocation.setSalida("Y");
+        rutaLocation.setStatus("V");
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
         rutaLocation.setFechaHoraSalida(dateFormatter.format(new Date()));
@@ -471,20 +478,27 @@ public class ListRutasActivity extends ActionBarActivity {
         try {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            String url = Comm.URL + "api/routes/update";
+            String url = Comm.URL + "multip/api/routes/update";
             url += "?routeid="+ruta.getId();
             url += "&tipo="+tipo;
+
+            url += "&observation=" + ruta.getObservation();
+
             if (tipo.equals("ENTRADA"))
                 url += "&fechahora="+ruta.getFechaHoraEntrada();
             else if (tipo.equals("SALIDA"))
                 url += "&fechahora="+ruta.getFechaHoraSalida();
-            else if (tipo.equals("OBSERVACION"))
-                url += "&fechahora="+ruta.getFechaHoraEntrada();
+            else if (tipo.equals("OBSERVACION")) {
+                url += "&fechahora="+ruta.getFechaHoraSalida();
+                url += "&observation=" + ruta.getObservation();
+            }
 
-            url += "&observation="+ruta.getObservation();
+
+
             url = url.replace(" ", "%20");
 
 
+            Log.d(TAG,"url: "+url);
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
             String json = "";
@@ -537,7 +551,11 @@ public class ListRutasActivity extends ActionBarActivity {
                 //guardarCobranzaBtn.setEnabled(true);
                 //guardar con estado ENVIADO
                 //c.setEstado_envio("ENVIADO");
-                db.updateRutaLocation(ruta);
+//                if(tipo.equalsIgnoreCase("SALIDA")){
+//                    ruta.setStatus("V");
+//                }
+
+                //db.updateRutaLocation(ruta);
                 ((BaseAdapter) listRutasListView.getAdapter()).notifyDataSetChanged();
                 //finish();
             } else {
@@ -547,6 +565,7 @@ public class ListRutasActivity extends ActionBarActivity {
 
             Log.d(TAG, "resultado  post: "+ result);
         } catch (Exception e) {
+            e.printStackTrace();
             AppUtils.handleError("Error al enviar ruta.", ListRutasActivity.this);
             Log.e(TAG, e.getMessage());
             //guardarCobranzaBtn.setEnabled(true);

@@ -24,6 +24,7 @@ import android.widget.Toast;
 //import org.apache.http.impl.cookie.BasicClientCookie;
 
 import com.crashlytics.android.Crashlytics;
+//import com.hypertrack.hyperlog.HyperLog;
 
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.NamedFactory;
@@ -88,6 +89,9 @@ public class Main extends ActionBarActivity {
 
         Fabric.with(this, new Crashlytics());
 
+//        HyperLog.initialize(this);
+//        HyperLog.setLogLevel(Log.VERBOSE);
+
         setContentView(R.layout.activity_main);
 
         /* Configuracion ActionBar*/
@@ -106,7 +110,7 @@ public class Main extends ActionBarActivity {
         nombreUsuarioTextView = (TextView) findViewById(R.id.main_nombre_usuario);
         registroVisistasBtn = (Button) findViewById(R.id.main_btn_registroVisita);
         sincronizarBtn = (Button) findViewById(R.id.main_btn_sincronizar_datos);
-//        rutasBtn = (Button) findViewById(R.id.main_btn_rutas);
+        rutasBtn = (Button) findViewById(R.id.main_btn_rutas);
 //        entregasBtn = (Button) findViewById(R.id.main_btn_entrega);
         pedidosBtn = (Button) findViewById(R.id.main_btn_pedido);
         cobranzasBtn = (Button) findViewById(R.id.main_btn_cobranza);
@@ -134,13 +138,13 @@ public class Main extends ActionBarActivity {
             }
         });
 
-//        rutasBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(Main.this, ListRutasActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        rutasBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Main.this, ListRutasActivity.class);
+                startActivity(intent);
+            }
+        });
 
 //        entregasBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -219,7 +223,7 @@ public class Main extends ActionBarActivity {
         String [] permisos= {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
         solicitarPermisos(permisos);
 
-        startCheckLocationService();
+        //startCheckLocationService();
 
         startService(new Intent(this, ControlService.class));
     }

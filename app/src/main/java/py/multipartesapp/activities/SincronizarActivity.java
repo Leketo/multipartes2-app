@@ -175,7 +175,7 @@ public class SincronizarActivity extends ActionBarActivity {
         sincronizarClientes();
 
         /* ============================== || 2 ||========================================= */
-        sincronizarUsuarios();
+        //sincronizarUsuarios();
 
         /* ============================== || 3 ||========================================= */
         sincronizarFacturas();
@@ -198,7 +198,7 @@ public class SincronizarActivity extends ActionBarActivity {
         //sincronizarCobros();
 
         /* ============================== || 9 ||========================================= */
-        //sincronizarHojaDeRuta();
+        sincronizarHojaDeRuta();
 
         /* ============================== || 10 ||========================================= */
         sincronizarFamiliaProducto();
@@ -463,7 +463,7 @@ public class SincronizarActivity extends ActionBarActivity {
                                 Log.d(TAG, "Se eliminará los datos de la  tabla Stock Productos...");
                                 db.deleteStockProducto();
 
-                                Log.d(TAG,"Insertar: Cant. Stock Producto: "+db.countStockProducto());
+                                Log.d(TAG,"Cant. Stock Producto: "+db.countStockProducto());
 
                                 db.insertProductoLista(productoList.getList(), getApplicationContext());
                                 productoList.getList().clear();
@@ -658,7 +658,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             Log.d(TAG, "RutasLocation. Insertando registros");
 
                             Log.d(TAG, "Se eliminará la tabla RutasLocation...");
-                            db.deleteRutaLocation();
+                            //db.deleteRutaLocation();
                             Log.d(TAG, "Eliminacion exitosa");
                             db.insertRutaLocationLista(rutaLocationList.getList(), getApplicationContext());
                             Log.d(TAG, "RutasLocation. Registros insertados exitosamente");
@@ -1121,7 +1121,7 @@ public class SincronizarActivity extends ActionBarActivity {
 
     public int getTotal() {
         //int TOTAL = 10; //10 servicios
-        int TOTAL = 5;
+        int TOTAL = 6;
         //si esta marcado catalogo son 4 servicios extras, lista imagenes, familia, subfamilia, los archivos
         if (catalogoCheckbox.isChecked())
             TOTAL = TOTAL + 4;

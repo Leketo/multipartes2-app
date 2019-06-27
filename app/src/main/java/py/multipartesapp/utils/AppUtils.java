@@ -41,6 +41,14 @@ public class AppUtils {
         return show("Error", msg, null, ctx, true, null);
     }
 
+
+    public static AlertDialog showSuccess(String msg, Context ctx) {
+        return show("Éxito. ", msg, null, ctx, true, null);
+    }
+
+    public static AlertDialog showWarning(String msg, Context ctx) {
+        return show("Atención", msg, null, ctx, true, null);
+    }
     public static AlertDialog show(String title, String msg, String[] buttons,
                                    Context ctx, boolean cancelable, DialogInterface.OnClickListener onClickListener) {
         try {
@@ -122,7 +130,7 @@ public class AppUtils {
 
         if(haveConnectedMobile || haveConnectedWifi){
             try {
-                Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
+                Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 app.multipartes.com.py");
                 int returnVal = p1.waitFor();
                 boolean reachable = (returnVal == 0);
                 return reachable;

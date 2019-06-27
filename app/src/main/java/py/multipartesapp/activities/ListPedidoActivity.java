@@ -191,7 +191,7 @@ public class ListPedidoActivity extends ActionBarActivity {
 
             TextView titleTextView = (TextView) v.findViewById(R.id.txt1_item_registro_visita);
             Cliente c = db.selectClienteById(item.getClient_id());
-            titleTextView.setText(c.getNombre());
+            titleTextView.setText(""+item.getId()+"-"+c.getNombre());
 
             TextView subTitleTextView = (TextView) v.findViewById(R.id.txt2_item_registro_visita);
 
@@ -205,7 +205,7 @@ public class ListPedidoActivity extends ActionBarActivity {
                 cobrado = "NO";
 
             try {
-                subTitleTextView.setText("Fecha: "+ DateUtils.convertDateFromServer(item.getDate_order()) );
+                subTitleTextView.setText(""+ "Fecha: "+ DateUtils.convertDateFromServer(item.getDate_order()) );
             } catch (ParseException e) {
                 e.printStackTrace();
             }

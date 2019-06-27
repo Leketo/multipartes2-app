@@ -28,6 +28,7 @@
             style="@style/button"
             android:id="@+id/list_rutas_btn_ver_mapa"
             android:text="Ver mapa completo"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

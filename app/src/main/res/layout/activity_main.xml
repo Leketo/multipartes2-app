@@ -106,6 +106,40 @@
             </LinearLayout>
             <!--Fin Boton Sincronizar datos-->
 
+            <LinearLayout
+                android:id="@+id/fila_10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:weightSum="10">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <Button
+                            android:id="@+id/main_btn_rutas"
+                            style="@style/button"
+                            android:layout_width="200dp"
+                            android:layout_height="80dp"
+                            android:drawableTop="@drawable/ic_no_visitado"
+                            android:text="Hoja de ruta"
+                            android:textSize="14sp"></Button>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
             <!--Boton Pedido-->
             <LinearLayout
                 android:id="@+id/fila_3"
@@ -147,7 +181,7 @@
 
             <!--Boton Cobro-->
             <LinearLayout
-                android:id="@+id/fila_3"
+                android:id="@+id/fila_4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/fila_1"

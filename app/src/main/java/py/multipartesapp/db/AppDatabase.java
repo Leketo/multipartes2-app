@@ -1365,10 +1365,12 @@ public class AppDatabase {
                 insStmt.bindLong(1, r.getId());
                 insStmt.bindString(2, r.getDate());
                 insStmt.bindLong(3, r.getUser_id());
+
                 if (r.getLatitude() != null)
                     insStmt.bindString(4, r.getLatitude());
                 if (r.getLongitude() != null)
                     insStmt.bindString(5, r.getLongitude());
+
                 insStmt.bindLong(6, r.getClient_id());
 
                 if(r.getZone()!=null)
@@ -1381,7 +1383,13 @@ public class AppDatabase {
 
                 if (r.getType() != null)
                     insStmt.bindString(10, r.getType());
-                insStmt.bindString(11, r.getObservation());
+
+                if(r.getObservation()!=null) {
+                    insStmt.bindString(11, r.getObservation());
+                }
+                else{
+                    insStmt.bindString(11, "");
+                }
 
                 insStmt.executeInsert();
             }
@@ -2301,6 +2309,7 @@ public class AppDatabase {
         Log.d("Valor Insertado", configuracion.toString());
     }
 
+
     // Deletes
     public void deleteProductoFamilia(){
         SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
@@ -2361,6 +2370,14 @@ public class AppDatabase {
         db.delete(AppContract.Tables.CONFIGURACION, null, null);
         //db.close();
     }
+
+    // Deletes
+    public void deleteConfiguracionLastUpdated(){
+        SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
+        db.delete(AppContract.Tables.CONFIGURACION, " CLAVE!='URL'", null);
+        //db.close();
+    }
+
 
     // Deletes
     public void deleteSession(){

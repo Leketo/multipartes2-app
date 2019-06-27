@@ -100,8 +100,19 @@
             android:id="@+id/config_printer2"
             android:padding="10dip" />
 
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Limpiar datos"
+                android:layout_marginLeft="5dp"
+                android:id="@+id/limpiar_datos"
+                android:padding="10dip" />
+        </LinearLayout>
     </LinearLayout>
+
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

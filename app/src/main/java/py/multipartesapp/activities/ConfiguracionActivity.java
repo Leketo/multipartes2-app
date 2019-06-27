@@ -31,6 +31,7 @@ public class ConfiguracionActivity extends ActionBarActivity {
     private EditText puertoEditText;
     private Switch configImpresora;
     private Button btnConfigPrinter2;
+    private Button btnLimpiarDatos;
     boolean hasConfigImpresora;
     private AppDatabase db = new AppDatabase(this);
 
@@ -51,6 +52,8 @@ public class ConfiguracionActivity extends ActionBarActivity {
         puertoEditText = (EditText) findViewById(R.id.configuracion_puerto);
         configImpresora = (Switch) findViewById(R.id.config_impresora);
         btnConfigPrinter2 = (Button) findViewById(R.id.config_printer2);
+        btnLimpiarDatos=(Button) findViewById(R.id.limpiar_datos);
+
         Configuracion url = db.selectConfiguracionByClave("URL");
 
         //si ya existe una url completar campos
@@ -60,12 +63,21 @@ public class ConfiguracionActivity extends ActionBarActivity {
 
             Configuracion puerto = db.selectConfiguracionByClave("PUERTO");
             puertoEditText.setText(puerto.getValor());
+        }else{
+            urlEditText.setText("app.multipartes.com.py/");
         }
 
         guardarConfiguracionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 guardarConfiguracion();
+            }
+        });
+
+        btnLimpiarDatos.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public  void onClick(View v){
+                limpiarDatos();
             }
         });
 
@@ -115,6 +127,8 @@ public class ConfiguracionActivity extends ActionBarActivity {
             }
         });
     }
+
+
 
     private void guardarConfiguracion(){
 
@@ -194,5 +208,20 @@ public class ConfiguracionActivity extends ActionBarActivity {
                 ConfiguracionActivity.this.startActivity(intent);
             }
         });
+    }
+
+    public void limpiarDatos(){
+
+        db.deleteConfiguracionLastUpdated();
+        db.deleteCliente();
+        db.deleteStockProducto();
+        db.deleteProducto();
+        db.deleteFactura();
+        db.deleteCobranza();
+        db.deletePedido();
+        db.deleteEntrega();
+        db.deleteRutaLocation();
+        Toast.makeText(getApplicationContext(), "Los datos guardados fueron eliminados con éxito.", Toast.LENGTH_LONG).show();
+
     }
 }

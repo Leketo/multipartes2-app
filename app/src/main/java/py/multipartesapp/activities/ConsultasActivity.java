@@ -54,6 +54,9 @@ public class ConsultasActivity extends ActionBarActivity {
         estadoCuentaBtn = (Button) findViewById(R.id.consultas_estado_cuenta);
         stockProductoBtn = (Button) findViewById(R.id.consultas_stock_producto);
 
+
+        misEntregasBtn.setVisibility(View.INVISIBLE);
+
         misVisitasBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

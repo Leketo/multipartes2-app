@@ -35,6 +35,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -228,8 +231,9 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
                 detalleSeleccionado = (PedidoDetalle) detallesList.get(position);
 
                 String[] buttons = {"Si", "No"};
-                AppUtils.show(null, "Eliminar detalle? ", buttons, PedidoActivity.this, false, dialogOnclicListenerEliminarDetalle);
-
+                if(Globals.getPedidoSeleccionado() ==null || !Globals.getPedidoSeleccionado().getEstado_envio().equalsIgnoreCase("ENVIADO")) {
+                    AppUtils.show(null, "Eliminar detalle? ", buttons, PedidoActivity.this, false, dialogOnclicListenerEliminarDetalle);
+                }
                 //Intent intent = new Intent(OrderActivity.this, OrderProductActivity.class);
                 //startActivity(intent);
                 return false;
@@ -343,6 +347,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             db.insertPedidoDetalle(detalle);
         }
 
+        Globals.setPedidoSeleccionado(pedido);
         Context context = getApplicationContext();
         CharSequence text = "Pedido actualizado.";
         Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
@@ -381,6 +386,11 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 //            guardarPedido();
 //        }
 
+        if(!enLinea){
+            AppUtils.showError("No posee conexión a internet, no podrá realizar el envio del pedido",PedidoActivity.this);
+            return;
+        }
+
 
         Pedido pedido = Globals.getPedidoSeleccionado();
 
@@ -392,11 +402,22 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         InputStream inputStream = null;
         String result = "";
         try {
+            HttpParams httpParameters = new BasicHttpParams();
+// Set the timeout in milliseconds until a connection is established.
+// The default value is zero, that means the timeout is not used.
+            int timeoutConnection = 5000;
+            HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+// Set the default socket timeout (SO_TIMEOUT)
+// in milliseconds which is the timeout for waiting for data.
+            int timeoutSocket = 10000;
+            HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
             // 1. create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
+            HttpClient httpclient = new DefaultHttpClient(httpParameters);
+
             String url = Comm.URL + CommReq.CommReqEnviarPedido;
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
+
             String json = "";
 
             // 3. build jsonObject
@@ -492,7 +513,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 
 
             } else {
-                Toast.makeText(getApplicationContext(), "Error al enviar el pedido .", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Error al enviar el pedido, reintente más tarde .", Toast.LENGTH_LONG).show();
                 guardarPedidoBtn.setEnabled(true);
             }
 

@@ -47,6 +47,7 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
     private Producto productoSeleccionado;
     private AutoCompleteTextView productoTextView;
     private TextView codigoProductoTxtView;
+    private TextView codigoSistemaTxtView;
     private TextView precioProductoTxtView;
     private TextView stockProductoTxtView;
     private EditText cantidadTxtView;
