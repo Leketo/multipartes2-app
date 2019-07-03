@@ -658,7 +658,7 @@ public class SincronizarActivity extends ActionBarActivity {
                             Log.d(TAG, "RutasLocation. Insertando registros");
 
                             Log.d(TAG, "Se eliminará la tabla RutasLocation...");
-                            //db.deleteRutaLocation();
+                            db.deleteRutaLocation();
                             Log.d(TAG, "Eliminacion exitosa");
                             db.insertRutaLocationLista(rutaLocationList.getList(), getApplicationContext());
                             Log.d(TAG, "RutasLocation. Registros insertados exitosamente");

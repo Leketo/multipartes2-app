@@ -472,7 +472,7 @@ public class ListRutasActivity extends ActionBarActivity {
             Toast.makeText(getApplicationContext(), "No hay conexión.", Toast.LENGTH_LONG).show();
             return;
         }
-
+        db.updateRutaLocation(ruta);
         InputStream inputStream = null;
         String result = "";
         try {
