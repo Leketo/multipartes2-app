@@ -3,6 +3,7 @@ package py.multipartesapp.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -207,30 +208,32 @@ public class ListRutasActivity extends ActionBarActivity {
         }
 
 
-        public int getCount() {
-            return listRutas.size();
-        }
+            public int getCount() {
+                return listRutas.size();
+            }
 
-        public Object getItem(int position) {
-            return null;
-        }
+            public Object getItem(int position) {
+                return null;
+            }
 
-        public long getItemId(int position) {
-            return 0;
-        }
+            public long getItemId(int position) {
+                return 0;
+            }
 
-        // create a new ImageView for each item referenced by the Adapter
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
+            // create a new ImageView for each item referenced by the Adapter
+            @Override
+            public View getView(int i, View view, ViewGroup viewGroup) {
 
 
-            RutaLocation item = listRutas.get(i);
-            View v = view;
-            if (v == null) {
-                v = mInflater.inflate(R.layout.list_item_ruta2, viewGroup, false);
+                RutaLocation item = listRutas.get(i);
+                View v = view;
+                if (v == null) {
+                    v = mInflater.inflate(R.layout.list_item_ruta2, viewGroup, false);
 
                 v.setTag(R.id.txt1_item_ruta, v.findViewById(R.id.txt1_item_ruta));
                 //v.setTag(R.id.txt2_item_ruta, v.findViewById(R.id.txt2_item_ruta));
+                v.setTag(R.id.item_ruta_entrada_btn, v.findViewById(R.id.item_ruta_entrada_btn));
+                v.setTag(R.id.item_ruta_salida_btn, v.findViewById(R.id.item_ruta_salida_btn));
                 v.setTag(R.id.item_ruta_entrada_btn, v.findViewById(R.id.item_ruta_entrada_btn));
                 v.setTag(R.id.item_ruta_salida_btn, v.findViewById(R.id.item_ruta_salida_btn));
                 v.setTag(R.id.item_ruta_btn_accion, v.findViewById(R.id.item_ruta_btn_accion));
@@ -239,16 +242,15 @@ public class ListRutasActivity extends ActionBarActivity {
                 v.setTag(R.id.item_ruta_btn_observacion_btn, v.findViewById(R.id.item_ruta_btn_observacion_btn));
                 v.setTag(R.id.item_ruta_observacion_txt, v.findViewById(R.id.item_ruta_observacion_txt));
             }
+                TextView titleTextView = (TextView) v.findViewById(R.id.txt1_item_ruta);
+                Cliente c = db.selectClienteById(item.getClient_id());
+                titleTextView.setText(item.getPriority()+" - "+c.getNombre());
 
-            TextView titleTextView = (TextView) v.findViewById(R.id.txt1_item_ruta);
-            Cliente c = db.selectClienteById(item.getClient_id());
-            titleTextView.setText(item.getPriority()+" - "+c.getNombre());
-
-            SimpleDateFormat inputFecha = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-            SimpleDateFormat outputFecha = new SimpleDateFormat("dd-MM-yyyy");
-//            String fecha = null;
-//            try {
-//                fecha = outputFecha.format(inputFecha.parse(item.getDate()));
+                SimpleDateFormat inputFecha = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                SimpleDateFormat outputFecha = new SimpleDateFormat("dd-MM-yyyy");
+//                String fecha = null;
+//        try {
+//                fecha = outputFecha.format(inputFecha.parse(item.getDate()))
 //            } catch (ParseException e) {
 //                e.printStackTrace();
 //            }
@@ -258,6 +260,8 @@ public class ListRutasActivity extends ActionBarActivity {
             Button entradaBtn = (Button) v.getTag(R.id.item_ruta_entrada_btn);
             Button salidaBtn = (Button) v.getTag(R.id.item_ruta_salida_btn);
             Button actionBtn = (Button) v.getTag(R.id.item_ruta_btn_accion);
+            TextView txtEntradaDate = (TextView) v.getTag(R.id.item_ruta_entrada_btn);
+            TextView txtSalidaDate = (TextView) v.getTag(R.id.item_ruta_salida_btn);
             final Button enviarObservacion = (Button) v.getTag(R.id.item_ruta_btn_observacion_btn);
             final EditText observacionEditText = (EditText) v.getTag(R.id.item_ruta_observacion_txt);
 
@@ -290,13 +294,44 @@ public class ListRutasActivity extends ActionBarActivity {
                 }
             });
 
-
+            boolean backgroundColor = false;
             //si ya marco entrada, bloquear boton entrada
-            if (item.getEntrada()!=null && item.getEntrada().equals("Y"))
+            if (item.getEntrada()!=null && item.getEntrada().equals("Y")){
                 entradaBtn.setEnabled(false);
-            //si ya marco salida, bloquear boton salida
-            if (item.getSalida() != null && item.getSalida().equals("Y"))
+                backgroundColor = true;
+                entradaBtn.setVisibility(View.GONE);
+                txtEntradaDate.setVisibility(View.VISIBLE);
+
+                SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    Date dateValue = input.parse(item.getFechaHoraEntrada());
+                    SimpleDateFormat output = new SimpleDateFormat("dd/MM/yy HH:mm");
+                    String fechaEntrada = output.format(dateValue);
+                    txtEntradaDate.setText(fechaEntrada);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (item.getSalida() != null && item.getSalida().equals("Y")) {                         ;
                 salidaBtn.setEnabled(false);
+                if(backgroundColor) {
+                    v.setBackgroundColor(Color.parseColor("#8ddebc"));
+                    editObservacionBtn.setEnabled(false);
+                    salidaBtn.setVisibility(View.GONE);
+                    txtSalidaDate.setVisibility(View.VISIBLE);
+
+                    SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    try {
+                        Date dateValue = input.parse(item.getFechaHoraSalida());
+                        SimpleDateFormat output = new SimpleDateFormat("dd/MM/yy HH:mm");
+                        String fechaSalida = output.format(dateValue);
+                        txtSalidaDate.setText(fechaSalida);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
             entradaBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -429,7 +464,8 @@ public class ListRutasActivity extends ActionBarActivity {
 
         Globals.setRutaLocationSeleccionada(rutaLocation);
         String[] buttons = {"Si", "No"};
-        AppUtils.show(null, "Marcar entrada?", buttons, ListRutasActivity.this, false,dialogOnclicListenerMarcarEntrada );
+        AppUtils.show(null, "Marcar entrada?", buttons, ListRutasActivity.this,
+                false, dialogOnclicListenerMarcarEntrada );
 
     }
 
