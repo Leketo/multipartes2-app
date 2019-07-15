@@ -45,7 +45,7 @@ public class CommReq {
             = App + "product/price/summary";
 
     public static final String CommReqGetAllRoutes
-            = App + "routes/user";
+            = App + "routes/sincronizar/hoja-ruta/TODOS";
 
     public static final String CommReqPostUpdateRoute
             = App + "routes/update";

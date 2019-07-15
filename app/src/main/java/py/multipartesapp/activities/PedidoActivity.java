@@ -284,7 +284,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             Globals.setClienteSeleccionadoPedido(clienteSeleccionado);
             mostrarDatosCliente(clienteSeleccionado);
 
-            List<PedidoDetalle> detalles = db.selectPedidoDetalleByPedido(Globals.pedidoSeleccionado.getId());
+            List<PedidoDetalle> detalles = db.selectPedidoDetalleByPedido(Globals.getPedidoSeleccionado().getId());
             detallesList = detalles;
             adapterDetalles.notifyDataSetChanged();
 

@@ -219,8 +219,10 @@ public class ConfiguracionActivity extends ActionBarActivity {
         db.deleteFactura();
         db.deleteCobranza();
         db.deletePedido();
+        db.deletePedidoDetalle();
         db.deleteEntrega();
         db.deleteRutaLocation();
+
         Toast.makeText(getApplicationContext(), "Los datos guardados fueron eliminados con éxito.", Toast.LENGTH_LONG).show();
 
     }

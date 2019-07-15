@@ -682,8 +682,8 @@ public class SincronizarActivity extends ActionBarActivity {
         //String fechahoy = "2016-03-01";
 
 
-        mapClaseResponseRoutes.put(CommReq.CommReqGetAllRoutes + "/" + userId, RutaLocationList.class.getName());
-        new Comm(mapClaseResponseRoutes).requestGet(CommReq.CommReqGetAllRoutes + "/" + userId, new String[][]{
+        mapClaseResponseRoutes.put(CommReq.CommReqGetAllRoutes + "?userId=" + userId, RutaLocationList.class.getName());
+        new Comm(mapClaseResponseRoutes).requestGet(CommReq.CommReqGetAllRoutes + "?userId=" + userId, new String[][]{
         }, delegateRutas);
     }
 
