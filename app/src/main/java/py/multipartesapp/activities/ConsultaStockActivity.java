@@ -21,6 +21,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +71,9 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
     private TextView idProductoTextView;
 
+    private TextView precioPublicoTextView;
+    private TextView precioMayoristaTextView;
+
 
 
 
@@ -89,6 +94,9 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
         //verCatalogoBtn = (Button) findViewById(R.id.pedido_detalle_nuevo_catalogo_btn);
         vistaPreviaImgView = (ImageView) findViewById(R.id.agregar_detalle_pedido_vista_previa);
+
+        precioPublicoTextView=(TextView) findViewById(R.id.precio_publico);
+        precioMayoristaTextView=(TextView) findViewById(R.id.precio_mayorista);
 
         /*
         verCatalogoBtn.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +155,7 @@ public class ConsultaStockActivity extends ActionBarActivity {
                 productoSeleccionado=productosFiltrados.get(0);
 
                 idProductoTextView.setText(""+productoSeleccionado.getM_product_id());
+                calcularPrecioProducto();
 
                 //obtener el stock del producto haciendo la llamada al servicio stock-productos
                 CommDelegateAndroid delegate = new CommDelegateAndroid(){
@@ -232,7 +241,7 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
 
         //1. Obtener precio categoria del cliente
-        PrecioCategoria precioCategoria = db.selectPrecioCategoriaById(Globals.clienteSeleccionadoPedido.getCategoria_precio());
+//        PrecioCategoria precioCategoria = db.selectPrecioCategoriaById(Globals.clienteSeleccionadoPedido.getCategoria_precio());
 
         //2. obtener precio version
         PrecioVersion precioVersion = db.selectPrecioVersionByProducto( productoSeleccionado.getM_product_id());
@@ -251,36 +260,12 @@ public class ConsultaStockActivity extends ActionBarActivity {
         --130320000 radiadoristas
         */
         //3. Sacar el precio a usar segun categoria
-        switch (precioCategoria.getM_pricelist_id()){
-            case 1000587:
-                precio = precioVersion.getPrecio_ventas_inicial();
-                break;
-            case 1010590:
-                precio = precioVersion.getPrecio_costo_inicial();
-                break;
-            case 1010591:
-                precio = precioVersion.getPrecio_publico();
-                break;
-            case 1010596:
-                precio = precioVersion.getPrecio_mayorista_a();
-                break;
-            case 1010597:
-                precio = precioVersion.getPrecio_mayorista_b();
-                break;
-            case 1010598:
-                precio = precioVersion.getPrecio_lista();
-                break;
-            case 1010599:
-                precio = precioVersion.getPrecio_vidrieros();
-                break;
-            case 130320000:
-                precio = precioVersion.getPrecio_radiadoritas();
-                break;
-        }
+        DecimalFormat dfFormat = new DecimalFormat("###,###");
 
-        if (precio == null){
-            precio = 0;
-        }
+        precioPublicoTextView.setText(""+dfFormat.format(precioVersion.getPrecio_publico().intValue()));
+        precioMayoristaTextView.setText(""+dfFormat.format(precioVersion.getPrecio_mayorista_a()));
+
+
         return precio;
     }
 
