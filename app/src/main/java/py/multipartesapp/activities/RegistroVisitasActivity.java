@@ -120,7 +120,6 @@ public class RegistroVisitasActivity extends ActionBarActivity implements View.O
 
         Session session = db.selectUsuarioLogeado();
        // usuario= db.selectUsuarioById(session.getUserId());
-        listRegistroVisita = db.selectRegistroVisitaByNomUser(String.valueOf(session.getUserId()), Globals.ordenRegVisitas);
 
 
         if (db.countCliente() == 0){
