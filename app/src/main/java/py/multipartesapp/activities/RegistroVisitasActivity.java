@@ -57,6 +57,7 @@ import py.multipartesapp.beans.TipoVisita;
 import py.multipartesapp.beans.Session;
 import py.multipartesapp.beans.Usuario;
 import py.multipartesapp.comm.Comm;
+import py.multipartesapp.db.AppContract;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.AppUtils;
 import py.multipartesapp.utils.Globals;
@@ -98,8 +99,11 @@ public class RegistroVisitasActivity extends ActionBarActivity implements View.O
 
     private AppDatabase db = new AppDatabase(this);
 
+    Usuario usuario;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrovisitas);
 
@@ -113,6 +117,11 @@ public class RegistroVisitasActivity extends ActionBarActivity implements View.O
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //muestra el boton atras
         getSupportActionBar().setTitle("Registro de Visita");
+
+        Session session = db.selectUsuarioLogeado();
+       // usuario= db.selectUsuarioById(session.getUserId());
+        listRegistroVisita = db.selectRegistroVisitaByNomUser(String.valueOf(session.getUserId()), Globals.ordenRegVisitas);
+
 
         if (db.countCliente() == 0){
             Toast.makeText(getApplicationContext(), "Favor sincronizar datos primero.", Toast.LENGTH_LONG).show();
@@ -294,6 +303,40 @@ public class RegistroVisitasActivity extends ActionBarActivity implements View.O
             }
         });
 
+/////////////////////////////////////////////////////////////////////////////////////////
+        /*if (Globals.accion_pedido != null) {
+
+            RegistroVisita item = listRegistroVisita.get(i);
+            nroPedidoTextView.setText("" + Globals.getPedidoSeleccionado().getId());
+
+            Cliente c = db.selectClienteById(Globals.getPedidoSeleccionado().getClient_id());
+            clienteSeleccionado = c;
+            Globals.setClienteSeleccionadoPedido(clienteSeleccionado);
+            mostrarDatosCliente(clienteSeleccionado);
+
+            List<PedidoDetalle> detalles = db.selectClienteById(item.getCliente());
+            detallesList = detalles;
+            adapterDetalles.notifyDataSetChanged();
+
+
+            //ocultar teclado
+            clienteTextView.clearFocus();
+            hideSoftKeyboard();
+
+
+            if (Globals.accion_pedido.equals("VER")) {
+                guardarPedidoBtn.setVisibility(View.GONE);
+                agregarDetalleBtn.setVisibility(View.GONE);
+                enviarPedidoBtn.setEnabled(false);
+                clienteTextView.setEnabled(false);
+            } else {
+                guardarPedidoBtn.setText("Actualizar");
+                enviarPedidoBtn.setEnabled(true);
+            }
+            Globals.setAccion_pedido(null);
+            //Globals.setPedidoSeleccionado(null);
+        }*/
+/////////////////////////////////////////////////////////////////////////////////////////
     }
 
 
@@ -531,10 +574,12 @@ public class RegistroVisitasActivity extends ActionBarActivity implements View.O
                 }
 
                 Toast.makeText(getApplicationContext(), "Visita enviada correctamente.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Visita enviada correctamente.", Toast.LENGTH_LONG).show();
                 guardarVisitaBtn.setEnabled(true);
                 //guardar con estado ENVIADO
                 r.setEstado_envio("ENVIADO");
                 db.insertRegistroVisita(r);
+                //startActivity(new Intent(RegistroVisitasActivity.this,ListRegistroVisitasActivity).class);
                 finish();
             }
 
@@ -576,6 +621,18 @@ public class RegistroVisitasActivity extends ActionBarActivity implements View.O
         }
 
     }
+    ////////////////////////////////////////////////////////////////////
+    /*private void mostrarDatosCliente(Cliente cliente) {
+        clienteTextView.setText(cliente.toString());
+        //mostrar categoria cliente
+        PrecioCategoria precioCategoria = db.selectPrecioCategoriaById(cliente.getCategoria_precio());
+        categoriaClienteTextView.setText(precioCategoria.getName());
+
+        //mostrar credito de cliente
+        Integer creditoDisponible = cliente.getCredito_disponible().intValue();
+        creditoClienteTextView.setText(formatearMoneda(MyFormatter.formatearMoneda(creditoDisponible.toString())));
+    }*/
+    ///////////////////////////////////////////////////////////////////
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));

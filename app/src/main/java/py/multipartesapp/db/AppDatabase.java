@@ -404,7 +404,9 @@ public class AppDatabase {
 
     public Usuario selectUsuarioById (Integer idUsuario){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
-        Cursor c = db.rawQuery(" SELECT * FROM " +AppContract.Tables.USUARIO+ " WHERE " + AppContract.Usuario.id + "=" + idUsuario, null);
+        String []whereArgs={String.valueOf(idUsuario)};
+        Cursor c = db.rawQuery(" SELECT * FROM " +AppContract.Tables.USUARIO+ " WHERE " +
+                AppContract.Usuario.id +"=?", whereArgs);
         return mappingUsuario(c);
     }
 
@@ -463,11 +465,13 @@ public class AppDatabase {
         return mappingListRegistroVisita(c);
     }
 
-    public List<RegistroVisita> selectRegistroVisitaByNomUser (String nombre, String order){
+    public List<RegistroVisita> selectRegistroVisitaByNomUser (String usuarioId, String order){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
-        Cursor c = db.rawQuery(" SELECT * FROM " +AppContract.Tables.REGISTRO_VISITA + " WHERE "+AppContract.RegistroVisita.nombre_usuario+"='"+nombre+"'"+
+        String [] whereArgs={usuarioId};
+        Cursor c = db.rawQuery(" SELECT * FROM " +AppContract.Tables.REGISTRO_VISITA +
+                        " WHERE "+AppContract.RegistroVisita.usuario+"=?"+
                 " order by FECHA_VISITA "+ order +", HORA_VISITA "+ order,
-                null );
+                whereArgs );
         return mappingListRegistroVisita(c);
     }
 
@@ -1574,7 +1578,8 @@ public class AppDatabase {
         values.put(AppContract.RegistroVisita.ent_sal,registroVisita.getEnt_sal());
         values.put(AppContract.RegistroVisita.nombre_usuario, registroVisita.getNombreUsuario());
 
-        db.insert(AppContract.Tables.REGISTRO_VISITA, null, values);
+        long registro = db.insert(AppContract.Tables.REGISTRO_VISITA, null, values);
+        Log.d(TAG,"se insertaron " + registro);
         Log.d("Valor Insertado", registroVisita.toString());
     }
 

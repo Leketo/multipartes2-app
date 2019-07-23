@@ -2,6 +2,7 @@ package py.multipartesapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,13 +12,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.mina.util.byteaccess.ByteArray;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import py.multipartesapp.R;
@@ -42,6 +48,11 @@ public class ListRegistroVisitasActivity  extends ActionBarActivity {
     private Button ordenarBtn;
 
     Usuario usuario;
+    ArrayList<RegistroVisita> ejemplo;
+    ArrayList<String>ListaInformacion;
+    ArrayList<Usuario>ListaUsuarios;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,17 +66,20 @@ public class ListRegistroVisitasActivity  extends ActionBarActivity {
         getSupportActionBar().setTitle("Registros de Visita");
 
         nuevaVisitaBtn = (Button) findViewById(R.id.reg_visita_btn_new);
+
         listRegistroVisitaListView = (ListView) findViewById(R.id.reg_visita_list);
+
         ordenarBtn = (Button) findViewById(R.id.reg_visita_ordenar_btn);
 
         Session session = db.selectUsuarioLogeado();
         usuario = db.selectUsuarioById(session.getUserId());
-        listRegistroVisita = db.selectRegistroVisitaByNomUser(usuario.getName(), Globals.ordenRegVisitas);
+        listRegistroVisita = db.selectRegistroVisitaByNomUser(String.valueOf(session.getUserId()), Globals.ordenRegVisitas);
 
         adapter = new ImageAdapter (this);
         listRegistroVisitaListView.setAdapter(adapter);
 
         Log.d(TAG,"cantidad de visitas encontradas:"+ listRegistroVisita.size());
+        //Toast.makeText(getApplicationContext(), "hola"+listRegistroVisita.size(), Toast.LENGTH_LONG).show();
 
         nuevaVisitaBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +98,7 @@ public class ListRegistroVisitasActivity  extends ActionBarActivity {
                     ordenarBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_collapse, 0, 0, 0);
                     Globals.setOrdenRegVisitas("DESC");
 
-                    listRegistroVisita = db.selectRegistroVisitaByNomUser(usuario.getName(), Globals.ordenRegVisitas);
+                    listRegistroVisita = db.selectRegistroVisitaByNomUser(String.valueOf(session.getUserId()), Globals.ordenRegVisitas);
                     ((BaseAdapter) listRegistroVisitaListView.getAdapter()).notifyDataSetChanged();
 
                 }else {
@@ -92,13 +106,36 @@ public class ListRegistroVisitasActivity  extends ActionBarActivity {
                     ordenarBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_expand, 0, 0, 0);
                     Globals.setOrdenRegVisitas("ASC");
 
-                    listRegistroVisita = db.selectRegistroVisitaByNomUser(usuario.getName(), Globals.ordenRegVisitas);
+                    listRegistroVisita = db.selectRegistroVisitaByNomUser(String.valueOf(session.getUserId()), Globals.ordenRegVisitas);
                     ((BaseAdapter) listRegistroVisitaListView.getAdapter()).notifyDataSetChanged();
 
                 }
             }
         });
+///////////////////////////////////////////////////////////////////////
+
+        listRegistroVisitaListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                RegistroVisita pedido = (RegistroVisita) listRegistroVisita.get(position);
+                Globals.setVisitaSeleccionado(pedido);
+                if (pedido.getEstado_envio().equalsIgnoreCase("ENVIADO")){
+                    Globals.setAccion_RV("VER");
+                }else{
+                    Globals.setAccion_RV("EDITAR");
+                }
+
+
+                Intent intent = new Intent(ListRegistroVisitasActivity.this, RegistroVisitasActivity.class);
+                startActivity(intent);
+            }
+        });
+
+//////////////////////////////////////////////////////////////////////
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -109,7 +146,8 @@ public class ListRegistroVisitasActivity  extends ActionBarActivity {
 
     @Override
     protected void onResume() {
-        listRegistroVisita = db.selectRegistroVisitaByNomUser(usuario.getName(), Globals.ordenRegVisitas);
+        Session sessionLogueado = db.selectUsuarioLogeado();
+        listRegistroVisita = db.selectRegistroVisitaByNomUser(String.valueOf(sessionLogueado.getUserId()), Globals.ordenRegVisitas);
         ((BaseAdapter) listRegistroVisitaListView.getAdapter()).notifyDataSetChanged();
         super.onResume();
     }
@@ -160,6 +198,7 @@ public class ListRegistroVisitasActivity  extends ActionBarActivity {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
 
+
             RegistroVisita item = listRegistroVisita.get(i);
             View v = view;
             if (v == null) {
@@ -175,7 +214,7 @@ public class ListRegistroVisitasActivity  extends ActionBarActivity {
             titleTextView.setText(c.getNombre());
 
             TextView subTitleTextView = (TextView) v.findViewById(R.id.txt2_item_registro_visita);
-
+            //formateo de fecha
             SimpleDateFormat inputFecha = new SimpleDateFormat("dd-MM-yyyy");
             SimpleDateFormat outputFecha = new SimpleDateFormat("yyyy-MM-dd");
             String fechaVisita = null;

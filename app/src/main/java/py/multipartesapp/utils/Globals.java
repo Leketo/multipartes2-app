@@ -13,6 +13,7 @@ import py.multipartesapp.beans.Pedido;
 import py.multipartesapp.beans.PedidoDetalle;
 import py.multipartesapp.beans.Producto;
 import py.multipartesapp.beans.ProductoImagen;
+import py.multipartesapp.beans.RegistroVisita;
 import py.multipartesapp.beans.RutaLocation;
 
 
@@ -50,8 +51,11 @@ public class Globals {
     public static Cliente clienteSeleccionadoRuta;
 
     public static String accion_pedido;
+    public static String accion_RV;
     public static Pedido pedidoSeleccionado;
-
+    ////////////////
+    public static RegistroVisita RV;
+    ////////////////
     public static CookieStore getCookieStore() {
         return cookieStore;
     }
@@ -183,7 +187,13 @@ public class Globals {
     public static void setAccion_pedido(String accion_pedido) {
         Globals.accion_pedido = accion_pedido;
     }
+    //////////////////////////////////////////////////////////////
 
+    public static void setAccion_RV(String accion_RV) {
+        Globals.accion_RV = accion_RV;
+    }
+
+    //////////////////////////////////////////////////////////////
     public static Pedido getPedidoSeleccionado() {
         return pedidoSeleccionado;
     }
@@ -191,6 +201,13 @@ public class Globals {
     public static void setPedidoSeleccionado(Pedido pedidoSeleccionado) {
         Globals.pedidoSeleccionado = pedidoSeleccionado;
     }
+    ///////////////////////////////
+
+    public static void setVisitaSeleccionado(RegistroVisita RV) {
+        Globals.RV = RV;
+    }
+
+    ///////////////////////////////
 
     public static Bitmap getImagenSeleccionadaCatalogo() {
         return imagenSeleccionadaCatalogo;
