@@ -3,17 +3,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/background_toolbar"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:contentInsetEnd="0dp"
-        app:contentInsetStart="0dp">
-    </android.support.v7.widget.Toolbar>
+        app:contentInsetStart="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,6 +22,12 @@
         android:layout_below="@id/toolbar"
         android:orientation="vertical">
 
+        <Button
+            style="@style/button"
+            android:id="@+id/listanuevo_btn_new"
+            android:text="NUEVO"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
         <Button
             style="@style/button"
             android:id="@+id/list_rutas_btn_ver_mapa"

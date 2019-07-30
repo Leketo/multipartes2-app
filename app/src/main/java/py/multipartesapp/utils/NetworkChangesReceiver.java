@@ -12,6 +12,7 @@ import py.multipartesapp.activities.EntregaActivity;
 import py.multipartesapp.activities.Main;
 import py.multipartesapp.activities.PedidoActivity;
 import py.multipartesapp.activities.RegistroVisitasActivity;
+import py.multipartesapp.activities.RutaLocationNewActivity;
 
 //import py.com.walrus.mobile.activities.CobranzasCreditoActivity;
 
@@ -85,7 +86,10 @@ public class NetworkChangesReceiver extends BroadcastReceiver {
 
                 Log.d(TAG, "Verificando existencia de Registro de Visitas Pendientes..");
                 new RegistroVisitasActivity().enviarVisitasPendientes(context);
-
+                /////////////////////////////////////////////////////////////////////////////////////
+                Log.d(TAG, "Verificando existencia de Ruta de location Pendientes..");
+                new RutaLocationNewActivity().enviarutaPendientes(context);
+                //////////////////////////////////////////////////////////////////////////////////7
                 Log.d(TAG, "Verificando existencia de Location Pendientes..");
                 new Main().enviarLocation(context);
 

@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Vendedor: "/>
@@ -109,11 +110,13 @@
             android:paddingTop="16dp"
             android:orientation="horizontal">
             <TextView
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Prioridad: "/>
 
             <EditText
+                android:visibility="gone"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/rutalocation_prioridad"

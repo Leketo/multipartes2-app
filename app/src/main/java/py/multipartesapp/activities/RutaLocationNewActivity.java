@@ -47,6 +47,7 @@ import py.multipartesapp.R;
 import py.multipartesapp.beans.Cliente;
 import py.multipartesapp.beans.Entrega;
 import py.multipartesapp.beans.RutaLocation;
+import py.multipartesapp.beans.Session;
 import py.multipartesapp.beans.Usuario;
 import py.multipartesapp.comm.Comm;
 import py.multipartesapp.comm.CommDelegateAndroid;
@@ -115,17 +116,22 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
 
         observacionEditText = (EditText) findViewById(R.id.rutalocation_observacion);
         prioridadEditText = (EditText) findViewById(R.id.rutalocation_prioridad);
+
+        prioridadEditText.setVisibility(View.GONE);
+
         tipoRutaSpinner = (Spinner) findViewById(R.id.rutalocation_tipo_spinner);
         guardarRutaBtn = (Button) findViewById(R.id.guardar_ruta);
 
 
         fechaVisitaEditText = (EditText) findViewById(R.id.rutalocation_fecha_visita);
         fechaVisitaEditText.setInputType(InputType.TYPE_NULL);
+        String fechaVisita = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+        fechaVisitaEditText.setText(fechaVisita);
         calendarBtn = (ImageButton) findViewById(R.id.rutalocation_calendar_btn);
 
         clienteAutoComplete = (CustomAutoCompleteView) findViewById(R.id.rutalocation_cliente_autocomplete);
         vendedoresAutoComplete = (CustomAutoCompleteView) findViewById(R.id.rutalocation_vendedor_autocomplete);
-
+        vendedoresAutoComplete.setVisibility(View.GONE);
         // add the listener so it will tries to suggest while the user types
         clienteAutoComplete.addTextChangedListener(new RutaLocationActivityClienteTextChangedListener(this));
         vendedoresAutoComplete.addTextChangedListener(new RutaLocationActivityUsuarioTextChangedListener(this));
@@ -220,7 +226,8 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         tipoRutaSpinner.setAdapter(tipoRutaArrayAdapter);
 
-
+        tipoRutaSpinner.setSelection(3);
+        tipoRutaSpinner.setEnabled(false);
         tipoRutaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -230,7 +237,7 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
+        //tipoRutaSpinner.setSelection(3);
         guardarRutaBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,13 +264,13 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             guardarRutaBtn.setEnabled(true);
             return;
         }
-
-        if (vendedorSeleccionado == null || vendedoresAutoComplete.getText().toString().equals("")){
+        /////////////////////vendedor///////////////////////////////////////////////////////////////
+        /*if (vendedorSeleccionado == null || vendedoresAutoComplete.getText().toString().equals("")){
             String[] buttons = {"Ok"};
             AppUtils.show(null, "Seleccione un vendedor", buttons, RutaLocationNewActivity.this, false, dialogOnclicListener);
             guardarRutaBtn.setEnabled(true);
             return;
-        }
+        }*/
 
         if ( fechaVisitaEditText.getText().toString().isEmpty()){
             String[] buttons = {"Ok"};
@@ -296,6 +303,10 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
         String fechaEntregaSpinner = fechaVisitaEditText.getText().toString();
         Log.d(TAG, "fecha del Spinner: "+ fechaEntregaSpinner);
 
+        //obtener usuario logueado
+        Session sessionLogueado = db.selectUsuarioLogeado();
+        Usuario usuario = db.selectUsuarioById(sessionLogueado.getUserId());
+
         SimpleDateFormat inputFecha = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat outputFecha = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         String fechaRutaVisita = null;
@@ -312,19 +323,20 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
         //ruta.setDate(fecha.format(new Date()));
         ruta.setDate(fechaRutaVisita);
         ruta.setClient_id(clienteSeleccionado.getId());
-        ruta.setUser_id(vendedorSeleccionado.getId());
+        //////////////////////////////////////////////////////////////////////////////////
+        ruta.setUser_id(sessionLogueado.getUserId());
+        //////////////////////////////////////////////////////////////////////////////////
         ruta.setPriority(Integer.valueOf(prioridadEditText.getText().toString()));
         ruta.setStatus("V");
         ruta.setType(tipoRutaSeleccionado);
         ruta.setObservation(observacionEditText.getText().toString());
-
         if (!enLinea){
             Log.d(TAG, "Sin conexion, se guarda la entrega");
 
-            //guardar con estado PENDIENTE para su posterior envio
-            //e.setEstado_envio("PENDIENTE");
-            //db.insertEntrega(e);
 
+            //guardar con estado PENDIENTE para su posterior envio
+            ruta.setEstadoEnvio("PENDIENTE");
+            db.insertRutaLocation(ruta);
             /*
             List<Entrega> entregasInsertadas = db.selectEntregaByEstado("PENDIENTE");
             for (Entrega e: entregasInsertadas){
@@ -337,7 +349,7 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             Toast toast = Toast.makeText(context, text, duration);
             toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
             toast.show();
-            //finish();
+            finish();
             return;
         }
 
@@ -362,7 +374,6 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             jsonObject.accumulate("status", ruta.getStatus());
             jsonObject.accumulate("observation", ruta.getObservation());
             jsonObject.accumulate("type", ruta.getType());
-
             // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
 
@@ -385,21 +396,6 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             int code = httpResponse.getStatusLine().getStatusCode();
             //si llega 401 es error de login
             Log.d(TAG, "responde code: "+code);
-            if (code == 200){
-                Toast.makeText(getApplicationContext(), "Ruta enviada correctamente.", Toast.LENGTH_LONG).show();
-                guardarRutaBtn.setEnabled(true);
-                //guardar con estado ENVIADO
-                /*
-                c.setEstado_envio("ENVIADO");
-                db.insertCobranza(c);
-                for (CobranzaDetalle cd : c.getDetalles()){
-                    db.insertCobranzaDetalle(cd);
-                } */
-                finish();
-            } else {
-                Toast.makeText(getApplicationContext(), "Error al enviar ruta .", Toast.LENGTH_LONG).show();
-                guardarRutaBtn.setEnabled(true);
-            }
 
             // 9. receive response as inputStream
             inputStream = httpResponse.getEntity().getContent();
@@ -410,12 +406,39 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             } else {
                 result = "Did not work!";
             }
+
+            if (code == 200){
+                if (result.contains("Portal Movil Tigo")) {
+                    Log.d(TAG, "Sin conexion, se guarda el pedido");
+
+                    ruta.setEstadoEnvio("PENDIENTE");
+                    db.insertRutaLocation(ruta);
+
+                    Context context = getApplicationContext();
+                    CharSequence text = "No hay conexión. Se guarda y se volverá a intentar mas tarde.";
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+                    toast.show();
+                    finish();
+                    return;
+                }
+                Toast.makeText(getApplicationContext(), "Ruta enviada correctamente.", Toast.LENGTH_LONG).show();
+                guardarRutaBtn.setEnabled(true);
+                //guardar con estado ENVIADO
+                ruta.setEstadoEnvio("ENVIADO");
+                db.insertRutaLocation(ruta);
+                finish();
+            }
             Log.d(TAG, "resultado  post: "+ result);
         } catch (Exception e) {
-            AppUtils.handleError("Error al enviar ruta.", RutaLocationNewActivity.this);
+            //AppUtils.handleError("Error al enviar ruta.", RutaLocationNewActivity.this);
             Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
             guardarRutaBtn.setEnabled(true);
         }
+
+
+
 
     }
 
@@ -468,14 +491,14 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
-    public static void enviarEntregasPendientes (Context context){
-        new RutaLocationNewActivity().enviarEntregas(context);
+    public static void enviarutaPendientes (Context context){
+        new RutaLocationNewActivity().enviarRuta(context);
     }
 
-    public void enviarEntregas (Context context){
+    public void enviarRuta(Context context){
 
         db = new AppDatabase(context);
-        List<Entrega> list = db.selectEntregaByEstado("PENDIENTE");
+        List<RutaLocation> list = db.selectRutaLocationByEstado("PENDIENTE");
         Log.d(TAG, "============== Se encontraron " + list.size() +" Entregas PENDIENTES ");
 
         if (list.size() > 0){
@@ -484,9 +507,14 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             Toast toast = Toast.makeText(context, text, duration);
             toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
             toast.show();
+
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
         }
-        for (Entrega entrega : list){
+        for (RutaLocation ruta : list){
             //e = entrega;
+            InputStream inputStream = null;
+            String result = "";
             CommDelegateAndroid delegateSendDelivery = new CommDelegateAndroid(){
                 @Override
                 public void onError(){
@@ -501,15 +529,107 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
                     //finish();
                 }
             };
-            new Comm().requestGet(CommReq.CommReqSendDelivery, new String[][]{
-                    {"user_id", entrega.getUser_id()},
+            /*new Comm().requestGet(CommReq.CommReqSendDelivery, new String[][]{
+                    {"user_id",ruta.getUser_id()},
                     {"client_id", entrega.getClient_id()},
                     {"order_id",entrega.getOrder_id()},
                     {"date_delivered", entrega.getDate_delivered()},
                     {"time_delivered", entrega.getTime_delivered()},
                     {"observation", entrega.getObservation()}
-            }, delegateSendDelivery);
+            }, delegateSendDelivery);*/
+            try {
+                // 1. create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
+                String url = Comm.URL + CommReq.CommReqPostSaveRoute;
+                // 2. make POST request to the given URL
+                HttpPost httpPost = new HttpPost(url);
+                String json = "";
+
+                // 3. build jsonObject
+                /*String fechaVisita = ruta.get();
+                String fechaProximaVisita = ruta.getFecha_prox_visita();
+                String horaVisita = ruta.getHoravisita();*/
+
+                JSONObject jsonObject = new JSONObject();
+
+                jsonObject.accumulate("date", ruta.getDate());
+                jsonObject.accumulate("user_id", ruta.getUser_id());
+                jsonObject.accumulate("client_id", ruta.getClient_id());
+                jsonObject.accumulate("zone", 1);
+                jsonObject.accumulate("priority", ruta.getPriority());
+                jsonObject.accumulate("status", "A");
+                jsonObject.accumulate("observation", ruta.getObservation());
+                jsonObject.accumulate("type", ruta.getType());
+                //jsonObject.accumulate("id", 3);
+                /*jsonObject.accumulate("tipo_visita", r.getTipo_visita());
+                jsonObject.accumulate("ruc", r.getRuc());
+                jsonObject.accumulate("cliente", r.getCliente());
+                jsonObject.accumulate("latitude", String.valueOf(r.getLatitude()));
+                jsonObject.accumulate("longitude", String.valueOf(r.getLongitude()));
+                jsonObject.accumulate("observation",  r.getObservation());
+                jsonObject.accumulate("status", "A");
+                jsonObject.accumulate("usuario", r.getUsuario());
+                jsonObject.accumulate("fechavisita", fechaVisita);
+                jsonObject.accumulate("horavisita", horaVisita);
+                jsonObject.accumulate("fecha_prox_visita", fechaProximaVisita);*/
+
+                // 4. convert JSONObject to JSON to String
+                json = jsonObject.toString();
+
+                // ** Alternative way to convert Person object to JSON string usin Jackson Lib
+                // ObjectMapper mapper = new ObjectMapper();
+                // json = mapper.writeValueAsString(person);
+
+                // 5. set json to StringEntity
+                StringEntity se = new StringEntity(json);
+
+                // 6. set httpPost Entity
+                httpPost.setEntity(se);
+
+                // 7. Set some headers to inform server about the type of the content
+                httpPost.setHeader("Accept", "application/json");
+                httpPost.setHeader("Content-type", "application/json");
+
+                Log.d(TAG, "enviando post: "+ httpPost.toString());
+                Log.d(TAG, "mensaje post: "+ json);
+
+                DefaultHttpClient httpclient2 = new DefaultHttpClient();
+                //httpclient2.setCookieStore(Globals.cookieStore);
+
+                // 8. Execute POST request to the given URL
+                HttpResponse httpResponse = httpclient2.execute(httpPost);
+
+                int code = httpResponse.getStatusLine().getStatusCode();
+                //si llega 401 es error de login
+                Log.d(TAG, "responde code envio visita pendiente: "+code);
+
+                // 9. receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
+
+                // 10. convert inputstream to string
+                if(inputStream != null) {
+                    result = convertInputStreamToString(inputStream);
+                } else {
+                    result = "Did not work!";
+                }
+
+                if (code == 200){
+                    if (result.contains("Portal Movil Tigo")){
+                        Log.e(TAG, "Portal tigo; Sin saldo");
+                        return;
+                    }
+
+                    ruta.setEstadoEnvio("ENVIADO");
+                    db.updateRutaLocation(ruta);
+                }
+                Log.d(TAG, "resultado  post: "+ result);
+            } catch (Exception e) {
+                e.printStackTrace();
+                //AppUtils.handleError("Error al enviar visita.", RegistroVisitasActivity.this);
+                Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
+            }
         }
+
     }
 
     // this function is used in CustomAutoCompleteTextChangedListener.java

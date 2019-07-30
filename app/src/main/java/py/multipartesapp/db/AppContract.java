@@ -193,6 +193,7 @@ public class AppContract {
         String type = "TYPE";
         String fechaHoraEntrada = "FECHA_HORA_ENTRADA";
         String fechaHoraSalida = "FECHA_HORA_SALIDA";
+        String estadoEnvio="ESTADO_ENVIO";
     }
 
     interface CobranzaColumns {

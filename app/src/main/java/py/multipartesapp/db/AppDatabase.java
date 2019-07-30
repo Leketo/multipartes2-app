@@ -44,7 +44,7 @@ public class AppDatabase {
     //Database
     private static final String DATABASE_NAME = "myDatabase";
     //DB version
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     private final DictionaryOpenHelper mDatabaseOpenHelper;
 
@@ -145,7 +145,8 @@ public class AppDatabase {
 
     public List<RutaLocation> selectAllRutaLocation(){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM "+AppContract.Tables.RUTA_LOCATION + " WHERE status != 'V' ORDER BY "+AppContract.RutaLocation.priority + " DESC ", null);
+        Cursor c = db.rawQuery("SELECT * FROM "+AppContract.Tables.RUTA_LOCATION +
+                " WHERE status != 'V' ORDER BY "+AppContract.RutaLocation.priority + " DESC ", null);
         return mappingListRutaLocation(c);
     }
 
@@ -395,6 +396,14 @@ public class AppDatabase {
         Cursor c = db.rawQuery(" SELECT * FROM " +AppContract.Tables.REGISTRO_VISITA+ " WHERE ESTADO_ENVIO=" +"'"+estado+"'", null );
         return mappingListRegistroVisita(c);
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    public List<RutaLocation> selectRutaLocationByEstado (String estado){
+        SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
+        Cursor c = db.rawQuery(" SELECT * FROM " +AppContract.Tables.RUTA_LOCATION+ " WHERE ESTADO_ENVIO=" +"'"+estado+"'", null );
+        return mappingListRutaLocation(c);
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////
 
     public List<Pedido> selectPedidoByEstado (String estado){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
@@ -822,6 +831,7 @@ public class AppDatabase {
                 rutaLocation.setFechaHoraSalida(cursor.getString(cursor.getColumnIndex(AppContract.RutaLocation.fechaHoraSalida)));
                 rutaLocation.setType(cursor.getString(cursor.getColumnIndex(AppContract.RutaLocation.type)));
                 rutaLocation.setObservation(cursor.getString(cursor.getColumnIndex(AppContract.RutaLocation.observation)));
+                rutaLocation.setObservation(cursor.getString(cursor.getColumnIndex(AppContract.RutaLocation.estadoEnvio)));
 
                 list.add(rutaLocation);
             } while (cursor.moveToNext());
@@ -1344,6 +1354,37 @@ public class AppDatabase {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    //insertar rutalocation
+    public void insertRutaLocation (RutaLocation entrega){
+        SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
+
+        /*Entrega ultimaEntrega = selectLastEntrega();
+        if (ultimaEntrega.getId() != null)
+            entrega.setId(ultimaEntrega.getId()+1);
+        else
+            entrega.setId(0);*/
+
+        ContentValues values = new ContentValues();
+        values.put(AppContract.RutaLocation.id, entrega.getId());
+        values.put(AppContract.RutaLocation.client_id, entrega.getClient_id());
+        values.put(AppContract.RutaLocation.priority, entrega.getPriority());
+        values.put(AppContract.RutaLocation.user_id, entrega.getUser_id());
+        values.put(AppContract.RutaLocation.latitude, entrega.getLatitude());
+        values.put(AppContract.RutaLocation.longitude, entrega.getLongitude());
+        values.put(AppContract.RutaLocation.observation, entrega.getObservation());
+        values.put(AppContract.RutaLocation.estadoEnvio, entrega.getEstadoEnvio());
+        values.put(AppContract.RutaLocation.date, entrega.getDate());
+        values.put(AppContract.RutaLocation.zone, entrega.getZone());
+        values.put(AppContract.RutaLocation.status, entrega.getStatus());
+        values.put(AppContract.RutaLocation.type, entrega.getType());
+
+
+        db.insert(AppContract.Tables. RUTA_LOCATION, null, values);
+        Log.d("Valor Insertado", entrega.toString());
+    }
+    ////////////////////////////////////////////////////////////////////////
+
     public void insertRutaLocationLista (List<RutaLocation> listRutaLocation, Context context){
         //initializeInstance(new AppDatabase.DictionaryOpenHelper(context));
         //SQLiteDatabase db = AppDatabase.getInstance().openDatabase();
@@ -1361,7 +1402,8 @@ public class AppDatabase {
                 + AppContract.RutaLocation.priority + ","
                 + AppContract.RutaLocation.status + ","
                 + AppContract.RutaLocation.type + ","
-                + AppContract.RutaLocation.observation + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                + AppContract.RutaLocation.estadoEnvio + ","
+                + AppContract.RutaLocation.observation + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);");
 
         db.beginTransaction();
         try {
@@ -2293,6 +2335,7 @@ public class AppDatabase {
         values.put(AppContract.RutaLocation.salida, rutaLocation.getSalida());
         values.put(AppContract.RutaLocation.fechaHoraEntrada, rutaLocation.getFechaHoraEntrada());
         values.put(AppContract.RutaLocation.fechaHoraSalida, rutaLocation.getFechaHoraSalida());
+        values.put(AppContract.RutaLocation.estadoEnvio, rutaLocation.getEstadoEnvio());
 
         String[] whereArgs = { rutaLocation.getId().toString() };
         int cant_row = db.update(AppContract.Tables.RUTA_LOCATION, values, AppContract.RutaLocation.id+"="+rutaLocation.getId(), null);
@@ -2745,9 +2788,9 @@ public class AppDatabase {
                             + AppContract.RutaLocation.fechaHoraEntrada + ", "
                             + AppContract.RutaLocation.fechaHoraSalida + ", "
                             + AppContract.RutaLocation.type + ", "
-                            + AppContract.RutaLocation.observation + "); "
+                            + AppContract.RutaLocation.observation + ", "
+                            +AppContract.RutaLocation.estadoEnvio+");");
 
-            );
             Log.d("Creo tabla","RUTA_LOCATION");
 
             db.execSQL("CREATE VIRTUAL TABLE " + AppContract.Tables.COBRANZA+ " USING fts3 ("

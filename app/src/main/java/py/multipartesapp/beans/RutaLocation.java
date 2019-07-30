@@ -27,6 +27,8 @@ public class RutaLocation extends Bean {
     String FechaHoraSalida;
 
 
+    String estadoEnvio;
+
     @Override
     public void initWithJson(JSONObject o) throws JSONException {
         id = getInteger(o, "id");
@@ -124,6 +126,14 @@ public class RutaLocation extends Bean {
 
     public void setObservation(String observation) {
         this.observation = observation;
+    }
+
+    public String getEstadoEnvio() {
+        return estadoEnvio;
+    }
+
+    public void setEstadoEnvio(String estadoEnvio) {
+        this.estadoEnvio = estadoEnvio;
     }
 
     @Override

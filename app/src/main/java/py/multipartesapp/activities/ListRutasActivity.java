@@ -63,6 +63,7 @@ public class ListRutasActivity extends ActionBarActivity {
     private AppDatabase db = new AppDatabase(this);
     private ImageAdapter adapter;
     private ListView listRutasListView;
+    private Button nuevoListBtn;
     private Button verMapaBtn;
     private Spinner filtroSpinner;
 
@@ -78,6 +79,9 @@ public class ListRutasActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //muestra el boton atras
         getSupportActionBar().setTitle("Lista de Rutas");
 
+        ////////////////////////////////////////////////////
+        nuevoListBtn = (Button) findViewById(R.id.listanuevo_btn_new);
+        ////////////////////////////////////////////////////
         if (Build.VERSION.SDK_INT > 9){
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -120,8 +124,19 @@ public class ListRutasActivity extends ActionBarActivity {
         listRutasListView.setAdapter(adapter);
 
         Log.d(TAG, "cantidad de rutas encontradas:" + listRutas.size());
-        if (listRutas.size() == 0)
-            Toast.makeText(getApplicationContext(), "No hay hoja de ruta asignada para el día de hoy. Pruebe sincronizar para obtener su hoja de ruta.", Toast.LENGTH_LONG).show();
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        nuevoListBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ListRutasActivity.this, RutaLocationNewActivity.class);
+                startActivity(intent);
+            }
+        });
+        /////////////////////////////////////////////////////////////////////////////////////////
+        //if (listRutas.size() == 0)
+          //  Toast.makeText(getApplicationContext(), "No hay hoja de ruta asignada para el día de hoy. Pruebe sincronizar para obtener su hoja de ruta.", Toast.LENGTH_LONG).show();
+
 
         verMapaBtn.setOnClickListener(new View.OnClickListener() {
             @Override
