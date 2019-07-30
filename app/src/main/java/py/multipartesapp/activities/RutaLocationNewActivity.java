@@ -319,7 +319,7 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
         ruta.setObservation(observacionEditText.getText().toString());
 
         if (!enLinea){
-            Log.d(TAG, "Sin conexion, se guarda la entrega");
+            Log.d(TAG, "Sin conexion, se guarda la hoja de ruta");
 
             //guardar con estado PENDIENTE para su posterior envio
             //e.setEstado_envio("PENDIENTE");
@@ -508,7 +508,7 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
                     {"date_delivered", entrega.getDate_delivered()},
                     {"time_delivered", entrega.getTime_delivered()},
                     {"observation", entrega.getObservation()}
-            }, delegateSendDelivery);
+            }, delegateSendDelivery,false);
         }
     }
 

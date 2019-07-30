@@ -142,7 +142,7 @@ public class LocationService extends Service {
                     {"user_id", ""+session.getUserId().toString()},
                     {"time", hora},
                     {"date", fecha},
-            }, delegateSendLocation);
+            }, delegateSendLocation,false);
         }
 
 

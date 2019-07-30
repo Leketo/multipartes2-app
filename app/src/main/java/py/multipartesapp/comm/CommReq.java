@@ -12,6 +12,9 @@ public class CommReq {
     public static final String CommReqGetAllClients
             = App + "client/summary";
 
+    public static final String CommReqSincronizarClientes
+            = App + "client/sincronizar";
+
     public static final String CommReqSendVisita
             = App + "visit/save/params";
 
@@ -38,11 +41,17 @@ public class CommReq {
     public static final String CommReqGetAllProduct
             = App + "product/summary";
 
+    public static final String CommReqSincronizarProductos
+            = App + "product/sincronizar";
+
     public static final String CommReqGetAllPrecioCategoria
             = App + "product/price/version/list";
 
     public static final String CommReqGetAllPrecioVersion
             = App + "product/price/summary";
+
+    public static final String CommReqSincronizarPrecios
+            = App + "product/price/summary/new";
 
     public static final String CommReqGetAllRoutes
             = App + "routes/sincronizar/hoja-ruta/TODOS";
@@ -62,6 +71,9 @@ public class CommReq {
     public static final String CommReqGetAllFacturas
             = App + "invoice/summary";
 
+
+    public static final String CommReqSincronizarFacturas
+            = App + "invoice/sincronizar";
     public static final String CommReqPostSaveRoute
             = App + "routes/save";
 
@@ -88,6 +100,8 @@ public class CommReq {
     public static final String  CommReqConsultaEstadoCuenta="api/report/extracto";
 
     public static final String CommReqConsultaPedidos="api/report/pedidos";
+
+
 
 
 

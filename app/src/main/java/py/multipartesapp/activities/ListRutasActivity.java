@@ -88,11 +88,11 @@ public class ListRutasActivity extends ActionBarActivity {
         filtroSpinner = (Spinner) findViewById(R.id.list_rutas_spinner_filtro);
 
         List<String> listFiltros = new ArrayList<>();
-//        listFiltros.add("TODOS");
-//        listFiltros.add("PENDIENTES");
-//        listFiltros.add("ENTREGAS");
+        listFiltros.add("TODOS");
+        listFiltros.add("PENDIENTES");
+        listFiltros.add("ENTREGAS");
 //        listFiltros.add("PEDIDOS");
-//        listFiltros.add("COBROS");
+        listFiltros.add("COBROS");
         listFiltros.add("VISITAS");
 
         ArrayAdapter<String> filtroAdapter = new ArrayAdapter<String>
@@ -140,17 +140,17 @@ public class ListRutasActivity extends ActionBarActivity {
                 if (filtro.equals("TODOS")){
                     listRutas = db.selectAllRutaLocation();
                 } else if (filtro.equals("PENDIENTES")) {
-                    listRutas = db.selectRutaLocationByFilter(null, "null", null);
+                    listRutas = db.selectRutaLocationByFilter("A",null, "null", null);
                 } else if (filtro.equals("COMPLETADOS")){
-                        listRutas = db.selectRutaLocationByFilter(null, "Y", "Y");
+                        listRutas = db.selectRutaLocationByFilter("TODOS",null, "Y", "Y");
                 } else if (filtro.equals("ENTREGAS")){
-                    listRutas = db.selectRutaLocationByFilter("ENTREGA", null, null);
+                    listRutas = db.selectRutaLocationByFilter("TODOS","ENTREGA", null, null);
                 } else if (filtro.equals("PEDIDOS")){
-                    listRutas = db.selectRutaLocationByFilter("PEDIDO", null, null);
+                    listRutas = db.selectRutaLocationByFilter("TODOS","PEDIDO", null, null);
                 } else if (filtro.equals("COBROS")){
-                    listRutas = db.selectRutaLocationByFilter("COBRANZA", null, null);
+                    listRutas = db.selectRutaLocationByFilter("TODOS","COBRANZA", null, null);
                 } else if (filtro.equals("VISITAS")) {
-                    listRutas = db.selectRutaLocationByFilter("VISITA", null, null);
+                    listRutas = db.selectRutaLocationByFilter("TODOS","VISITA", null, null);
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -236,6 +236,7 @@ public class ListRutasActivity extends ActionBarActivity {
                 v.setTag(R.id.item_ruta_salida_btn, v.findViewById(R.id.item_ruta_salida_btn));
                 v.setTag(R.id.item_ruta_entrada_btn, v.findViewById(R.id.item_ruta_entrada_btn));
                 v.setTag(R.id.item_ruta_salida_btn, v.findViewById(R.id.item_ruta_salida_btn));
+                v.setTag(R.id.item_ruta_btn_accion, v.findViewById(R.id.item_ruta_btn_accion));
                 v.setTag(R.id.item_ruta_btn_accion, v.findViewById(R.id.item_ruta_btn_accion));
                 v.setTag(R.id.item_ruta_edit_observacion, v.findViewById(R.id.item_ruta_edit_observacion));
                 v.setTag(R.id.item_ruta_layout_observacion, v.findViewById(R.id.item_ruta_layout_observacion));
@@ -416,8 +417,8 @@ public class ListRutasActivity extends ActionBarActivity {
                         }
                     });
                 } else if (item.getType().equals("VISITA")) {
-                    actionBtn.setText("Completar");
-                    actionBtn.setVisibility(View.GONE);
+                    actionBtn.setText("ENVIAR");
+                    //actionBtn.setVisibility(View.GONE);
                     actionBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -430,7 +431,7 @@ public class ListRutasActivity extends ActionBarActivity {
                             Cliente c = db.selectClienteById(ruta.getClient_id());
                             Globals.setClienteSeleccionadoRuta(c);
 
-                            ruta.setStatus("V");
+                            ruta.setStatus("O");
                             db.updateRutaLocation(ruta);
                             Toast.makeText(getApplicationContext(), "Completado con exito", Toast.LENGTH_LONG).show();
 

@@ -149,9 +149,13 @@ public class AppDatabase {
         return mappingListRutaLocation(c);
     }
 
-    public List<RutaLocation> selectRutaLocationByFilter(String tipo, String entrada, String salida){
+    public List<RutaLocation> selectRutaLocationByFilter(String estado, String tipo, String entrada, String salida){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
         String query = "SELECT * FROM "+AppContract.Tables.RUTA_LOCATION + " WHERE 1=1 ";
+        if(estado.equalsIgnoreCase("A")){
+            query=query+" AND estado='A'";
+        }
+
         if (tipo != null){
             query = query + " AND "+AppContract.RutaLocation.type +"='"+ tipo+"'";
         }

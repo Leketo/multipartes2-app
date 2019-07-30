@@ -259,7 +259,7 @@ public class LoginActivity extends Activity {
 
         new Comm().requestGet(CommReq.CommReqGetUserLoged, new String[][]{
                 {"username",usernameEditText.getText().toString()}
-        }, delegateGetUsuario);
+        }, delegateGetUsuario,false);
     }
 
     public  void getUsuarioLogeado(){
@@ -293,7 +293,7 @@ public class LoginActivity extends Activity {
 
         new Comm().requestGet(CommReq.CommReqGetUserLoged, new String[][]{
                 {"username",usernameEditText.getText().toString()}
-        }, delegateGetUsuario);
+        }, delegateGetUsuario,false);
 
     }
 

@@ -317,7 +317,7 @@ public class EntregaActivity extends ActionBarActivity implements View.OnClickLi
                 {"date_delivered", e.getDate_delivered()},
                 {"time_delivered", e.getTime_delivered()},
                 {"observation", e.getObservation()}
-        }, delegateSendDelivery);
+        }, delegateSendDelivery,false);
 
     }
 
@@ -410,7 +410,7 @@ public class EntregaActivity extends ActionBarActivity implements View.OnClickLi
                     {"date_delivered", entrega.getDate_delivered()},
                     {"time_delivered", entrega.getTime_delivered()},
                     {"observation", entrega.getObservation()}
-            }, delegateSendDelivery);
+            }, delegateSendDelivery,false);
         }
     }
 

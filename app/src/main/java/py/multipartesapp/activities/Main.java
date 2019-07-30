@@ -378,7 +378,7 @@ public class Main extends ActionBarActivity {
                         {"user_id", l.getId_user()},
                         {"time", l.getTime()},
                         {"date", l.getDate()},
-                }, delegateSendLocation);
+                }, delegateSendLocation,false);
 
                 db.deleteLocation(location);
             }

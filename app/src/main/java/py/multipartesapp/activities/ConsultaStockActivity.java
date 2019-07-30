@@ -178,7 +178,7 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
                 new Comm().requestGet(Comm.URL, CommReq.CommReqGetStockProducto, new String[][]{
                         {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
-                }, delegate);
+                }, delegate,false);
 
                 
 //                //pedidoLinearLayout.setVisibility(View.VISIBLE);

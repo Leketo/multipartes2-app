@@ -12,6 +12,9 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 
@@ -19,6 +22,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 
 import py.multipartesapp.beans.Bean;
@@ -42,6 +46,7 @@ import py.multipartesapp.beans.UsuarioList;
 import py.multipartesapp.comm.Http.HttpException;
 import py.multipartesapp.comm.Http.HttpResponse;
 import py.multipartesapp.comm.Http.Logger;
+import py.multipartesapp.utils.Base64;
 import py.multipartesapp.utils.Globals;
 import py.multipartesapp.utils.Hex;
 
@@ -123,7 +128,12 @@ public class Comm extends Application{
         {CommReq.CommReqGetAllProductSubFamily, ProductoSubFamiliaList.class.getName()},
 		{CommReq.CommReqGetAllProductImages, ProductoImagenList.class.getName()},
 		{CommReq.CommReqGetRegistroVisita, RegistroVisitaList.class.getName()},
-		{CommReq.CommReqGetAllEntrega, EntregaList.class.getName()}, {CommReq.CommReqGetStockProducto, StockList.class.getName()}
+		{CommReq.CommReqGetAllEntrega, EntregaList.class.getName()},
+		{CommReq.CommReqGetStockProducto, StockList.class.getName()},
+		{CommReq.CommReqSincronizarClientes, ClienteList.class.getName()},
+			{CommReq.CommReqSincronizarFacturas, FacturaList.class.getName()},
+			{CommReq.CommReqSincronizarPrecios, PrecioVersionList.class.getName()},
+			{CommReq.CommReqSincronizarProductos, ProductoList.class.getName()}
 
 
 	};
@@ -381,9 +391,9 @@ public class Comm extends Application{
         return Hex.encode(ret);
     }
 
-	public void requestPost(final String req, final Object[][] params, final CommDelegate delegate){
+	public void requestPost(final String req, final Object[][] params, final CommDelegate delegate,boolean respuestaBase64){
 		Map hash = toMap(params);
-		request(req, hash, delegate);
+		request(req, hash, delegate,respuestaBase64);
 	}
 
     /*
@@ -392,7 +402,7 @@ public class Comm extends Application{
         request2(req, multimap, delegate);
     }
 	*/
-	public void request(final String req, final Map params, final CommDelegate delegate){
+	public void request(final String req, final Map params, final CommDelegate delegate,Boolean respuestaBase64){
 		
 		execute(new CommRunnable() {
 			
@@ -404,7 +414,7 @@ public class Comm extends Application{
 				Object object = null;
 				try {
 					response = post(delegate, req, URL+commandURL,params);
-					object = objectFromResponse(req,response);
+					object = objectFromResponse(req,response,respuestaBase64);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -416,7 +426,32 @@ public class Comm extends Application{
 			}			
 		}, delegate);
 	}
-	public void request(final String api_url,final String req, final Map params, final CommDelegate delegate){
+
+	public void requestPost(final String req, final Map params, final CommDelegate delegate,Boolean respuestaBase64){
+
+		execute(new CommRunnable() {
+
+			public CommResponse run() throws CommException {
+
+				String commandURL = req;
+				commandURL = sanitateUrl(commandURL);
+				String response;
+				Object object = null;
+				try {
+					response = post(delegate, req, URL+commandURL,params);
+					object = objectFromResponse(req,response,respuestaBase64);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				if( object instanceof Bean ){
+					return new CommResponse((Bean) object);
+				} else {
+					return new CommResponse(object);
+				}
+			}
+		}, delegate);
+	}
+	public void request(final String api_url,final String req, final Map params, final CommDelegate delegate,boolean respuestaBase64){
 
 		execute(new CommRunnable() {
 
@@ -428,7 +463,7 @@ public class Comm extends Application{
 				Object object = null;
 				try {
 					response = post(delegate, req, api_url+commandURL,params);
-					object = objectFromResponse(req,response);
+					object = objectFromResponse(req,response,respuestaBase64);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -442,19 +477,19 @@ public class Comm extends Application{
 	}
 
 
-    public void requestGet(final String req, final Object[][]params, final CommDelegate delegate){
+    public void requestGet(final String req, final Object[][]params, final CommDelegate delegate,boolean respuestaBase64){
         Map hash = toMap(params);
         String api_url=URL;
-        requestGet(api_url,req, hash, delegate);
+        requestGet(api_url,req, hash, delegate,respuestaBase64);
     }
 
-	public void requestGet(final String api_url,final String req, final Object[][]params, final CommDelegate delegate){
+	public void requestGet(final String api_url,final String req, final Object[][]params, final CommDelegate delegate,boolean respuestaBase64){
 		Map hash = toMap(params);
 
-		requestGet(api_url,req, hash, delegate);
+		requestGet(api_url,req, hash, delegate,respuestaBase64);
 	}
 
-    public void requestGet(final String api_url,final String req, final Map params, final CommDelegate delegate){
+    public void requestGet(final String api_url,final String req, final Map params, final CommDelegate delegate,Boolean respuestaBase64){
 
 
         execute(new CommRunnable() {
@@ -467,7 +502,7 @@ public class Comm extends Application{
                 Object object = null;
                 try {
                     response = get(delegate, req, api_url + commandURL, params);
-                    object = objectFromResponse(req,response);
+                    object = objectFromResponse(req,response,respuestaBase64);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -481,7 +516,7 @@ public class Comm extends Application{
     }
 
 
-	public void requestGetUrl(final String api_url,final String req, final Map params, final CommDelegate delegate){
+	public void requestGetUrl(final String api_url,final String req, final Map params, final CommDelegate delegate,boolean respuestaBase64){
 
 
 		execute(new CommRunnable() {
@@ -494,7 +529,7 @@ public class Comm extends Application{
 				Object object = null;
 				try {
 					response = get(delegate, req, api_url + commandURL, params);
-					object = objectFromResponse(req,response);
+					object = objectFromResponse(req,response,respuestaBase64);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -509,36 +544,75 @@ public class Comm extends Application{
 	}
 	
 	
-	private static Object objectFromResponse(String req, String response) {
+//	private static Object objectFromResponse(String req, String response) {
+//
+//        String clazzName = (String) classByReq.get(req);
+//        Boolean contain = classByReq.containsValue(clazzName);
+//        //if (!classByReq.containsValue(req)){
+//        if (!contain){
+//            clazzName = extras.get(req);
+//        }
+//
+//		if( clazzName!=null ){
+//			try {
+//				Bean b = (Bean) Class.forName(clazzName).newInstance();
+//				return b.fromJSON(response);
+//			} catch (Throwable e) {
+//                //si es de login ignorar nomas
+//                if (req != "j_spring_security_check")
+//                    throw new RuntimeException(e);
+//                else
+//                    e.printStackTrace();
+//			}
+//		}
+//		try {
+//			final JSONObject jsonObject = new JSONObject(response);
+//			return jsonObject.getJSONObject("data");
+//		} catch (JSONException e) {
+//			Log.e("ERROR:", "URL no está asociada ninguna clase para Mapear respuesta.");
+//		}
+//		return response;
+//	}
 
-        String clazzName = (String) classByReq.get(req);
-        Boolean contain = classByReq.containsValue(clazzName);
-        //if (!classByReq.containsValue(req)){
-        if (!contain){
-            clazzName = extras.get(req);
-        }
-
+	private static Object objectFromResponse(String req, String response,boolean respuestaBase64) throws CommException {
+		//Log.d("prueba detencion - response", response);
+		String clazzName = (String) classByReq.get(req);
 		if( clazzName!=null ){
 			try {
 				Bean b = (Bean) Class.forName(clazzName).newInstance();
+				if(!response.isEmpty())
+					if(respuestaBase64) {
+						byte[] compressed  = Base64.decode(response, 0);
+						ByteArrayInputStream bis = new ByteArrayInputStream(compressed);
+						GZIPInputStream gis = new GZIPInputStream(bis);
+						BufferedReader br = new BufferedReader(new InputStreamReader(gis, "UTF-8"));
+						StringBuilder sb = new StringBuilder();
+						String line;
+						while((line = br.readLine()) != null) {
+							sb.append(line);
+						}
+						br.close();
+						gis.close();
+						bis.close();
+						return b.fromJSON(sb.toString());
+					}
 				return b.fromJSON(response);
 			} catch (Throwable e) {
-                //si es de login ignorar nomas
-                if (req != "j_spring_security_check")
-                    throw new RuntimeException(e);
-                else
-                    e.printStackTrace();
+				e.printStackTrace();
+				throw new CommException("Disculpe, ocurrió un error de conexión. " +
+						"Asegurese que tenga una conexión a internet y vuelva a intentar."
+						,ErrorCodeHttpConnectionFailed.toString(),e);
 			}
 		}
 		try {
 			final JSONObject jsonObject = new JSONObject(response);
 			return jsonObject.getJSONObject("data");
 		} catch (JSONException e) {
-			Log.e("ERROR:", "URL no está asociada ninguna clase para Mapear respuesta.");
+			//can happen, noop
 		}
 		return response;
 	}
-	
+
 	public static String md5(String pass) {
 		if( pass == null ){
 			return null;
