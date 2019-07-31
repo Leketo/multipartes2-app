@@ -31,6 +31,7 @@ import py.multipartesapp.beans.LocatorDTO;
 import py.multipartesapp.beans.PrecioCategoria;
 import py.multipartesapp.beans.PrecioVersion;
 import py.multipartesapp.beans.Producto;
+import py.multipartesapp.beans.ProductoList;
 import py.multipartesapp.beans.StockDTO;
 import py.multipartesapp.beans.StockList;
 import py.multipartesapp.comm.Comm;
@@ -178,7 +179,7 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
                 new Comm().requestGet(Comm.URL, CommReq.CommReqGetStockProducto, new String[][]{
                         {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
-                }, delegate,false);
+                }, delegate,false, ProductoList.class.getName());
 
                 
 //                //pedidoLinearLayout.setVisibility(View.VISIBLE);

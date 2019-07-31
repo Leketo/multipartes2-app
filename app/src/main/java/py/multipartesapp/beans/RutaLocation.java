@@ -25,6 +25,8 @@ public class RutaLocation extends Bean {
     String salida;
     String fechaHoraEntrada;
     String FechaHoraSalida;
+    Usuario usuario;
+    Cliente cliente;
 
 
     @Override
@@ -40,6 +42,8 @@ public class RutaLocation extends Bean {
         status = getString(o, "status");
         type = getString(o, "type");
         observation = getString(o, "observation");
+        usuario=(Usuario) new Usuario().fromJSON(o.getJSONObject("usuario"));
+        cliente=(Cliente) new Cliente().fromJSON(o.getJSONObject("cliente"));
     }
 
     @Override
@@ -124,6 +128,22 @@ public class RutaLocation extends Bean {
 
     public void setObservation(String observation) {
         this.observation = observation;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     @Override

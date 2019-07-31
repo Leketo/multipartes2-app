@@ -49,7 +49,7 @@ import py.multipartesapp.beans.Entrega;
 import py.multipartesapp.beans.RutaLocation;
 import py.multipartesapp.beans.Usuario;
 import py.multipartesapp.comm.Comm;
-import py.multipartesapp.comm.CommDelegateAndroid;
+//import py.multipartesapp.comm.CommDelegateAndroid;
 import py.multipartesapp.comm.CommReq;
 import py.multipartesapp.customAutoComplete.CustomAutoCompleteView;
 import py.multipartesapp.customAutoComplete.RutaLocationActivityClienteTextChangedListener;
@@ -474,42 +474,42 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
 
     public void enviarEntregas (Context context){
 
-        db = new AppDatabase(context);
-        List<Entrega> list = db.selectEntregaByEstado("PENDIENTE");
-        Log.d(TAG, "============== Se encontraron " + list.size() +" Entregas PENDIENTES ");
-
-        if (list.size() > 0){
-            CharSequence text = "Enviando "+ list.size() + " Entregas ";
-            int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
-            toast.show();
-        }
-        for (Entrega entrega : list){
-            //e = entrega;
-            CommDelegateAndroid delegateSendDelivery = new CommDelegateAndroid(){
-                @Override
-                public void onError(){
-                    Log.e(TAG, this.exception.getMessage());
-                    //AppUtils.handleError(this.exception.getMessage(), LoginActivity.this);
-                }
-                @Override
-                public void onSuccess(){
-                    //guardar con estado ENVIADO
-                    //e.setEstado_envio("ENVIADO");
-                    //db.updateEntrega(e);
-                    //finish();
-                }
-            };
-            new Comm().requestGet(CommReq.CommReqSendDelivery, new String[][]{
-                    {"user_id", entrega.getUser_id()},
-                    {"client_id", entrega.getClient_id()},
-                    {"order_id",entrega.getOrder_id()},
-                    {"date_delivered", entrega.getDate_delivered()},
-                    {"time_delivered", entrega.getTime_delivered()},
-                    {"observation", entrega.getObservation()}
-            }, delegateSendDelivery,false);
-        }
+//        db = new AppDatabase(context);
+//        List<Entrega> list = db.selectEntregaByEstado("PENDIENTE");
+//        Log.d(TAG, "============== Se encontraron " + list.size() +" Entregas PENDIENTES ");
+//
+//        if (list.size() > 0){
+//            CharSequence text = "Enviando "+ list.size() + " Entregas ";
+//            int duration = Toast.LENGTH_LONG;
+//            Toast toast = Toast.makeText(context, text, duration);
+//            toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
+//            toast.show();
+//        }
+//        for (Entrega entrega : list){
+//            //e = entrega;
+//            CommDelegateAndroid delegateSendDelivery = new CommDelegateAndroid(){
+//                @Override
+//                public void onError(){
+//                    Log.e(TAG, this.exception.getMessage());
+//                    //AppUtils.handleError(this.exception.getMessage(), LoginActivity.this);
+//                }
+//                @Override
+//                public void onSuccess(){
+//                    //guardar con estado ENVIADO
+//                    //e.setEstado_envio("ENVIADO");
+//                    //db.updateEntrega(e);
+//                    //finish();
+//                }
+//            };
+//            new Comm().requestGet(CommReq.CommReqSendDelivery, new String[][]{
+//                    {"user_id", entrega.getUser_id()},
+//                    {"client_id", entrega.getClient_id()},
+//                    {"order_id",entrega.getOrder_id()},
+//                    {"date_delivered", entrega.getDate_delivered()},
+//                    {"time_delivered", entrega.getTime_delivered()},
+//                    {"observation", entrega.getObservation()}
+//            }, delegateSendDelivery,false,"");
+//        }
     }
 
     // this function is used in CustomAutoCompleteTextChangedListener.java

@@ -28,7 +28,6 @@ import java.util.zip.GZIPInputStream;
 import py.multipartesapp.beans.Bean;
 import py.multipartesapp.beans.ClienteList;
 import py.multipartesapp.beans.CobranzaList;
-import py.multipartesapp.beans.EntregaList;
 import py.multipartesapp.beans.FacturaList;
 import py.multipartesapp.beans.Login;
 import py.multipartesapp.beans.PedidoList;
@@ -128,10 +127,9 @@ public class Comm extends Application{
         {CommReq.CommReqGetAllProductSubFamily, ProductoSubFamiliaList.class.getName()},
 		{CommReq.CommReqGetAllProductImages, ProductoImagenList.class.getName()},
 		{CommReq.CommReqGetRegistroVisita, RegistroVisitaList.class.getName()},
-		{CommReq.CommReqGetAllEntrega, EntregaList.class.getName()},
 		{CommReq.CommReqGetStockProducto, StockList.class.getName()},
 		{CommReq.CommReqSincronizarClientes, ClienteList.class.getName()},
-			{CommReq.CommReqSincronizarFacturas, FacturaList.class.getName()},
+            {CommReq.CommReqSincronizarFacturas, FacturaList.class.getName()},
 			{CommReq.CommReqSincronizarPrecios, PrecioVersionList.class.getName()},
 			{CommReq.CommReqSincronizarProductos, ProductoList.class.getName()}
 
@@ -391,9 +389,9 @@ public class Comm extends Application{
         return Hex.encode(ret);
     }
 
-	public void requestPost(final String req, final Object[][] params, final CommDelegate delegate,boolean respuestaBase64){
+	public void requestPost(final String req, final Object[][] params, final CommDelegate delegate,boolean respuestaBase64,String className){
 		Map hash = toMap(params);
-		request(req, hash, delegate,respuestaBase64);
+		request(req, hash, delegate,respuestaBase64,className);
 	}
 
     /*
@@ -402,7 +400,7 @@ public class Comm extends Application{
         request2(req, multimap, delegate);
     }
 	*/
-	public void request(final String req, final Map params, final CommDelegate delegate,Boolean respuestaBase64){
+	public void request(final String req, final Map params, final CommDelegate delegate,Boolean respuestaBase64,String className){
 		
 		execute(new CommRunnable() {
 			
@@ -414,7 +412,7 @@ public class Comm extends Application{
 				Object object = null;
 				try {
 					response = post(delegate, req, URL+commandURL,params);
-					object = objectFromResponse(req,response,respuestaBase64);
+					object = objectFromResponse(req,response,respuestaBase64,className);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -427,7 +425,7 @@ public class Comm extends Application{
 		}, delegate);
 	}
 
-	public void requestPost(final String req, final Map params, final CommDelegate delegate,Boolean respuestaBase64){
+	public void requestPost(final String req, final Map params, final CommDelegate delegate,Boolean respuestaBase64,String className){
 
 		execute(new CommRunnable() {
 
@@ -439,7 +437,7 @@ public class Comm extends Application{
 				Object object = null;
 				try {
 					response = post(delegate, req, URL+commandURL,params);
-					object = objectFromResponse(req,response,respuestaBase64);
+					object = objectFromResponse(req,response,respuestaBase64,className);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -451,7 +449,7 @@ public class Comm extends Application{
 			}
 		}, delegate);
 	}
-	public void request(final String api_url,final String req, final Map params, final CommDelegate delegate,boolean respuestaBase64){
+	public void request(final String api_url,final String req, final Map params, final CommDelegate delegate,boolean respuestaBase64,String className){
 
 		execute(new CommRunnable() {
 
@@ -463,7 +461,7 @@ public class Comm extends Application{
 				Object object = null;
 				try {
 					response = post(delegate, req, api_url+commandURL,params);
-					object = objectFromResponse(req,response,respuestaBase64);
+					object = objectFromResponse(req,response,respuestaBase64,className);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -477,19 +475,19 @@ public class Comm extends Application{
 	}
 
 
-    public void requestGet(final String req, final Object[][]params, final CommDelegate delegate,boolean respuestaBase64){
+    public void requestGet(final String req, final Object[][]params, final CommDelegate delegate,boolean respuestaBase64,String className){
         Map hash = toMap(params);
         String api_url=URL;
-        requestGet(api_url,req, hash, delegate,respuestaBase64);
+        requestGet(api_url,req, hash, delegate,respuestaBase64,className);
     }
 
-	public void requestGet(final String api_url,final String req, final Object[][]params, final CommDelegate delegate,boolean respuestaBase64){
+	public void requestGet(final String api_url,final String req, final Object[][]params, final CommDelegate delegate,boolean respuestaBase64,String className){
 		Map hash = toMap(params);
 
-		requestGet(api_url,req, hash, delegate,respuestaBase64);
+		requestGet(api_url,req, hash, delegate,respuestaBase64,className);
 	}
 
-    public void requestGet(final String api_url,final String req, final Map params, final CommDelegate delegate,Boolean respuestaBase64){
+    public void requestGet(final String api_url,final String req, final Map params, final CommDelegate delegate,Boolean respuestaBase64,String className){
 
 
         execute(new CommRunnable() {
@@ -502,7 +500,7 @@ public class Comm extends Application{
                 Object object = null;
                 try {
                     response = get(delegate, req, api_url + commandURL, params);
-                    object = objectFromResponse(req,response,respuestaBase64);
+                    object = objectFromResponse(req,response,respuestaBase64,className);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -516,7 +514,7 @@ public class Comm extends Application{
     }
 
 
-	public void requestGetUrl(final String api_url,final String req, final Map params, final CommDelegate delegate,boolean respuestaBase64){
+	public void requestGetUrl(final String api_url,final String req, final Map params, final CommDelegate delegate,boolean respuestaBase64,String className){
 
 
 		execute(new CommRunnable() {
@@ -529,7 +527,7 @@ public class Comm extends Application{
 				Object object = null;
 				try {
 					response = get(delegate, req, api_url + commandURL, params);
-					object = objectFromResponse(req,response,respuestaBase64);
+					object = objectFromResponse(req,response,respuestaBase64,className);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -574,9 +572,9 @@ public class Comm extends Application{
 //		return response;
 //	}
 
-	private static Object objectFromResponse(String req, String response,boolean respuestaBase64) throws CommException {
+	private static Object objectFromResponse(String req, String response,boolean respuestaBase64,String clazzName) throws CommException {
 		//Log.d("prueba detencion - response", response);
-		String clazzName = (String) classByReq.get(req);
+		//String clazzName = (String) classByReq.get(req);
 		if( clazzName!=null ){
 			try {
 				Bean b = (Bean) Class.forName(clazzName).newInstance();

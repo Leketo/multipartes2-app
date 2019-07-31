@@ -90,10 +90,10 @@ public class ListRutasActivity extends ActionBarActivity {
         List<String> listFiltros = new ArrayList<>();
         listFiltros.add("TODOS");
         listFiltros.add("PENDIENTES");
-        listFiltros.add("ENTREGAS");
+   //     listFiltros.add("ENTREGAS");
 //        listFiltros.add("PEDIDOS");
-        listFiltros.add("COBROS");
-        listFiltros.add("VISITAS");
+       // listFiltros.add("COBROS");
+        //listFiltros.add("VISITAS");
 
         ArrayAdapter<String> filtroAdapter = new ArrayAdapter<String>
                 (this, android.R.layout.simple_dropdown_item_1line, listFiltros);
@@ -417,7 +417,7 @@ public class ListRutasActivity extends ActionBarActivity {
                         }
                     });
                 } else if (item.getType().equals("VISITA")) {
-                    actionBtn.setText("ENVIAR");
+                    actionBtn.setText("OMITIR");
                     //actionBtn.setVisibility(View.GONE);
                     actionBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -433,7 +433,9 @@ public class ListRutasActivity extends ActionBarActivity {
 
                             ruta.setStatus("O");
                             db.updateRutaLocation(ruta);
-                            Toast.makeText(getApplicationContext(), "Completado con exito", Toast.LENGTH_LONG).show();
+                            enviarRuta(ruta, "ENTRADA");
+
+                            Toast.makeText(getApplicationContext(), "El cliente seleccionado ha sido omitido con exito", Toast.LENGTH_LONG).show();
 
 //                            Intent intent = new Intent(ListRutasActivity.this, RegistroVisitasActivity.class);
 //                            startActivity(intent);
@@ -585,19 +587,12 @@ public class ListRutasActivity extends ActionBarActivity {
                 }
 
                 Toast.makeText(getApplicationContext(), "Ruta actualizada.", Toast.LENGTH_LONG).show();
-                //guardarCobranzaBtn.setEnabled(true);
-                //guardar con estado ENVIADO
-                //c.setEstado_envio("ENVIADO");
-//                if(tipo.equalsIgnoreCase("SALIDA")){
-//                    ruta.setStatus("V");
-//                }
 
                 //db.updateRutaLocation(ruta);
                 ((BaseAdapter) listRutasListView.getAdapter()).notifyDataSetChanged();
                 //finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Error al enviar la ruta", Toast.LENGTH_LONG).show();
-                //guardarCobranzaBtn.setEnabled(true);
             }
 
             Log.d(TAG, "resultado  post: "+ result);

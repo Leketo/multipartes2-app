@@ -32,7 +32,7 @@ import py.multipartesapp.R;
 import py.multipartesapp.beans.ClienteList;
 import py.multipartesapp.beans.CobranzaList;
 import py.multipartesapp.beans.Configuracion;
-import py.multipartesapp.beans.EntregaList;
+//import py.multipartesapp.beans.EntregaList;
 import py.multipartesapp.beans.FacturaList;
 import py.multipartesapp.beans.Pedido;
 import py.multipartesapp.beans.PedidoDetalle;
@@ -78,7 +78,7 @@ public class SincronizarActivity extends ActionBarActivity {
     private ProductoSubFamiliaList productoSubFamiliaList;
     private ProductoImagenList productoImagenList;
     private RegistroVisitaList registroVisitaList;
-    private EntregaList entregaList;
+//    private EntregaList entregaList;
 
     private CheckBox catalogoCheckbox;
     private int count = 0;
@@ -171,9 +171,10 @@ public class SincronizarActivity extends ActionBarActivity {
 
         String userId = db.selectUsuarioLogeado().getUserId().toString();
 
-//        sincronizarHojaDeRuta();
+        sincronizarHojaDeRuta();
 //
-//        sincronizarPreciosCategoria();
+        sincronizarPreciosCategoria();
+
 //        sincronizarFamiliaProducto();
 //        sincronizarSubFamiliaProducto();
 
@@ -223,7 +224,7 @@ public class SincronizarActivity extends ActionBarActivity {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d(TAG, "Clientes. Insertando registros");
+                            Log.d(TAG, "Clientes. Insertando registros...");
 
                             //Si ya existe actualizar
                             if (db.countCliente() > 0) {
@@ -248,15 +249,10 @@ public class SincronizarActivity extends ActionBarActivity {
                             Log.d(TAG, "Clientes. Registros insertados exitosamente");
                             runOnUiThread(new Runnable() {
                                 public void run() {
-                                    //progressBar.setVisibility(View.INVISIBLE);
-
-                                    //sincronizarBtn.setEnabled(true);
-                                    //mensajeTextView.setText("Sincronización finalizada.");
-
                                     count++;
-                                    mensajeTextView.setText("Sincronizando Clientes... "+clienteList.getList().size()+" " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando Clientes... "+clienteList.getList().size()+" " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
 
@@ -278,7 +274,7 @@ public class SincronizarActivity extends ActionBarActivity {
         mapClaseResponse.put(CommReq.CommReqSincronizarClientes + "/" + ultmaActualizacionCliente, ClienteList.class.getName());
 
         new Comm(mapClaseResponse).requestGet(CommReq.CommReqSincronizarClientes + "/" + ultmaActualizacionCliente, new String[][]{
-        }, delegateClientes,true);
+        }, delegateClientes,true,ClienteList.class.getName());
     }
 
     public void sincronizarUsuarios() {
@@ -313,9 +309,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando usuarios " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("Sincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -327,7 +323,7 @@ public class SincronizarActivity extends ActionBarActivity {
             }
         };
         new Comm().requestGet(CommReq.CommReqGetAllUsersTeckel, new String[][]{
-        }, delegateUsuarios,false);
+        }, delegateUsuarios,false,UsuarioList.class.getName());
     }
 
     public void sincronizarPedidos() {
@@ -379,9 +375,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando pedidos " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -406,7 +402,7 @@ public class SincronizarActivity extends ActionBarActivity {
                 {"userId", userId
                 }
 
-        }, delegatePedidos,false);
+        }, delegatePedidos,false,PedidoList.class.getName());
     }
 
     public void sincronizarProductos() {
@@ -469,9 +465,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando Productos... "+ productoList.getList().size()+ " " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando Productos... "+ productoList.getList().size()+ " " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -492,7 +488,7 @@ public class SincronizarActivity extends ActionBarActivity {
         mapClaseResponse.put(CommReq.CommReqSincronizarProductos + "/" + ultmaActualizacionProductos, ProductoList.class.getName());
 
         new Comm(mapClaseResponse).requestGet(CommReq.CommReqSincronizarProductos + "/" + ultmaActualizacionProductos, new String[][]{
-        }, delegateProductos,true);
+        }, delegateProductos,true,ProductoList.class.getName());
     }
 
     public void sincronizarPreciosCategoria() {
@@ -526,9 +522,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando Categoria de precios... "+precioCategoriaList.getList().size()+" " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando Categoria de precios... "+precioCategoriaList.getList().size()+" " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -540,7 +536,7 @@ public class SincronizarActivity extends ActionBarActivity {
             }
         };
         new Comm().requestGet(CommReq.CommReqGetAllPrecioCategoria, new String[][]{
-        }, delegatePrecioCategoria,false);
+        }, delegatePrecioCategoria,false,PrecioCategoriaList.class.getName());
 
     }
 
@@ -590,9 +586,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando Lista de precios "+precioVersionList+" " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando Lista de precios "+precioVersionList.getList().size()+" " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -614,7 +610,7 @@ public class SincronizarActivity extends ActionBarActivity {
         mapClaseResponse.put(CommReq.CommReqSincronizarPrecios+ "/" + ultmaActualizacionPrecioVersion, PrecioVersionList.class.getName());
 
         new Comm(mapClaseResponse).requestGet(CommReq.CommReqSincronizarPrecios + "/" + ultmaActualizacionPrecioVersion, new String[][]{
-        }, delegatePrecioVersion,true);
+        }, delegatePrecioVersion,true,PrecioVersionList.class.getName());
     }
 
     public void sincronizarHojaDeRuta() {
@@ -649,9 +645,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando Hoja de Ruta "+rutaLocationList.getList().size()+" " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando Hoja de Ruta "+rutaLocationList.getList().size()+" " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -667,7 +663,7 @@ public class SincronizarActivity extends ActionBarActivity {
 
         mapClaseResponseRoutes.put(CommReq.CommReqGetAllRoutes + "?userId=" + userId, RutaLocationList.class.getName());
         new Comm(mapClaseResponseRoutes).requestGet(CommReq.CommReqGetAllRoutes + "?userId=" + userId, new String[][]{
-        }, delegateRutas,false);
+        }, delegateRutas,false,RutaLocationList.class.getName());
     }
 
     public void sincronizarCobros() {
@@ -716,9 +712,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -740,7 +736,7 @@ public class SincronizarActivity extends ActionBarActivity {
         mapClaseResponse.put(CommReq.CommReqGetAllCobros + "/" + ultmaActualizacionCobros, CobranzaList.class.getName());
 
         new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllCobros +"/"+ultmaActualizacionCobros, new String[][]{
-        }, delegateCobranzas,false);
+        }, delegateCobranzas,false,CobranzaList.class.getName());
     }
 
     public void sincronizarFacturas() {
@@ -791,9 +787,9 @@ public class SincronizarActivity extends ActionBarActivity {
                                 public void run() {
 
                                     count++;
-                                    mensajeTextView.setText("Sincronizando Facturas..."+facturaList.getList().size()+" " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando Facturas..."+facturaList.getList().size()+" " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -815,7 +811,7 @@ public class SincronizarActivity extends ActionBarActivity {
         mapClaseResponse.put(CommReq.CommReqSincronizarFacturas + "/" + ultmaActualizacionFactura, FacturaList.class.getName());
 
         new Comm(mapClaseResponse).requestGet(CommReq.CommReqSincronizarFacturas + "/" + ultmaActualizacionFactura, new String[][]{
-        }, delegateFacturas,true);
+        }, delegateFacturas,true,FacturaList.class.getName());
     }
 
     public void sincronizarFamiliaProducto(){
@@ -851,9 +847,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando Familias..."+ productoFamiliaList.getList().size()+" " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando Familias..."+ productoFamiliaList.getList().size()+" " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -865,7 +861,7 @@ public class SincronizarActivity extends ActionBarActivity {
         };
         if (catalogoCheckbox.isChecked()) {
             new Comm().requestGet(CommReq.CommReqGetAllProductFamily, new String[][]{
-            }, delegateProductoFamilia,false);
+            }, delegateProductoFamilia,false,ProductoFamiliaList.class.getName());
         }
     }
 
@@ -901,9 +897,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando SubFamiliar "+productoSubFamiliaList.getList().size()+" " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando SubFamiliar "+productoSubFamiliaList.getList().size()+" " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -915,7 +911,7 @@ public class SincronizarActivity extends ActionBarActivity {
         };
         if (catalogoCheckbox.isChecked()) {
             new Comm().requestGet(CommReq.CommReqGetAllProductSubFamily, new String[][]{
-            }, delegateProductoSubFamilia,false);
+            }, delegateProductoSubFamilia,false,ProductoSubFamiliaList.class.getName());
         }
     }
 
@@ -963,9 +959,9 @@ public class SincronizarActivity extends ActionBarActivity {
                                     obtenerImagenesProducto();
 
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -987,7 +983,7 @@ public class SincronizarActivity extends ActionBarActivity {
             mapClaseResponse.put(CommReq.CommReqGetAllProductImages + "/" + ultmaActualizacionProductImg, ProductoImagenList.class.getName());
 
             new Comm(mapClaseResponse).requestGet(CommReq.CommReqGetAllProductImages + "/" + ultmaActualizacionProductImg, new String[][]{
-            }, delegateProductoImagen,false);
+            }, delegateProductoImagen,false,ProductoImagenList.class.getName());
         }
     }
 
@@ -1025,9 +1021,9 @@ public class SincronizarActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     count++;
-                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
+                                    mensajeTextView.append("\nSincronizando de visitas " + count + "/" + getTotal() + "");
                                     if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
+                                        mensajeTextView.append("\nSincronización finalizada.");
                                         progressBar.setVisibility(View.INVISIBLE);
                                     }
                                 }
@@ -1051,63 +1047,64 @@ public class SincronizarActivity extends ActionBarActivity {
                 {"fechaDesde", ayer},
                 {"fechaHasta", hoy},
 
-        }, delegateRegistroVisita,false);
+        }, delegateRegistroVisita,false,RegistroVisitaList.class.getName());
     }
 
-    public void sincronizarEntregas(){
-        CommDelegateAndroid delegateEntrega = new CommDelegateAndroid() {
-            @Override
-            public void onError() {
-                progressBar.setVisibility(View.INVISIBLE);
-                AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
-                sincronizarBtn.setEnabled(true);
-            }
-
-            @Override
-            public void onSuccess() {
-
-                Log.d(TAG, "Entrega. Datos recibidos");
-                Comm.CommResponse r = response;
-                entregaList = (EntregaList) r.getBean();
-                if (entregaList != null) {
-                    Log.d(TAG, "Entrega. Tamaño lista " + entregaList.getList().size());
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d(TAG, "Entrega. Insertando registros");
-
-                            Log.d(TAG, "Se eliminará la tabla Entrega...");
-                            db.deleteEntrega();
-                            Log.d(TAG, "Eliminacion exitosa");
-                            db.insertEntregaLista(entregaList.getList(), getApplicationContext());
-                            Log.d(TAG, "Entrega. Registros insertados exitosamente");
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    count++;
-                                    mensajeTextView.setText("Sincronizando " + count + "/" + getTotal() + "");
-                                    if (count == getTotal()) {
-                                        mensajeTextView.setText("Sincronización finalizada.");
-                                        progressBar.setVisibility(View.INVISIBLE);
-                                    }
-                                }
-                            });
-                        }
-                    }).start();
-                }
-            }
-        };
-
-        new Comm().requestGet(CommReq.CommReqGetAllEntrega, new String[][]{{"userId", userId}
-        }, delegateEntrega,false);
-    }
+//    public void sincronizarEntregas(){
+//        CommDelegateAndroid delegateEntrega = new CommDelegateAndroid() {
+//            @Override
+//            public void onError() {
+//                progressBar.setVisibility(View.INVISIBLE);
+//                AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
+//                sincronizarBtn.setEnabled(true);
+//            }
+//
+//            @Override
+//            public void onSuccess() {
+//
+//                Log.d(TAG, "Entrega. Datos recibidos");
+//                Comm.CommResponse r = response;
+//                entregaList = (EntregaList) r.getBean();
+//                if (entregaList != null) {
+//                    Log.d(TAG, "Entrega. Tamaño lista " + entregaList.getList().size());
+//
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Log.d(TAG, "Entrega. Insertando registros");
+//
+//                            Log.d(TAG, "Se eliminará la tabla Entrega...");
+//                            db.deleteEntrega();
+//                            Log.d(TAG, "Eliminacion exitosa");
+//                            db.insertEntregaLista(entregaList.getList(), getApplicationContext());
+//                            Log.d(TAG, "Entrega. Registros insertados exitosamente");
+//                            runOnUiThread(new Runnable() {
+//                                public void run() {
+//                                    count++;
+//
+//                                    mensajeTextView.append("\nSincronizando " + count + "/" + getTotal() + "");
+//                                    if (count == getTotal()) {
+//                                        mensajeTextView.append("\nSincronización finalizada.");
+//                                        progressBar.setVisibility(View.INVISIBLE);
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    }).start();
+//                }
+//            }
+//        };
+//
+//        new Comm().requestGet(CommReq.CommReqGetAllEntrega, new String[][]{{"userId", userId}
+//        }, delegateEntrega,false,EntregaList.class.getName());
+//    }
 
     public int getTotal() {
         //int TOTAL = 10; //10 servicios
         int TOTAL = 6;
-        //si esta marcado catalogo son 4 servicios extras, lista imagenes, familia, subfamilia, los archivos
-        if (catalogoCheckbox.isChecked())
-            TOTAL = TOTAL + 4;
+//        //si esta marcado catalogo son 4 servicios extras, lista imagenes, familia, subfamilia, los archivos
+//        if (catalogoCheckbox.isChecked())
+//            TOTAL = TOTAL + 4;
 
         return TOTAL;
     }
