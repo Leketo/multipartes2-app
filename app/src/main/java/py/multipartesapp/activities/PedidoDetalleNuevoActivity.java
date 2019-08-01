@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +79,7 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
         cantidadTxtView = (EditText) findViewById(R.id.pedido_nuevo_detalle_cantidad);
         verCatalogoBtn = (Button) findViewById(R.id.pedido_detalle_nuevo_catalogo_btn);
         vistaPreviaImgView = (ImageView) findViewById(R.id.agregar_detalle_pedido_vista_previa);
+        codigoSistemaTxtView=(TextView) findViewById(R.id.cod_sistema);
 
         verCatalogoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,8 +115,12 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
                 productoSeleccionado = (Producto) parent.getAdapter().getItem(position);
 
                 codigoProductoTxtView.setText(productoSeleccionado.getCodinterno());
+                codigoSistemaTxtView.setText(""+productoSeleccionado.getM_product_id());
                 Integer precio = calcularPrecioProducto();
-                precioProductoTxtView.setText(precio.toString());
+                DecimalFormat dfFormat = new DecimalFormat("###,###");
+
+                //precioPublicoTextView.setText(""+dfFormat.format(precioVersion.getPrecio_publico().intValue()));
+                precioProductoTxtView.setText(""+ dfFormat.format(precio.intValue()));
 
                 int sumaAsu=0;
                 int sumaSucursales=0;
@@ -160,6 +166,7 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
                     if (event.getRawX() >= leftEdgeOfRightDrawable) {
                         // clicked on clear icon
                         productoTextView.setText("");
+                        codigoSistemaTxtView.setText("");
                         productoSeleccionado = null;
                         codigoProductoTxtView.setText("");
                         precioProductoTxtView.setText("");

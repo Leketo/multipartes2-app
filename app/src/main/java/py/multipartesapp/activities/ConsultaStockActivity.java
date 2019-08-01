@@ -151,9 +151,9 @@ public class ConsultaStockActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //clienteTextView.clearFocus();
-                //productoSeleccionado = productosFiltrados.get(position);
+                productoSeleccionado = productosFiltrados.get(position);
 
-                productoSeleccionado=productosFiltrados.get(0);
+                //productoSeleccionado=productosFiltrados.get(0);
 
                 idProductoTextView.setText(""+productoSeleccionado.getM_product_id());
                 calcularPrecioProducto();
@@ -179,7 +179,7 @@ public class ConsultaStockActivity extends ActionBarActivity {
 
                 new Comm().requestGet(Comm.URL, CommReq.CommReqGetStockProducto, new String[][]{
                         {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
-                }, delegate,false, ProductoList.class.getName());
+                }, delegate,false, StockList.class.getName());
 
                 
 //                //pedidoLinearLayout.setVisibility(View.VISIBLE);
@@ -212,8 +212,9 @@ public class ConsultaStockActivity extends ActionBarActivity {
                         productoAutoComplete.setText("");
                         limpiarListViewStock();
 //                        codigoProductoTxtView.setText("");
-//                        precioProductoTxtView.setText("");
-//                        stockProductoTxtView.setText("");
+                        idProductoTextView.setText("");
+                        precioMayoristaTextView.setText("");
+                        precioPublicoTextView.setText("");
                         return true;
                     }
                 }
