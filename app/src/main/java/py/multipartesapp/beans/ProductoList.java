@@ -16,7 +16,7 @@ public class ProductoList extends Bean {
 		this.list = list;
 	}
 
-	
+
 	public List<Producto> getList() {
 		return list;
 	}

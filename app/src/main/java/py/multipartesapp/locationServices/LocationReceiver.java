@@ -78,7 +78,7 @@ public class LocationReceiver extends BroadcastReceiver {
                     {"user_id", location.getId_user()},
                     {"time", location.getTime()},
                     {"date", location.getDate()},
-            }, delegateSendLocation);
+            }, delegateSendLocation,false,"");
         } else {
             db.insertLocation(location);
         }

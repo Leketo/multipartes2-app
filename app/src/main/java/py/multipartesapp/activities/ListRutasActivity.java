@@ -1,5 +1,6 @@
 package py.multipartesapp.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -61,17 +62,20 @@ public class ListRutasActivity extends ActionBarActivity {
 
     private List<RutaLocation> listRutas;
     private AppDatabase db = new AppDatabase(this);
-    private ImageAdapter adapter;
+    private ImageAdapter adapterHojaRuta;
     private ListView listRutasListView;
     private Button nuevoListBtn;
     private Button verMapaBtn;
     private Spinner filtroSpinner;
+    private  ProgressDialog progress;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_rutas);
+
+        progress = new ProgressDialog(this);
 
         /* Configuracion ActionBar*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -92,12 +96,14 @@ public class ListRutasActivity extends ActionBarActivity {
         filtroSpinner = (Spinner) findViewById(R.id.list_rutas_spinner_filtro);
 
         List<String> listFiltros = new ArrayList<>();
-//        listFiltros.add("TODOS");
-//        listFiltros.add("PENDIENTES");
-//        listFiltros.add("ENTREGAS");
+        listFiltros.add("PENDIENTES");
+        listFiltros.add("TODOS");
+        listFiltros.add("COMPLETADOS");
+        listFiltros.add("OMITIDOS");
+   //     listFiltros.add("ENTREGAS");
 //        listFiltros.add("PEDIDOS");
-//        listFiltros.add("COBROS");
-        listFiltros.add("VISITAS");
+       // listFiltros.add("COBROS");
+        //listFiltros.add("VISITAS");
 
         ArrayAdapter<String> filtroAdapter = new ArrayAdapter<String>
                 (this, android.R.layout.simple_dropdown_item_1line, listFiltros);
@@ -120,8 +126,8 @@ public class ListRutasActivity extends ActionBarActivity {
         //listRutas.add(r1);
         //listRutas.add(r2);
 
-        adapter = new ImageAdapter (this);
-        listRutasListView.setAdapter(adapter);
+        adapterHojaRuta = new ImageAdapter (this);
+        listRutasListView.setAdapter(adapterHojaRuta);
 
         Log.d(TAG, "cantidad de rutas encontradas:" + listRutas.size());
 
@@ -155,19 +161,24 @@ public class ListRutasActivity extends ActionBarActivity {
                 if (filtro.equals("TODOS")){
                     listRutas = db.selectAllRutaLocation();
                 } else if (filtro.equals("PENDIENTES")) {
-                    listRutas = db.selectRutaLocationByFilter(null, "null", null);
+                    listRutas = db.selectRutaLocationByFilter("A",null, "null", null);
+                }else if (filtro.equals("OMITIDOS")) {
+                    listRutas = db.selectRutaLocationByFilter("O",null, "null", null);
                 } else if (filtro.equals("COMPLETADOS")){
-                        listRutas = db.selectRutaLocationByFilter(null, "Y", "Y");
+                        listRutas = db.selectRutaLocationByFilter("V",null, "Y", "Y");
                 } else if (filtro.equals("ENTREGAS")){
-                    listRutas = db.selectRutaLocationByFilter("ENTREGA", null, null);
+                    listRutas = db.selectRutaLocationByFilter("TODOS","ENTREGA", null, null);
                 } else if (filtro.equals("PEDIDOS")){
-                    listRutas = db.selectRutaLocationByFilter("PEDIDO", null, null);
+                    listRutas = db.selectRutaLocationByFilter("TODOS","PEDIDO", null, null);
                 } else if (filtro.equals("COBROS")){
-                    listRutas = db.selectRutaLocationByFilter("COBRANZA", null, null);
+                    listRutas = db.selectRutaLocationByFilter("TODOS","COBRANZA", null, null);
                 } else if (filtro.equals("VISITAS")) {
-                    listRutas = db.selectRutaLocationByFilter("VISITA", null, null);
+                    listRutas = db.selectRutaLocationByFilter("TODOS","VISITA", null, null);
                 }
-                adapter.notifyDataSetChanged();
+
+                listRutasListView.setAdapter(null);
+                listRutasListView.setAdapter(adapterHojaRuta);
+                adapterHojaRuta.notifyDataSetChanged();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -251,6 +262,7 @@ public class ListRutasActivity extends ActionBarActivity {
                 v.setTag(R.id.item_ruta_salida_btn, v.findViewById(R.id.item_ruta_salida_btn));
                 v.setTag(R.id.item_ruta_entrada_btn, v.findViewById(R.id.item_ruta_entrada_btn));
                 v.setTag(R.id.item_ruta_salida_btn, v.findViewById(R.id.item_ruta_salida_btn));
+                v.setTag(R.id.item_ruta_btn_accion, v.findViewById(R.id.item_ruta_btn_accion));
                 v.setTag(R.id.item_ruta_btn_accion, v.findViewById(R.id.item_ruta_btn_accion));
                 v.setTag(R.id.item_ruta_edit_observacion, v.findViewById(R.id.item_ruta_edit_observacion));
                 v.setTag(R.id.item_ruta_layout_observacion, v.findViewById(R.id.item_ruta_layout_observacion));
@@ -431,8 +443,8 @@ public class ListRutasActivity extends ActionBarActivity {
                         }
                     });
                 } else if (item.getType().equals("VISITA")) {
-                    actionBtn.setText("Completar");
-                    actionBtn.setVisibility(View.GONE);
+                    actionBtn.setText("OMITIR");
+                    //actionBtn.setVisibility(View.GONE);
                     actionBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -445,9 +457,20 @@ public class ListRutasActivity extends ActionBarActivity {
                             Cliente c = db.selectClienteById(ruta.getClient_id());
                             Globals.setClienteSeleccionadoRuta(c);
 
-                            ruta.setStatus("V");
+                            ruta.setStatus("O");
                             db.updateRutaLocation(ruta);
-                            Toast.makeText(getApplicationContext(), "Completado con exito", Toast.LENGTH_LONG).show();
+                            mostrarProgressBar();
+                            enviarRuta(ruta, "ENTRADA");
+                            cerrarProgressBar();
+
+                            listRutas = db.selectRutaLocationByFilter("A",null, "null", null);
+                            adapterHojaRuta.notifyDataSetChanged();
+                            String[] buttons = {"Ok"};
+                            int id_icon = R.drawable.ic_check;
+                            String msj="El cliente seleccionado ha sido omitido de la lista de hoja de ruta";
+                            AppUtils.showWithIcon("Enviado", id_icon,msj, buttons, ListRutasActivity.this, true, dialogOnclicListenerAfterSave);
+
+                            //Toast.makeText(getApplicationContext(), "El cliente seleccionado ha sido omitido con exito", Toast.LENGTH_LONG).show();
 
 //                            Intent intent = new Intent(ListRutasActivity.this, RegistroVisitasActivity.class);
 //                            startActivity(intent);
@@ -458,6 +481,26 @@ public class ListRutasActivity extends ActionBarActivity {
             return v;
         }
     }
+
+    public void mostrarProgressBar(){
+
+        progress=AppUtils.mostrarProgressDialog("Procesando...",this);
+    }
+
+    public void cerrarProgressBar(){
+        progress.dismiss();
+    }
+
+    DialogInterface.OnClickListener dialogOnclicListenerAfterSave = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            //click en boton Ok
+            //finish();
+            dialog.dismiss();
+        }
+    };
+
+
 
     public void marcarObservacion (int position, String texto){
         RutaLocation rutaLocation = listRutas.get(position);
@@ -598,20 +641,13 @@ public class ListRutasActivity extends ActionBarActivity {
                     return;
                 }
 
-                Toast.makeText(getApplicationContext(), "Ruta actualizada.", Toast.LENGTH_LONG).show();
-                //guardarCobranzaBtn.setEnabled(true);
-                //guardar con estado ENVIADO
-                //c.setEstado_envio("ENVIADO");
-//                if(tipo.equalsIgnoreCase("SALIDA")){
-//                    ruta.setStatus("V");
-//                }
+                //Toast.makeText(getApplicationContext(), "Ruta actualizada.", Toast.LENGTH_LONG).show();
 
                 //db.updateRutaLocation(ruta);
                 ((BaseAdapter) listRutasListView.getAdapter()).notifyDataSetChanged();
                 //finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Error al enviar la ruta", Toast.LENGTH_LONG).show();
-                //guardarCobranzaBtn.setEnabled(true);
             }
 
             Log.d(TAG, "resultado  post: "+ result);

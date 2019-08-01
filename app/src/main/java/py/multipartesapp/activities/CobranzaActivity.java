@@ -462,7 +462,7 @@ public class CobranzaActivity extends ActionBarActivity {
         try {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            String url = Comm.URL + "api/cobro/registrar-cobro";
+            String url = Comm.URL + "multip/api/cobro/registrar-cobro";
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
 

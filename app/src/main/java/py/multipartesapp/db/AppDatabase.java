@@ -146,13 +146,17 @@ public class AppDatabase {
     public List<RutaLocation> selectAllRutaLocation(){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM "+AppContract.Tables.RUTA_LOCATION +
-                " WHERE status != 'V' ORDER BY "+AppContract.RutaLocation.priority + " DESC ", null);
+                " WHERE status != 'V' and status != 'O' ORDER BY "+AppContract.RutaLocation.priority + " DESC ", null);
         return mappingListRutaLocation(c);
     }
 
-    public List<RutaLocation> selectRutaLocationByFilter(String tipo, String entrada, String salida){
+    public List<RutaLocation> selectRutaLocationByFilter(String estado, String tipo, String entrada, String salida){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
         String query = "SELECT * FROM "+AppContract.Tables.RUTA_LOCATION + " WHERE 1=1 ";
+        if(!estado.equalsIgnoreCase("")){
+            query=query+" AND status='"+estado+"'" ;
+        }
+
         if (tipo != null){
             query = query + " AND "+AppContract.RutaLocation.type +"='"+ tipo+"'";
         }
@@ -167,6 +171,7 @@ public class AppDatabase {
             query = query + " AND "+AppContract.RutaLocation.salida +"='"+ salida+"'";
         }
         query = query + " ORDER BY "+AppContract.RutaLocation.priority + " DESC ";
+        Log.i(TAG,"query: "+query);
 
         Cursor c = db.rawQuery(query, null);
         return mappingListRutaLocation(c);
@@ -1407,17 +1412,19 @@ public class AppDatabase {
 
         db.beginTransaction();
         try {
+            //db.execSQL();
             for (RutaLocation r : listRutaLocation) {
+
                 insStmt.bindLong(1, r.getId());
                 insStmt.bindString(2, r.getDate());
-                insStmt.bindLong(3, r.getUser_id());
+                insStmt.bindLong(3, r.getUsuario().getId());
 
                 if (r.getLatitude() != null)
                     insStmt.bindString(4, r.getLatitude());
                 if (r.getLongitude() != null)
                     insStmt.bindString(5, r.getLongitude());
 
-                insStmt.bindLong(6, r.getClient_id());
+                insStmt.bindLong(6, r.getCliente().getId());
 
                 if(r.getZone()!=null)
                 insStmt.bindLong(7, r.getZone());

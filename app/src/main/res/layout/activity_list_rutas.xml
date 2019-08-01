@@ -22,6 +22,15 @@
         android:layout_below="@id/toolbar"
         android:orientation="vertical">
 
+        <!--<Button-->
+            <!--android:id="@+id/main_btn_registroVisita"-->
+            <!--style="@style/button"-->
+            <!--android:layout_width="150dp"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:drawableTop="@drawable/ic_registrar_visita_gris"-->
+            <!--android:text="Registro Visita"-->
+            <!--android:textSize="14sp"></Button>-->
+
         <Button
             style="@style/button"
             android:id="@+id/listanuevo_btn_new"

@@ -892,7 +892,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
                 }
                 if (code == 200) {
                     if (result.contains("Portal Movil Tigo")) {
-                        Log.e(TAG, "Error al enviar peido. Sin saldo tigo");
+                        Log.e(TAG, "Error al enviar pedido. Sin saldo tigo");
                         return;
                     }
                     pedido.setEstado_envio("ENVIADO");

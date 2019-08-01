@@ -1,6 +1,7 @@
 package py.multipartesapp.utils;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -110,6 +111,18 @@ public class AppUtils {
         return null;
     }
 
+    public static ProgressDialog mostrarProgressDialog(String texto, Context ctx){
+        ProgressDialog progressDialog = new ProgressDialog(ctx);
+        progressDialog.setMessage(texto);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        //progress.setProgress(0);
+        progressDialog.show();
+        return  progressDialog;
+    }
+    public static  void cerrarProgressDialog(ProgressDialog progressDialog){
+        progressDialog.dismiss();
+    }
 
     public static boolean isOnline(Context context) {
         boolean haveConnectedWifi = false;

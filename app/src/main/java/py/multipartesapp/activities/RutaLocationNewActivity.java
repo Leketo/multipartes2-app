@@ -50,7 +50,7 @@ import py.multipartesapp.beans.RutaLocation;
 import py.multipartesapp.beans.Session;
 import py.multipartesapp.beans.Usuario;
 import py.multipartesapp.comm.Comm;
-import py.multipartesapp.comm.CommDelegateAndroid;
+//import py.multipartesapp.comm.CommDelegateAndroid;
 import py.multipartesapp.comm.CommReq;
 import py.multipartesapp.customAutoComplete.CustomAutoCompleteView;
 import py.multipartesapp.customAutoComplete.RutaLocationActivityClienteTextChangedListener;
@@ -331,7 +331,7 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
         ruta.setType(tipoRutaSeleccionado);
         ruta.setObservation(observacionEditText.getText().toString());
         if (!enLinea){
-            Log.d(TAG, "Sin conexion, se guarda la entrega");
+            Log.d(TAG, "Sin conexion, se guarda la hoja de ruta");
 
 
             //guardar con estado PENDIENTE para su posterior envio
@@ -497,12 +497,13 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
 
     public void enviarRuta(Context context){
 
+
         db = new AppDatabase(context);
         List<RutaLocation> list = db.selectRutaLocationByEstado("PENDIENTE");
         Log.d(TAG, "============== Se encontraron " + list.size() +" Entregas PENDIENTES ");
 
         if (list.size() > 0){
-            CharSequence text = "Enviando "+ list.size() + " Entregas ";
+            CharSequence text = "Enviando "+ list.size() + " Hoja de ruta ";
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(context, text, duration);
             toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
@@ -515,28 +516,8 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             //e = entrega;
             InputStream inputStream = null;
             String result = "";
-            CommDelegateAndroid delegateSendDelivery = new CommDelegateAndroid(){
-                @Override
-                public void onError(){
-                    Log.e(TAG, this.exception.getMessage());
-                    //AppUtils.handleError(this.exception.getMessage(), LoginActivity.this);
-                }
-                @Override
-                public void onSuccess(){
-                    //guardar con estado ENVIADO
-                    //e.setEstado_envio("ENVIADO");
-                    //db.updateEntrega(e);
-                    //finish();
-                }
-            };
-            /*new Comm().requestGet(CommReq.CommReqSendDelivery, new String[][]{
-                    {"user_id",ruta.getUser_id()},
-                    {"client_id", entrega.getClient_id()},
-                    {"order_id",entrega.getOrder_id()},
-                    {"date_delivered", entrega.getDate_delivered()},
-                    {"time_delivered", entrega.getTime_delivered()},
-                    {"observation", entrega.getObservation()}
-            }, delegateSendDelivery);*/
+
+
             try {
                 // 1. create HttpClient
                 HttpClient httpclient = new DefaultHttpClient();

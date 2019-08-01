@@ -25,6 +25,8 @@ public class RutaLocation extends Bean {
     String salida;
     String fechaHoraEntrada;
     String FechaHoraSalida;
+    Usuario usuario;
+    Cliente cliente;
 
 
     String estadoEnvio;
@@ -42,6 +44,8 @@ public class RutaLocation extends Bean {
         status = getString(o, "status");
         type = getString(o, "type");
         observation = getString(o, "observation");
+        usuario=(Usuario) new Usuario().fromJSON(o.getJSONObject("usuario"));
+        cliente=(Cliente) new Cliente().fromJSON(o.getJSONObject("cliente"));
     }
 
     @Override
@@ -128,30 +132,6 @@ public class RutaLocation extends Bean {
         this.observation = observation;
     }
 
-    public String getEstadoEnvio() {
-        return estadoEnvio;
-    }
-
-    public void setEstadoEnvio(String estadoEnvio) {
-        this.estadoEnvio = estadoEnvio;
-    }
-
-    @Override
-    public String toString() {
-        return "RutaLocation{" +
-                "id=" + id +
-                ", date='" + date + '\'' +
-                ", user_id=" + user_id +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", client_id=" + client_id +
-                ", zone=" + zone +
-                ", priority=" + priority +
-                ", status='" + status + '\'' +
-                ", observation='" + observation + '\'' +
-                '}';
-    }
-
     public String getEntrada() {
         return entrada;
     }
@@ -182,5 +162,52 @@ public class RutaLocation extends Bean {
 
     public void setFechaHoraSalida(String fechaHoraSalida) {
         FechaHoraSalida = fechaHoraSalida;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getEstadoEnvio() {
+        return estadoEnvio;
+    }
+
+    public void setEstadoEnvio(String estadoEnvio) {
+        this.estadoEnvio = estadoEnvio;
+    }
+
+    @Override
+    public String toString() {
+        return "RutaLocation{" +
+                "id=" + id +
+                ", date='" + date + '\'' +
+                ", user_id=" + user_id +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", client_id=" + client_id +
+                ", zone=" + zone +
+                ", priority=" + priority +
+                ", status='" + status + '\'' +
+                ", observation='" + observation + '\'' +
+                ", entrada='" + entrada + '\'' +
+                ", salida='" + salida + '\'' +
+                ", fechaHoraEntrada='" + fechaHoraEntrada + '\'' +
+                ", FechaHoraSalida='" + FechaHoraSalida + '\'' +
+                ", usuario=" + usuario +
+                ", cliente=" + cliente +
+                ", estadoEnvio='" + estadoEnvio + '\'' +
+                '}';
     }
 }
