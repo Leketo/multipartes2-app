@@ -235,7 +235,7 @@ public class SincronizarActivity extends ActionBarActivity {
                                 Log.d(TAG, "Eliminacion exitosa");
                                 db.insertClienteLista(clienteList.getList(), getApplicationContext());
                             }
-                            clienteList.getList().clear();
+                            //clienteList.getList().clear();
 
                             //insertar fecha ultima actualizacion cliente
                             Configuracion fechaActualizacion = new Configuracion();
@@ -445,7 +445,7 @@ public class SincronizarActivity extends ActionBarActivity {
                                 Log.d(TAG,"Cant. Stock Producto: "+db.countStockProducto());
 
                                 db.insertProductoLista(productoList.getList(), getApplicationContext());
-                                productoList.getList().clear();
+                                //productoList.getList().clear();
 
                                 //imprimimos la cantidad de stock del producto
                                 Log.d(TAG,"Insertar: Cant. Stock Producto Nuevo: "+ db.countStockProducto());
