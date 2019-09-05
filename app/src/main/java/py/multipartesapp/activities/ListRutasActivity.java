@@ -67,7 +67,7 @@ public class ListRutasActivity extends ActionBarActivity {
     private Button nuevoListBtn;
     private Button verMapaBtn;
     private Spinner filtroSpinner;
-    private  ProgressDialog progress;
+    private ProgressDialog progress;
 
 
     @Override
@@ -86,7 +86,7 @@ public class ListRutasActivity extends ActionBarActivity {
         ////////////////////////////////////////////////////
         nuevoListBtn = (Button) findViewById(R.id.listanuevo_btn_new);
         ////////////////////////////////////////////////////
-        if (Build.VERSION.SDK_INT > 9){
+        if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
@@ -100,9 +100,9 @@ public class ListRutasActivity extends ActionBarActivity {
         listFiltros.add("TODOS");
         listFiltros.add("COMPLETADOS");
         listFiltros.add("OMITIDOS");
-   //     listFiltros.add("ENTREGAS");
+        //     listFiltros.add("ENTREGAS");
 //        listFiltros.add("PEDIDOS");
-       // listFiltros.add("COBROS");
+        // listFiltros.add("COBROS");
         //listFiltros.add("VISITAS");
 
         ArrayAdapter<String> filtroAdapter = new ArrayAdapter<String>
@@ -126,7 +126,7 @@ public class ListRutasActivity extends ActionBarActivity {
         //listRutas.add(r1);
         //listRutas.add(r2);
 
-        adapterHojaRuta = new ImageAdapter (this);
+        adapterHojaRuta = new ImageAdapter(this);
         listRutasListView.setAdapter(adapterHojaRuta);
 
         Log.d(TAG, "cantidad de rutas encontradas:" + listRutas.size());
@@ -141,7 +141,7 @@ public class ListRutasActivity extends ActionBarActivity {
         });
         /////////////////////////////////////////////////////////////////////////////////////////
         //if (listRutas.size() == 0)
-          //  Toast.makeText(getApplicationContext(), "No hay hoja de ruta asignada para el día de hoy. Pruebe sincronizar para obtener su hoja de ruta.", Toast.LENGTH_LONG).show();
+        //  Toast.makeText(getApplicationContext(), "No hay hoja de ruta asignada para el día de hoy. Pruebe sincronizar para obtener su hoja de ruta.", Toast.LENGTH_LONG).show();
 
 
         verMapaBtn.setOnClickListener(new View.OnClickListener() {
@@ -156,30 +156,32 @@ public class ListRutasActivity extends ActionBarActivity {
         filtroSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String filtro  = (String) parent.getAdapter().getItem(position);
+                String filtro = (String) parent.getAdapter().getItem(position);
 
-                if (filtro.equals("TODOS")){
+                if (filtro.equals("TODOS")) {
                     listRutas = db.selectAllRutaLocation();
+                    Log.i(TAG, "ListaRutas: " + listRutas.toString());
                 } else if (filtro.equals("PENDIENTES")) {
-                    listRutas = db.selectRutaLocationByFilter("A",null, "null", null);
-                }else if (filtro.equals("OMITIDOS")) {
-                    listRutas = db.selectRutaLocationByFilter("O",null, "null", null);
-                } else if (filtro.equals("COMPLETADOS")){
-                        listRutas = db.selectRutaLocationByFilter("V",null, "Y", "Y");
-                } else if (filtro.equals("ENTREGAS")){
-                    listRutas = db.selectRutaLocationByFilter("TODOS","ENTREGA", null, null);
-                } else if (filtro.equals("PEDIDOS")){
-                    listRutas = db.selectRutaLocationByFilter("TODOS","PEDIDO", null, null);
-                } else if (filtro.equals("COBROS")){
-                    listRutas = db.selectRutaLocationByFilter("TODOS","COBRANZA", null, null);
+                    listRutas = db.selectRutaLocationByFilter("A", null, "null", null);
+                } else if (filtro.equals("OMITIDOS")) {
+                    listRutas = db.selectRutaLocationByFilter("O", null, "null", null);
+                } else if (filtro.equals("COMPLETADOS")) {
+                    listRutas = db.selectRutaLocationByFilter("V", null, null, null);
+                } else if (filtro.equals("ENTREGAS")) {
+                    listRutas = db.selectRutaLocationByFilter("TODOS", "ENTREGA", null, null);
+                } else if (filtro.equals("PEDIDOS")) {
+                    listRutas = db.selectRutaLocationByFilter("TODOS", "PEDIDO", null, null);
+                } else if (filtro.equals("COBROS")) {
+                    listRutas = db.selectRutaLocationByFilter("TODOS", "COBRANZA", null, null);
                 } else if (filtro.equals("VISITAS")) {
-                    listRutas = db.selectRutaLocationByFilter("TODOS","VISITA", null, null);
+                    listRutas = db.selectRutaLocationByFilter("TODOS", "VISITA", null, null);
                 }
 
                 listRutasListView.setAdapter(null);
                 listRutasListView.setAdapter(adapterHojaRuta);
                 adapterHojaRuta.notifyDataSetChanged();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 Log.d(TAG, "No selecciono ningun filtro familia.");
@@ -234,27 +236,27 @@ public class ListRutasActivity extends ActionBarActivity {
         }
 
 
-            public int getCount() {
-                return listRutas.size();
-            }
+        public int getCount() {
+            return listRutas.size();
+        }
 
-            public Object getItem(int position) {
-                return null;
-            }
+        public Object getItem(int position) {
+            return null;
+        }
 
-            public long getItemId(int position) {
-                return 0;
-            }
+        public long getItemId(int position) {
+            return 0;
+        }
 
-            // create a new ImageView for each item referenced by the Adapter
-            @Override
-            public View getView(int i, View view, ViewGroup viewGroup) {
+        // create a new ImageView for each item referenced by the Adapter
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
 
 
-                RutaLocation item = listRutas.get(i);
-                View v = view;
-                if (v == null) {
-                    v = mInflater.inflate(R.layout.list_item_ruta2, viewGroup, false);
+            RutaLocation item = listRutas.get(i);
+            View v = view;
+            if (v == null) {
+                v = mInflater.inflate(R.layout.list_item_ruta2, viewGroup, false);
 
                 v.setTag(R.id.txt1_item_ruta, v.findViewById(R.id.txt1_item_ruta));
                 //v.setTag(R.id.txt2_item_ruta, v.findViewById(R.id.txt2_item_ruta));
@@ -269,12 +271,12 @@ public class ListRutasActivity extends ActionBarActivity {
                 v.setTag(R.id.item_ruta_btn_observacion_btn, v.findViewById(R.id.item_ruta_btn_observacion_btn));
                 v.setTag(R.id.item_ruta_observacion_txt, v.findViewById(R.id.item_ruta_observacion_txt));
             }
-                TextView titleTextView = (TextView) v.findViewById(R.id.txt1_item_ruta);
-                Cliente c = db.selectClienteById(item.getClient_id());
-                titleTextView.setText(item.getPriority()+" - "+c.getNombre());
+            TextView titleTextView = (TextView) v.findViewById(R.id.txt1_item_ruta);
+            Cliente c = db.selectClienteById(item.getClient_id());
+            titleTextView.setText(item.getPriority() + " - " + c.getNombre());
 
-                SimpleDateFormat inputFecha = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-                SimpleDateFormat outputFecha = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat inputFecha = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+            SimpleDateFormat outputFecha = new SimpleDateFormat("dd-MM-yyyy");
 //                String fecha = null;
 //        try {
 //                fecha = outputFecha.format(inputFecha.parse(item.getDate()))
@@ -299,7 +301,7 @@ public class ListRutasActivity extends ActionBarActivity {
             editObservacionBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v1) {
-                    if (linearLayoutObservacion.getVisibility() == View.VISIBLE){
+                    if (linearLayoutObservacion.getVisibility() == View.VISIBLE) {
                         linearLayoutObservacion.setVisibility(View.GONE);
                     } else {
                         linearLayoutObservacion.setVisibility(View.VISIBLE);
@@ -315,7 +317,7 @@ public class ListRutasActivity extends ActionBarActivity {
                     ListView listView = (ListView) viewParent.getParent();
                     final int position = listView.getPositionForView((View) viewParent);
 
-                    Log.d(TAG, "texto:"+observacionEditText.getText().toString() + " - pos: "+position);
+                    Log.d(TAG, "texto:" + observacionEditText.getText().toString() + " - pos: " + position);
                     marcarObservacion(position, observacionEditText.getText().toString());
                     linearLayoutObservacion.setVisibility(View.GONE);
                 }
@@ -323,7 +325,7 @@ public class ListRutasActivity extends ActionBarActivity {
 
             boolean backgroundColor = false;
             //si ya marco entrada, bloquear boton entrada
-            if (item.getEntrada()!=null && item.getEntrada().equals("Y")){
+            if (item.getEntrada() != null && item.getEntrada().equals("Y")) {
                 entradaBtn.setEnabled(false);
                 backgroundColor = true;
                 entradaBtn.setVisibility(View.GONE);
@@ -340,9 +342,10 @@ public class ListRutasActivity extends ActionBarActivity {
                 }
             }
 
-            if (item.getSalida() != null && item.getSalida().equals("Y")) {                         ;
+            if (item.getSalida() != null && item.getSalida().equals("Y")) {
+                ;
                 salidaBtn.setEnabled(false);
-                if(backgroundColor) {
+                if (backgroundColor) {
                     v.setBackgroundColor(Color.parseColor("#8ddebc"));
                     editObservacionBtn.setEnabled(false);
                     salidaBtn.setVisibility(View.GONE);
@@ -369,7 +372,7 @@ public class ListRutasActivity extends ActionBarActivity {
                     final int position = listView.getPositionForView((View) viewParent);
 
                     marcarEntrada(position);
-                    Log.d(TAG, "clic en boton por el lado de onItemClickListener, pos="+position);
+                    Log.d(TAG, "clic en boton por el lado de onItemClickListener, pos=" + position);
                 }
             });
 
@@ -382,12 +385,12 @@ public class ListRutasActivity extends ActionBarActivity {
                     final int position = listView.getPositionForView((View) viewParent);
 
                     marcarSalida(position);
-                    Log.d(TAG, "clic en boton por el lado de onItemClickListener, pos="+position);
+                    Log.d(TAG, "clic en boton por el lado de onItemClickListener, pos=" + position);
                 }
             });
 
-            if (item.getType() != null){
-                if (item.getType().equals("ENTREGA")){
+            if (item.getType() != null) {
+                if (item.getType().equals("ENTREGA")) {
                     actionBtn.setText("Entregas");
                     actionBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -424,7 +427,7 @@ public class ListRutasActivity extends ActionBarActivity {
                             startActivity(intent);
                         }
                     });
-                }else if (item.getType().equals("COBRANZA")) {
+                } else if (item.getType().equals("COBRANZA")) {
                     actionBtn.setText("Cobrar");
                     actionBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -460,15 +463,15 @@ public class ListRutasActivity extends ActionBarActivity {
                             ruta.setStatus("O");
                             db.updateRutaLocation(ruta);
                             mostrarProgressBar();
-                            enviarRuta(ruta, "ENTRADA");
+                            enviarRuta(ruta, "ESTADO");
                             cerrarProgressBar();
 
-                            listRutas = db.selectRutaLocationByFilter("A",null, "null", null);
+                            listRutas = db.selectRutaLocationByFilter("A", null, "null", null);
                             adapterHojaRuta.notifyDataSetChanged();
                             String[] buttons = {"Ok"};
                             int id_icon = R.drawable.ic_check;
-                            String msj="El cliente seleccionado ha sido omitido de la lista de hoja de ruta";
-                            AppUtils.showWithIcon("Enviado", id_icon,msj, buttons, ListRutasActivity.this, true, dialogOnclicListenerAfterSave);
+                            String msj = "El cliente seleccionado ha sido omitido de la lista de hoja de ruta";
+                            AppUtils.showWithIcon("Enviado", id_icon, msj, buttons, ListRutasActivity.this, true, dialogOnclicListenerAfterSave);
 
                             //Toast.makeText(getApplicationContext(), "El cliente seleccionado ha sido omitido con exito", Toast.LENGTH_LONG).show();
 
@@ -482,12 +485,12 @@ public class ListRutasActivity extends ActionBarActivity {
         }
     }
 
-    public void mostrarProgressBar(){
+    public void mostrarProgressBar() {
 
-        progress=AppUtils.mostrarProgressDialog("Procesando...",this);
+        progress = AppUtils.mostrarProgressDialog("Procesando...", this);
     }
 
-    public void cerrarProgressBar(){
+    public void cerrarProgressBar() {
         progress.dismiss();
     }
 
@@ -501,8 +504,7 @@ public class ListRutasActivity extends ActionBarActivity {
     };
 
 
-
-    public void marcarObservacion (int position, String texto){
+    public void marcarObservacion(int position, String texto) {
         RutaLocation rutaLocation = listRutas.get(position);
 
         rutaLocation.setObservation(texto);
@@ -513,7 +515,7 @@ public class ListRutasActivity extends ActionBarActivity {
         enviarRuta(rutaLocation, "OBSERVACION");
     }
 
-    public void marcarEntrada (int position){
+    public void marcarEntrada(int position) {
         RutaLocation rutaLocation = listRutas.get(position);
         rutaLocation.setEntrada("Y");
         //SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -523,11 +525,11 @@ public class ListRutasActivity extends ActionBarActivity {
         Globals.setRutaLocationSeleccionada(rutaLocation);
         String[] buttons = {"Si", "No"};
         AppUtils.show(null, "Marcar entrada?", buttons, ListRutasActivity.this,
-                false, dialogOnclicListenerMarcarEntrada );
+                false, dialogOnclicListenerMarcarEntrada);
 
     }
 
-    public void marcarSalida (int position){
+    public void marcarSalida(int position) {
         RutaLocation rutaLocation = listRutas.get(position);
         rutaLocation.setSalida("Y");
         rutaLocation.setStatus("V");
@@ -537,14 +539,14 @@ public class ListRutasActivity extends ActionBarActivity {
 
         Globals.setRutaLocationSeleccionada(rutaLocation);
         String[] buttons = {"Si", "No"};
-        AppUtils.show(null, "Marcar salida?", buttons, ListRutasActivity.this, false,dialogOnclicListenerMarcarSalida );
+        AppUtils.show(null, "Marcar salida?", buttons, ListRutasActivity.this, false, dialogOnclicListenerMarcarSalida);
     }
 
     DialogInterface.OnClickListener dialogOnclicListenerMarcarEntrada = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             //Si=-1, No = -2
-            if (which == -1){
+            if (which == -1) {
                 enviarRuta(Globals.getRutaLocationSeleccionada(), "ENTRADA");
             }
         }
@@ -554,15 +556,15 @@ public class ListRutasActivity extends ActionBarActivity {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             //Si=-1, No = -2
-            if (which == -1){
+            if (which == -1) {
                 enviarRuta(Globals.getRutaLocationSeleccionada(), "SALIDA");
             }
         }
     };
 
-    public void enviarRuta (RutaLocation ruta, String tipo){
+    public void enviarRuta(RutaLocation ruta, String tipo) {
 
-        if (!AppUtils.isOnline(getApplicationContext())){
+        if (!AppUtils.isOnline(getApplicationContext())) {
             Toast.makeText(getApplicationContext(), "No hay conexión.", Toast.LENGTH_LONG).show();
             return;
         }
@@ -573,26 +575,28 @@ public class ListRutasActivity extends ActionBarActivity {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
             String url = Comm.URL + "multip/api/routes/update";
-            url += "?routeid="+ruta.getId();
-            url += "&tipo="+tipo;
+            url += "?routeid=" + ruta.getId();
+            url += "&tipo=" + tipo;
 
             url += "&observation=" + ruta.getObservation();
 
             if (tipo.equals("ENTRADA"))
-                url += "&fechahora="+ruta.getFechaHoraEntrada();
+                url += "&fechahora=" + ruta.getFechaHoraEntrada();
             else if (tipo.equals("SALIDA"))
-                url += "&fechahora="+ruta.getFechaHoraSalida();
+                url += "&fechahora=" + ruta.getFechaHoraSalida();
             else if (tipo.equals("OBSERVACION")) {
-                url += "&fechahora="+ruta.getFechaHoraSalida();
+                url += "&fechahora=" + ruta.getFechaHoraSalida();
                 url += "&observation=" + ruta.getObservation();
+            } else if (tipo.equals("ESTADO")) {
+                url += "&fechahora=" + ruta.getFechaHoraEntrada();
+                url += "&estado=" + ruta.getStatus() + "";
             }
-
 
 
             url = url.replace(" ", "%20");
 
 
-            Log.d(TAG,"url: "+url);
+            Log.d(TAG, "url: " + url);
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
             String json = "";
@@ -614,8 +618,8 @@ public class ListRutasActivity extends ActionBarActivity {
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
 
-            Log.d(TAG, "enviando post: "+ httpPost.toString());
-            Log.d(TAG, "mensaje post: "+ json);
+            Log.d(TAG, "enviando post: " + httpPost.toString());
+            Log.d(TAG, "mensaje post: " + json);
 
             DefaultHttpClient httpclient2 = new DefaultHttpClient();
 
@@ -624,19 +628,19 @@ public class ListRutasActivity extends ActionBarActivity {
 
             int code = httpResponse.getStatusLine().getStatusCode();
             //si llega 401 es error de login
-            Log.d(TAG, "responde code: "+code);
+            Log.d(TAG, "responde code: " + code);
 
             // 9. receive response as inputStream
             inputStream = httpResponse.getEntity().getContent();
 
             // 10. convert inputstream to string
-            if(inputStream != null) {
+            if (inputStream != null) {
                 result = convertInputStreamToString(inputStream);
             } else {
                 result = "Did not work!";
             }
-            if (code == 200){
-                if (result.contains("Bienvenidos al Portal Movil Tigo\n")){
+            if (code == 200) {
+                if (result.contains("Bienvenidos al Portal Movil Tigo\n")) {
                     Toast.makeText(getApplicationContext(), "No hay conexión.", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -650,7 +654,7 @@ public class ListRutasActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), "Error al enviar la ruta", Toast.LENGTH_LONG).show();
             }
 
-            Log.d(TAG, "resultado  post: "+ result);
+            Log.d(TAG, "resultado  post: " + result);
         } catch (Exception e) {
             e.printStackTrace();
             AppUtils.handleError("Error al enviar ruta.", ListRutasActivity.this);
@@ -660,10 +664,10 @@ public class ListRutasActivity extends ActionBarActivity {
     }
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String line = "";
         String result = "";
-        while((line = bufferedReader.readLine()) != null)
+        while ((line = bufferedReader.readLine()) != null)
             result += line;
 
         inputStream.close();

@@ -146,13 +146,13 @@ public class AppDatabase {
     public List<RutaLocation> selectAllRutaLocation(){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM "+AppContract.Tables.RUTA_LOCATION +
-                " WHERE status != 'V' and status != 'O' ORDER BY "+AppContract.RutaLocation.priority + " DESC ", null);
+                " WHERE 1=1 ORDER BY "+AppContract.RutaLocation.id + " DESC ", null);
         return mappingListRutaLocation(c);
     }
 
     public List<RutaLocation> selectRutaLocationByFilter(String estado, String tipo, String entrada, String salida){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
-        String query = "SELECT * FROM "+AppContract.Tables.RUTA_LOCATION + " WHERE 1=1 ";
+        String query = "SELECT * FROM "+AppContract.Tables.RUTA_LOCATION + " WHERE 1=1 and date<=date('now') ";
         if(!estado.equalsIgnoreCase("")){
             query=query+" AND status='"+estado+"'" ;
         }
@@ -170,7 +170,7 @@ public class AppDatabase {
         if (salida != null){
             query = query + " AND "+AppContract.RutaLocation.salida +"='"+ salida+"'";
         }
-        query = query + " ORDER BY "+AppContract.RutaLocation.priority + " DESC ";
+        query = query + " ORDER BY "+AppContract.RutaLocation.id + " DESC ";
         Log.i(TAG,"query: "+query);
 
         Cursor c = db.rawQuery(query, null);

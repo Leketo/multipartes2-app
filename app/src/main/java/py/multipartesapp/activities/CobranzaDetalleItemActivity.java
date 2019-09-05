@@ -290,11 +290,12 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
                 String[] buttons = {"Ok"};
                 AppUtils.show(null, "Ingrese un monto valido.", buttons, CobranzaDetalleItemActivity.this, false, dialogOnclicListener);
                 return;
-            }else if(Double.parseDouble(str) > tDeuda){
-                String[] buttons = {"Ok"};
-                AppUtils.show(null, "El valor ingresado sobrepasa el total.", buttons, CobranzaDetalleItemActivity.this, false, dialogOnclicListener);
-                return;
             }
+//            else if(Double.parseDouble(str) > tDeuda){
+//                String[] buttons = {"Ok"};
+//                AppUtils.show(null, "El valor ingresado sobrepasa el total.", buttons, CobranzaDetalleItemActivity.this, false, dialogOnclicListener);
+//                return;
+//            }
             if (bancoSeleccionado == null || bancoSeleccionado.trim().equals("")){
                 String[] buttons = {"Ok"};
                 AppUtils.show(null, "Seleccione un banco.", buttons, CobranzaDetalleItemActivity.this, false, dialogOnclicListener);

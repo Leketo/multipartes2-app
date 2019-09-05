@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 /**
  * Created by Adolfo on 08/03/2016.
  */
@@ -27,7 +29,8 @@ public class RutaLocation extends Bean {
     String FechaHoraSalida;
     Usuario usuario;
     Cliente cliente;
-
+    Date hEntrada;
+    Date hSalida;
 
     String estadoEnvio;
 

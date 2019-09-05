@@ -1,6 +1,7 @@
 package py.multipartesapp.activities;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -92,6 +93,9 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
 
     private AppDatabase db = new AppDatabase(this);
 
+    private ProgressDialog progress;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +115,8 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
         if (db.countCliente() == 0){
             Toast.makeText(getApplicationContext(), "Favor sincronizar datos primero.", Toast.LENGTH_LONG).show();
         }
+
+        progress = new ProgressDialog(this);
 
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
 
@@ -243,7 +249,12 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             public void onClick(View v) {
                 guardarRutaBtn.setEnabled(false);
                 //progressBar.setVisibility(View.VISIBLE);
+                mostrarProgressBar();
                 enviarRuta();
+                cerrarProgressBar();
+                //finish();
+
+
             }
         });
 
@@ -297,9 +308,9 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
         boolean enLinea = AppUtils.isOnline(getApplicationContext());
         Log.d(TAG,"Conexión a internet: " + enLinea);
 
-        //Crear Objeto Entrega
+        //Crear Objeto Ruta
         String fechaRealEntrega = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        // formateo fecha Entrega
+        // formateo fecha
         String fechaEntregaSpinner = fechaVisitaEditText.getText().toString();
         Log.d(TAG, "fecha del Spinner: "+ fechaEntregaSpinner);
 
@@ -327,9 +338,15 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
         ruta.setUser_id(sessionLogueado.getUserId());
         //////////////////////////////////////////////////////////////////////////////////
         ruta.setPriority(Integer.valueOf(prioridadEditText.getText().toString()));
-        ruta.setStatus("V");
+        ruta.setStatus("N");
         ruta.setType(tipoRutaSeleccionado);
+        ruta.setEntrada("Y");
+        ruta.setSalida("Y");
+        ruta.setFechaHoraEntrada(""+fecha);
+        ruta.setFechaHoraSalida(""+fecha);
+
         ruta.setObservation(observacionEditText.getText().toString());
+
         if (!enLinea){
             Log.d(TAG, "Sin conexion, se guarda la hoja de ruta");
 
@@ -374,6 +391,10 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             jsonObject.accumulate("status", ruta.getStatus());
             jsonObject.accumulate("observation", ruta.getObservation());
             jsonObject.accumulate("type", ruta.getType());
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            rutaLocation.setFechaHoraEntrada(dateFormatter.format(new Date()));
+            jsonObject.accumulate("entrada",new Date().getTime());
+            jsonObject.accumulate("salida",new Date().getTime());
             // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
 
@@ -441,7 +462,23 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
 
 
     }
+    public void mostrarProgressBar(){
 
+        progress=AppUtils.mostrarProgressDialog("Procesando...",this);
+    }
+
+    public void cerrarProgressBar(){
+        progress.dismiss();
+    }
+
+    DialogInterface.OnClickListener dialogOnclicListenerAfterSave = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            //click en boton Ok
+            //finish();
+            dialog.dismiss();
+        }
+    };
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds itemsClientes to the action bar if it is present.

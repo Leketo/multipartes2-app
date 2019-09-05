@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -51,7 +53,7 @@ import java.io.InputStreamReader;
 /**
  * Created by Adolfo on 10/06/2015.
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends  ActionBarActivity {
     public static final String TAG = LoginActivity.class.getSimpleName();
 
 
@@ -69,6 +71,9 @@ public class LoginActivity extends Activity {
 
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activiy_login);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         try {
             versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
