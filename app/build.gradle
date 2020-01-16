@@ -8,7 +8,7 @@ repositories {
 
 ext.versionMajor = 3
 ext.versionMinor = 6
-ext.versionPatch = 2
+ext.versionPatch = 6
 ext.versionClassifier = null
 ext.isSnapshot = false
 ext.minimumSdkVersion = 19
@@ -33,14 +33,7 @@ buildscript {
 }
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'appreleasedkey'
-            keyPassword 'lfesplo2015'
-            storeFile file('/Users/wtoledo/repo/multip/keystore/multip.jks')
-            storePassword 'lfesplo2015'
-        }
-    }
+
     compileSdkVersion 26
     buildToolsVersion '28.0.3'
     compileOptions {
@@ -64,7 +57,6 @@ android {
         versionCode generateVersionCode()
         versionName generateVersionName()
         multiDexEnabled true
-        signingConfig signingConfigs.config
 
     }
     buildTypes {
