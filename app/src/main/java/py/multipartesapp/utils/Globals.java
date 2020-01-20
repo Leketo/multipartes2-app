@@ -9,6 +9,7 @@ import java.util.List;
 
 import py.multipartesapp.beans.Cliente;
 import py.multipartesapp.beans.CobranzaFormaPago;
+import py.multipartesapp.beans.Factura;
 import py.multipartesapp.beans.Pedido;
 import py.multipartesapp.beans.PedidoDetalle;
 import py.multipartesapp.beans.Producto;
@@ -29,6 +30,8 @@ public class Globals {
     public static Cliente clienteSeleccionadoPedido;
     public static RutaLocation rutaLocationSeleccionada;
 
+
+    public static List<Factura> invoicesListFiltered;
 
     public static String ordenPedidos = "DESC";
     public static String ordenCobros = "DESC";
@@ -53,6 +56,7 @@ public class Globals {
     public static String accion_pedido;
     public static String accion_RV;
     public static Pedido pedidoSeleccionado;
+
     ////////////////
     public static RegistroVisita RV;
     ////////////////
@@ -232,5 +236,13 @@ public class Globals {
 
     public static void setItemCobroList(List<CobranzaFormaPago> itemCobroList) {
         Globals.itemCobroList = itemCobroList;
+    }
+
+    public static List<Factura> getInvoicesListFiltered() {
+        return invoicesListFiltered;
+    }
+
+    public static void setInvoicesListFiltered(List<Factura> invoicesListFiltered) {
+        Globals.invoicesListFiltered = invoicesListFiltered;
     }
 }

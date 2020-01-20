@@ -105,6 +105,8 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
         totalSaldo = (TextView) findViewById(R.id.deuda_saldo);
         totalFp = (TextView) findViewById(R.id.deuda_fp);
 
+
+
         //montoEfectivoEditText.setText(CobranzaActivity.facturaSeleccionada.getGrandtotal().toString());
         //Rellenamos los datos del Combo Forma de Pago
         FormaPago tipo1 = new FormaPago("1", "EFECTIVO");
@@ -434,8 +436,8 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
 
     private void setTotalDeuda(){
         tDeuda = 0;
-        if(CobranzaActivity.facturasFiltrados != null) {
-            for (Factura f: CobranzaActivity.facturasFiltrados){
+        if(CobranzaActivity.invoicesListFiltered != null) {
+            for (Factura f: CobranzaActivity.invoicesListFiltered){
                 if(f.getMontoCobrado() != null){
                     if(!f.getMontoCobrado().isEmpty()){
                         tDeuda += Double.parseDouble(f.getMontoCobrado());

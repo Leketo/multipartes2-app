@@ -11,7 +11,7 @@ ext.versionMinor = 6
 ext.versionPatch = 6
 ext.versionClassifier = null
 ext.isSnapshot = false
-ext.minimumSdkVersion = 19
+ext.minimumSdkVersion = 28
 
 buildscript {
     repositories {
@@ -34,7 +34,7 @@ buildscript {
 
 android {
 
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
     compileOptions {
         encoding "UTF-8"

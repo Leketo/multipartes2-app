@@ -124,28 +124,36 @@
                 android:layout_weight="6"
                 android:textSize="9pt"
                 android:textStyle="bold"
-                android:text="Total forma de pago:"
-                android:layout_gravity="center_vertical"/>
+                android:text="Deuda total:"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:id="@+id/total_forma_pago"
-                android:layout_gravity="center_vertical"
+                android:id="@+id/cobranza_total_deuda"
                 android:gravity="right"
                 android:textSize="9pt"
                 android:textStyle="bold"
                 android:text="Gs. 0"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp"
+            android:weightSum="11" >
+
             <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:id="@+id/cobranza_detalle_add_cobro"
-                android:textSize="10pt"
+
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:layout_weight="1"
                 android:text="+"
-                android:layout_gravity="right"/>
-            </LinearLayout>
+                android:textSize="10pt" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -158,17 +166,90 @@
                 android:layout_weight="6"
                 android:textSize="9pt"
                 android:textStyle="bold"
-                android:text="Total deuda:"/>
+                android:text="Total Efectivo:"
+                android:layout_gravity="center_vertical"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:id="@+id/cobranza_total_deuda"
+                android:id="@+id/total_efectivo"
+                android:layout_gravity="center_vertical"
                 android:gravity="right"
                 android:textSize="9pt"
                 android:textStyle="bold"
                 android:text="Gs. 0"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/eliminar_efectivo"
+                android:textSize="10pt"
+                android:text="X"
+                android:layout_gravity="right"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp"
+            android:weightSum="11">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+                android:textSize="9pt"
+                android:textStyle="bold"
+                android:text="Total Cheque:"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:id="@+id/total_cheque"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="9pt"
+                android:textStyle="bold"
+                android:text="Gs. 0"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/eliminar_cheque"
+                android:textSize="10pt"
+                android:text="X"
+                android:layout_gravity="right"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp"
+            android:weightSum="11">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+                android:textSize="9pt"
+                android:textStyle="bold"
+                android:text="Total cobrado:"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:id="@+id/total_forma_pago"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="9pt"
+                android:textStyle="bold"
+                android:text="Gs. 0"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -176,7 +257,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="8dp"
-            android:weightSum="11">
+            android:weightSum="11" android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
