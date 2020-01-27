@@ -92,6 +92,7 @@ uses-permission android:name="android.permission.WAKE_LOCK" />
             android:name="py.multipartesapp.activities.ListRutasActivity"
             android:windowSoftInputMode="adjustPan">
         </activity>
+
         <activity
             android:name="py.multipartesapp.activities.RutasActivity"
             android:windowSoftInputMode="adjustPan">
@@ -122,6 +123,8 @@ uses-permission android:name="android.permission.WAKE_LOCK" />
         <activity android:name="py.multipartesapp.activities.ConsultaCobrosWebViewActivity">
         </activity>
         <activity android:name="py.multipartesapp.activities.CobranzaActivity">
+        </activity>
+        <activity android:name="py.multipartesapp.activities.CobranzaEditarActivity">
         </activity>
         <activity android:name="py.multipartesapp.activities.CobranzaDetalleActivity">
         </activity>

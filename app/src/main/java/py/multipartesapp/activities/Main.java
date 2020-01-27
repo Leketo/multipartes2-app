@@ -111,7 +111,7 @@ public class Main extends ActionBarActivity {
         registroVisistasBtn = (Button) findViewById(R.id.main_btn_registroVisita);
         sincronizarBtn = (Button) findViewById(R.id.main_btn_sincronizar_datos);
         rutasBtn = (Button) findViewById(R.id.main_btn_rutas);
-//        entregasBtn = (Button) findViewById(R.id.main_btn_entrega);
+        entregasBtn = (Button) findViewById(R.id.main_btn_entrega);
         pedidosBtn = (Button) findViewById(R.id.main_btn_pedido);
         cobranzasBtn = (Button) findViewById(R.id.main_btn_cobranza);
         catalogoBtn = (Button) findViewById(R.id.main_btn_catalogo);
@@ -146,13 +146,13 @@ public class Main extends ActionBarActivity {
             }
         });
 
-//        entregasBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(Main.this, ListEntregaActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        entregasBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Main.this, ListEntregaActivity.class);
+                startActivity(intent);
+            }
+        });
 
         pedidosBtn.setOnClickListener(new View.OnClickListener() {
             @Override

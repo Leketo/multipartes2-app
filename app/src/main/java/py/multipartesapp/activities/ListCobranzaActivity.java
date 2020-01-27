@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import py.multipartesapp.R;
 import py.multipartesapp.beans.Cobranza;
+import py.multipartesapp.beans.Pedido;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.utils.Globals;
 
@@ -87,6 +88,27 @@ public class ListCobranzaActivity extends ActionBarActivity {
                     listCobranza = db.selectCobranzaByIdVendedor(userId, Globals.ordenCobros);
                     ((BaseAdapter) listCobranzaListView.getAdapter()).notifyDataSetChanged();
                 }
+
+            }
+        });
+
+
+        //view or edit the charge
+        listCobranzaListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Cobranza cobranza =(Cobranza) listCobranza.get(position);
+                Globals.setCobranzaSeleccionada(cobranza);
+
+                if(cobranza.getEstado_envio().equalsIgnoreCase("ENVIADO")){
+                    Globals.setAccion_cobranza("VER");
+                }else{
+                    Globals.setAccion_cobranza("EDITAR");
+                }
+
+                Intent intent = new Intent(ListCobranzaActivity.this, CobranzaEditarActivity.class);
+                startActivity(intent);
 
             }
         });

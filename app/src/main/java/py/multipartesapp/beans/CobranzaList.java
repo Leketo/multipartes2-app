@@ -38,4 +38,11 @@ public class CobranzaList extends Bean {
         }
         setList(array);
     }
+
+    @Override
+    public String toString() {
+        return "CobranzaList{" +
+                "list=" + list +
+                '}';
+    }
 }

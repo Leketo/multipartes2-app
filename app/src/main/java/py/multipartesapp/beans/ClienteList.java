@@ -41,4 +41,11 @@ public class ClienteList extends Bean {
         }
         setList(array);
     }
+
+    @Override
+    public String toString() {
+        return "ClienteList{" +
+                "list=" + list +
+                '}';
+    }
 }

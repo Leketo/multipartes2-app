@@ -142,4 +142,22 @@ public class Factura extends Bean {
     public void setSelected(boolean selected) {
         isSelected = selected;
     }
+
+    @Override
+    public String toString() {
+        return "Factura{" +
+                "id=" + id +
+                ", isactive='" + isactive + '\'' +
+                ", order_id=" + order_id +
+                ", dateinvoiced='" + dateinvoiced + '\'' +
+                ", client_id=" + client_id +
+                ", grandtotal=" + grandtotal +
+                ", ispaid='" + ispaid + '\'' +
+                ", pend=" + pend +
+                ", nroFacturaImprimir='" + nroFacturaImprimir + '\'' +
+                ", montoCobrado='" + montoCobrado + '\'' +
+                ", isSelected=" + isSelected +
+                ", items=" + items +
+                '}';
+    }
 }

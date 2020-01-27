@@ -8,6 +8,7 @@ import org.apache.http.impl.client.BasicCookieStore;
 import java.util.List;
 
 import py.multipartesapp.beans.Cliente;
+import py.multipartesapp.beans.Cobranza;
 import py.multipartesapp.beans.CobranzaFormaPago;
 import py.multipartesapp.beans.Factura;
 import py.multipartesapp.beans.Pedido;
@@ -29,7 +30,6 @@ public class Globals {
     public static List<CobranzaFormaPago> itemCobroList;
     public static Cliente clienteSeleccionadoPedido;
     public static RutaLocation rutaLocationSeleccionada;
-
 
     public static List<Factura> invoicesListFiltered;
 
@@ -56,6 +56,9 @@ public class Globals {
     public static String accion_pedido;
     public static String accion_RV;
     public static Pedido pedidoSeleccionado;
+    public static Cobranza cobranzaSeleccionada;
+
+    public static String accion_cobranza;
 
     ////////////////
     public static RegistroVisita RV;
@@ -244,5 +247,22 @@ public class Globals {
 
     public static void setInvoicesListFiltered(List<Factura> invoicesListFiltered) {
         Globals.invoicesListFiltered = invoicesListFiltered;
+    }
+
+
+    public static Cobranza getCobranzaSeleccionada() {
+        return cobranzaSeleccionada;
+    }
+
+    public static void setCobranzaSeleccionada(Cobranza cobranzaSeleccionada) {
+        Globals.cobranzaSeleccionada = cobranzaSeleccionada;
+    }
+
+    public static String getAccion_cobranza() {
+        return accion_cobranza;
+    }
+
+    public static void setAccion_cobranza(String accion_cobranza) {
+        Globals.accion_cobranza = accion_cobranza;
     }
 }

@@ -23,6 +23,7 @@ public class Cobranza extends Bean {
     String estado_envio;
     Integer ad_org_id;
 
+
     List<CobranzaDetalle> detalles;
 
     List<CobranzaFormaPago> items;
@@ -150,5 +151,24 @@ public class Cobranza extends Bean {
 
     public void setAd_org_id(Integer ad_org_id) {
         this.ad_org_id = ad_org_id;
+    }
+
+    @Override
+    public String toString() {
+        return "Cobranza{" +
+                "id=" + id +
+                ", client_id=" + client_id +
+                ", user_id=" + user_id +
+                ", amount=" + amount +
+                ", invoice_number='" + invoice_number + '\'' +
+                ", observation='" + observation + '\'' +
+                ", status='" + status + '\'' +
+                ", nombre_cliente='" + nombre_cliente + '\'' +
+                ", nombre_vendedor='" + nombre_vendedor + '\'' +
+                ", estado_envio='" + estado_envio + '\'' +
+                ", ad_org_id=" + ad_org_id +
+                ", detalles=" + detalles +
+                ", items=" + items +
+                '}';
     }
 }

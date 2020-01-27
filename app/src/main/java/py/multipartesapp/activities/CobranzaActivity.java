@@ -54,6 +54,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -101,6 +102,8 @@ public class CobranzaActivity extends ActionBarActivity {
     private Button eliminarEfectivoBtn;
     private Button eliminarChequeBtn;
 
+    private TextView montoPagado;
+
 
     public String[] itemsClientes = new String[] {"Buscar por nombre o ruc..."};
     public CustomAutoCompleteView clienteAutoComplete;
@@ -128,6 +131,9 @@ public class CobranzaActivity extends ActionBarActivity {
     Thread workerThread;
     byte[] readBuffer;
 
+    SimpleDateFormat sdf =new SimpleDateFormat("dd/MM/yyyy");
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,10 +150,6 @@ public class CobranzaActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //muestra el boton atras
         getSupportActionBar().setTitle("Cobros");
 
-        if (db.countPedido() == 0){
-            Toast.makeText(getApplicationContext(), "No existen Pedidos a cobrar. Pruebe sincronizar", Toast.LENGTH_LONG).show();
-        }
-
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
 
         observacionEditText = (EditText) findViewById(R.id.cobranza_observacion);
@@ -161,7 +163,11 @@ public class CobranzaActivity extends ActionBarActivity {
         totalEfectivo=(TextView) findViewById(R.id.total_efectivo);
         totalCheque=(TextView) findViewById(R.id.total_cheque);
 
+        montoPagado=(TextView) findViewById(R.id.monto_pagado_item_cobranza);
+
         guardarCobranzaBtn = (Button) findViewById(R.id.guardar_cobranza);
+
+
 
         pedidosListView = (ListView) findViewById(R.id.cobranza_detalle_list);
 
@@ -200,6 +206,9 @@ public class CobranzaActivity extends ActionBarActivity {
                 //clienteTextView.clearFocus();
                 clienteSeleccionado = clientesFiltrados.get(position);
                 invoicesListFiltered = db.selectFacturaByClientId(clienteSeleccionado.getId());
+
+                Log.d("facturas ","facturas "+invoicesListFiltered);
+
                 adapterDetalles.notifyDataSetChanged();
                 actualizarTotalDeuda();
             }
@@ -435,9 +444,13 @@ public class CobranzaActivity extends ActionBarActivity {
             for (CobranzaDetalle cd : c.getDetalles()){
                 db.insertCobranzaDetalle(cd);
             }
+
             for (CobranzaFormaPago formaPago : Globals.getItemCobroList()){
                 db.insertCobranzaFormaPago(formaPago, c.getId());
             }
+
+            //we must update the invoice so it can reflect the changes on the view when applying a new charge
+            updateInvoices();
 
             mostrarMensajeNoEnviado("No hay conexión. Se guarda el cobro.");
             //finish();
@@ -552,7 +565,7 @@ public class CobranzaActivity extends ActionBarActivity {
 
             // 10. convert inputstream to string
             if(inputStream != null) {
-                result = convertInputStreamToString(inputStream);
+                result = AppUtils.convertInputStreamToString(inputStream);
             } else {
                 result = "Did not work!";
             }
@@ -586,6 +599,10 @@ public class CobranzaActivity extends ActionBarActivity {
                     db.insertCobranzaFormaPago(formaPago, c.getId());
                 }
 
+                //we must update the invoice so it can reflect the changes on the view when applying a new charge
+                updateInvoices();
+
+
                 /* ------- limpiar datos despues de haber enviado al server - adolfo 21/02/2019  */
                 clienteAutoComplete.setText("");
                 clienteSeleccionado = null;
@@ -598,6 +615,7 @@ public class CobranzaActivity extends ActionBarActivity {
                 actualizarImporteFormaPago();
                 actualizarTotal();
                 actualizarTotalDeuda();
+
 
                 mostrarMensajeEnviado("Cobro enviado correctamente!");
                 //finish();
@@ -613,6 +631,23 @@ public class CobranzaActivity extends ActionBarActivity {
             guardarCobranzaBtn.setEnabled(true);
         }
         return "ENVIADO_CORRECTAMENTE";
+    }
+
+    private void updateInvoices(){
+
+        for (Factura p: invoicesListFiltered){
+            if (p.getMontoCobrado() != null && !p.getMontoCobrado().equals("0") ){
+                Log.d("actualizar factura ",""+p);
+                //we must substract the payed from the total
+                Integer pend=p.getPend()-Integer.parseInt(p.getMontoCobrado());
+                Log.d("pendiente", "el nuevo pendiente es"+pend);
+                if(pend<=0){
+                    p.setIspaid("Y");
+                }
+                p.setPend(pend);
+                db.updateFactura(p);
+            }
+        }
     }
 
     private void imprimir(String datos) {
@@ -886,7 +921,7 @@ public class CobranzaActivity extends ActionBarActivity {
 
                 // 10. convert inputstream to string
                 if(inputStream != null) {
-                    result = convertInputStreamToString(inputStream);
+                    result = AppUtils.convertInputStreamToString(inputStream);
                 } else {
                     result = "Did not work!";
                 }
@@ -941,6 +976,9 @@ public class CobranzaActivity extends ActionBarActivity {
 
 
             Factura item = invoicesListFiltered.get(i);
+
+            Log.d("factura: ",""+item);
+
             View v = view;
             if (v == null) {
                 v = mInflater.inflate(R.layout.list_item_cobranza_pedido, viewGroup, false);
@@ -948,7 +986,7 @@ public class CobranzaActivity extends ActionBarActivity {
                 v.setTag(R.id.txt1_item_cobranza_nro_factura, v.findViewById(R.id.txt1_item_cobranza_nro_factura));
                 v.setTag(R.id.txt2_item_cobranza_fecha, v.findViewById(R.id.txt2_item_cobranza_fecha));
                 v.setTag(R.id.total_item_cobranza, v.findViewById(R.id.total_item_cobranza));
-                v.setTag(R.id.monto_cobrado_item_cobranza, v.findViewById(R.id.monto_cobrado_item_cobranza));
+                v.setTag(R.id.monto_a_cobrar_item_cobranza, v.findViewById(R.id.monto_a_cobrar_item_cobranza));
                 //v.setTag(R.id.editar_item_cobranza_btn, v.findViewById(R.id.editar_item_cobranza_btn));
                 v.setTag(R.id.check_item_cobranza_btn, v.findViewById(R.id.check_item_cobranza_btn));
 
@@ -961,30 +999,53 @@ public class CobranzaActivity extends ActionBarActivity {
             nroFactura.setText(item.getNroFacturaImprimir());
 
             TextView fechaPedido = (TextView) v.findViewById(R.id.txt2_item_cobranza_fecha);
-            String fecha = item.getDateinvoiced().substring(0, 10);
+
+            Date fechaParseada=null;
+            String fecha="";
+
+            Log.d("fecha factura",""+item.getDateinvoiced());
+            SimpleDateFormat sdfParse=new SimpleDateFormat("yyyy-MM-dd");
+
+            if(item.getDateinvoiced()!=null){
+
+                try {
+                    fechaParseada=sdfParse.parse(item.getDateinvoiced().substring(0,10));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                if(fechaParseada!=null){
+                    fecha = sdf.format(fechaParseada);
+                }
+            }
+
+
+
             fechaPedido.setText(fecha);
 
             TextView totalPedido = (TextView) v.findViewById(R.id.total_item_cobranza);
             totalPedido.setText(item.getGrandtotal().toString());
 
-            final EditText montoCobrado = (EditText) v.findViewById(R.id.monto_cobrado_item_cobranza);
-            Log.i("invoice ","montocobrado:   "+item.getMontoCobrado()+ " grandtotal: "+item.getGrandtotal());
+            final TextView montoPagado = (TextView) v.findViewById(R.id.monto_pagado_item_cobranza);
+            int prepaid=0;
+            if(item.getGrandtotal()!=null){
+                prepaid=item.getGrandtotal()-item.getPend();
+            }
+            montoPagado.setText(""+prepaid);
 
+
+            final EditText montoAcobrar = (EditText) v.findViewById(R.id.monto_a_cobrar_item_cobranza);
+            Log.i("invoice "," grandtotal: "+item.getGrandtotal()+" montocobrado:   "+item.getMontoCobrado()+" montoPendiente "+item.getPend());
 
             if (item.getMontoCobrado() != null ){
-                montoCobrado.setText(item.getMontoCobrado().toString());
+                montoAcobrar.setText(""+item.getMontoCobrado().toString());
             }else {
-                if (item.getGrandtotal() != null ){
-                    montoCobrado.setText(item.getGrandtotal().toString());
-                }else {
-                    montoCobrado.setText("0");
+                if(item.getPend()!=null){
+                    montoAcobrar.setText(""+item.getPend());
                 }
-
             }
 
-            //montoCobrado.setText(item.getMontoCobrado().toString());
-
-            montoCobrado.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            montoAcobrar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v1, boolean hasFocus) {
                     if(!hasFocus){
@@ -994,7 +1055,7 @@ public class CobranzaActivity extends ActionBarActivity {
                         /*Actualizar monto en la lista*/
                         if (invoicesListFiltered.get(position).isSelected()){
                         //if(cbItem.isChecked()) {
-                            String montoCob = montoCobrado.getText().toString();
+                            String montoCob = montoAcobrar.getText().toString();
 
                             if(!montoCob.isEmpty()) {
                                 invoicesListFiltered.get(position).setMontoCobrado(montoCob);
@@ -1013,7 +1074,7 @@ public class CobranzaActivity extends ActionBarActivity {
                     ViewParent viewParent = parentRow.getParent();
                     ListView listView = (ListView) viewParent.getParent();
                     int position = listView.getPositionForView((View) viewParent);
-                    String montoCob = montoCobrado.getText().toString();
+                    String montoCob = montoAcobrar.getText().toString();
 
 
                     if (invoicesListFiltered.get(position).isSelected()){
@@ -1069,17 +1130,7 @@ public class CobranzaActivity extends ActionBarActivity {
         }
     }
 
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
 
-        inputStream.close();
-        return result;
-
-    }
 
     private void limpiarDatos() {
         clienteAutoComplete.setText("");

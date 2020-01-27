@@ -262,6 +262,8 @@
             <!--Fin Boton Catalogo-->
 
 
+
+
             <!--Boton Consultas-->
             <LinearLayout
             android:id="@+id/fila_6"
@@ -305,6 +307,48 @@
                 </LinearLayout>
             </LinearLayout>
             <!--Fin boton Consultas-->
+
+            <LinearLayout
+                android:id="@+id/fila_6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:weightSum="10"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <Button
+                                android:id="@+id/main_btn_entrega"
+                                style="@style/button"
+                                android:layout_width="200dp"
+                                android:layout_height="80dp"
+                                android:drawableTop="@drawable/ic_buscar"
+                                android:text="Entregas"
+                                android:textSize="14sp"></Button>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </LinearLayout>
 
 
             <!--Boton Test-->

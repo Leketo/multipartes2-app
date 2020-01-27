@@ -45,11 +45,6 @@ public class Cliente extends Bean {
     public void initWithJsonArray(JSONArray o) throws JSONException {
     }
 
-    @Override
-    public String toString() {
-        return nombre + " - " + ruc;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -144,5 +139,12 @@ public class Cliente extends Bean {
 
     public void setCategoria_precio(Integer categoria_precio) {
         this.categoria_precio = categoria_precio;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return nombre + " - " + ruc;
     }
 }

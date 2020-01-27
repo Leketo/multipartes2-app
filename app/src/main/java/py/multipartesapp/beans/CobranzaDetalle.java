@@ -63,4 +63,16 @@ public class CobranzaDetalle {
     public void setNroFactura(String nroFactura) {
         this.nroFactura = nroFactura;
     }
+
+    @Override
+    public String toString() {
+        return "CobranzaDetalle{" +
+                "invoice='" + invoice + '\'' +
+                ", amount=" + amount +
+                ", cashed=" + cashed +
+                ", charge_id=" + charge_id +
+                ", nroFactura='" + nroFactura + '\'' +
+                ", items=" + items +
+                '}';
+    }
 }
