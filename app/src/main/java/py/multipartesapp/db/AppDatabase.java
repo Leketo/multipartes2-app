@@ -1140,13 +1140,13 @@ public class AppDatabase {
                 updateProducto(p);
             }
 
-            Log.d(TAG,"Producto"+p.getName()+ " "+p.getM_product_id());
-            Log.d(TAG,"Eliminamos el Stock del Producto");
-            deleteStockProductoByID(p.getM_product_id());
-
-            //insertamos el nuevo stock
-            Log.d(TAG,"Insertar Stock Producto");
-            insertarStockProducto(p);
+//            Log.d(TAG,"Producto"+p.getName()+ " "+p.getM_product_id());
+//            Log.d(TAG,"Eliminamos el Stock del Producto");
+//            deleteStockProductoByID(p.getM_product_id());
+//
+//            //insertamos el nuevo stock
+//            Log.d(TAG,"Insertar Stock Producto");
+//            insertarStockProducto(p);
         }
     }
 
@@ -1587,6 +1587,28 @@ public class AppDatabase {
 
     }
 
+    public void insertStockList(StockList stockList){
+        Log.d(TAG,"insertar stock de producto");
+
+        SQLiteDatabase db =mDatabaseOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        for (StockDTO stockDTO :stockList.getList()){
+            Log.d(TAG,stockDTO.getProducto().getCodinterno()+" - "+ stockDTO.getProducto().getM_product_id() + " - Cant. Stock Producto: "+ stockDTO.getStock_disponible());
+
+            values.put(AppContract.StockProducto.m_product_id,stockDTO.getProducto().getM_product_id());
+            values.put(AppContract.StockProducto.desc_m_product_id,stockDTO.getProducto().getName());
+            values.put(AppContract.StockProducto.m_locator_id,stockDTO.getLocator().getM_locator_id());
+            values.put(AppContract.StockProducto.desc_m_locator,stockDTO.getLocator().getM_locator_value());
+            values.put(AppContract.StockProducto.stock_disponible,stockDTO.getStock_disponible());
+            db.insert(AppContract.Tables.STOCK_PRODUCTO,null,values);
+        }
+
+
+    }
+
+
+
 
     //Insert FACTURA
     public void insertFactura(Factura factura){
@@ -1737,7 +1759,7 @@ public class AppDatabase {
                 insStmt.bindLong(6, p.getIdSubFamilia());
 //                insStmt.bindLong(7, p.getStock());
 
-                insertarStockProducto(p);
+                //insertarStockProducto(p);
 
                 insStmt.executeInsert();
             }

@@ -44,6 +44,9 @@ public class CommReq {
     public static final String CommReqSincronizarProductos
             = App + "product/sincronizar";
 
+
+
+
     public static final String CommReqGetAllPrecioCategoria
             = App + "product/price/version/list";
 
@@ -100,6 +103,10 @@ public class CommReq {
     public static final String  CommReqConsultaEstadoCuenta="api/report/extracto";
 
     public static final String CommReqConsultaPedidos="api/report/pedidos";
+
+
+    public static final String CommReqSincronizarStock
+            = Teckel + "multipartes/stock/sincronizar";
 
 
 

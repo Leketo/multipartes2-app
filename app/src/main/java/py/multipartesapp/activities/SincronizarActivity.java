@@ -46,6 +46,7 @@ import py.multipartesapp.beans.ProductoList;
 import py.multipartesapp.beans.ProductoSubFamiliaList;
 import py.multipartesapp.beans.RegistroVisitaList;
 import py.multipartesapp.beans.RutaLocationList;
+import py.multipartesapp.beans.StockList;
 import py.multipartesapp.beans.UsuarioList;
 import py.multipartesapp.comm.Comm;
 import py.multipartesapp.comm.CommDelegateAndroid;
@@ -69,6 +70,7 @@ public class SincronizarActivity extends ActionBarActivity {
     private UsuarioList usuarioList;
     private PedidoList pedidoList;
     private ProductoList productoList;
+    private  StockList stockList;
     private PrecioCategoriaList precioCategoriaList;
     private PrecioVersionList precioVersionList;
     private RutaLocationList rutaLocationList;
@@ -175,8 +177,8 @@ public class SincronizarActivity extends ActionBarActivity {
 //
         sincronizarPreciosCategoria();
 
-//        sincronizarFamiliaProducto();
-//        sincronizarSubFamiliaProducto();
+        sincronizarFamiliaProducto();
+        sincronizarSubFamiliaProducto();
 
         sincronizarClientes();
 
@@ -186,7 +188,9 @@ public class SincronizarActivity extends ActionBarActivity {
 
         sincronizarFacturas();
 
-        //sincronizarImagenesProducto();
+        sincronizarStock();
+
+        sincronizarImagenesProducto();
 
         //sincronizarUsuarios();
 
@@ -202,6 +206,92 @@ public class SincronizarActivity extends ActionBarActivity {
 
     }
 
+
+    public void sincronizarStock() {
+
+        CommDelegateAndroid delegate = new CommDelegateAndroid() {
+            @Override
+            public void onError() {
+                progressBar.setVisibility(View.INVISIBLE);
+                AppUtils.handleError(this.exception.getMessage(), SincronizarActivity.this);
+                sincronizarBtn.setEnabled(true);
+            }
+
+            @Override
+            public void onSuccess() {
+
+                Log.d(TAG, "Stock. Datos recibidos");
+                Comm.CommResponse r = response;
+                stockList = (StockList) r.getBean();
+
+                if (stockList != null) {
+                    Log.d(TAG, "Stock. Tamaño lista " + stockList.getList().size());
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "Stock. Insertando registros");
+
+                            //Si ya existe actualizar
+                            if (db.countProduct() > 0) {
+                                Log.d(TAG, "Actualizar: Cant. Stock Producto: " + db.countStockProducto());
+                                db.insertOrUpdateProductoList(productoList.getList());
+
+
+                            } else {
+
+                                Log.d(TAG, "Se eliminará los datos de la  tabla Stock Productos...");
+                                db.deleteStockProducto();
+
+                                Log.d(TAG, "Cant. Stock Producto: " + db.countStockProducto());
+
+                                db.insertStockList(stockList);
+
+
+                            }
+
+                            Log.d(TAG, "Stock . Registros insertados exitosamente");
+
+                            //insertar fecha ultima actualizacion precio_version
+                            Configuracion fechaActualizacion = new Configuracion();
+                            fechaActualizacion.setClave("STOCK_LAST_UPDATED");
+                            String now = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+                            fechaActualizacion.setValor(now);
+
+                            db.deleteConfiguracionByClave("STOCK_LAST_UPDATED");
+                            db.insertConfiguracion(fechaActualizacion);
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    count++;
+                                    mensajeTextView.append("\nSincronizando Stock... " + productoList.getList().size() + " " + count + "/" + getTotal() + "");
+                                    if (count == getTotal()) {
+                                        mensajeTextView.append("\nSincronización de stock finalizada.");
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                            });
+                        }
+                    }).start();
+                }
+            }
+
+        };
+
+        String ultmaActualizacion = "TODOS";
+        Configuracion stock_last_updated = db.selectConfiguracionByClave("STOCK_LAST_UPDATED");
+
+        if (stock_last_updated.getValor() != null) {
+                ultmaActualizacion = stock_last_updated.getValor();
+        }
+
+        mapClaseResponse = new HashMap();
+
+        mapClaseResponse.put(CommReq.CommReqSincronizarStock + "/" + ultmaActualizacion, StockList .class.getName());
+
+        new Comm(mapClaseResponse).requestGet(CommReq.CommReqSincronizarStock + "/" + ultmaActualizacion, new String[][]{
+            }, delegate,true,StockList.class.getName());
+
+    }
 
     public void sincronizarClientes() {
         CommDelegateAndroid delegateClientes = new CommDelegateAndroid() {

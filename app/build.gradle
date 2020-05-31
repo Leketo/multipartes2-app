@@ -8,10 +8,10 @@ repositories {
 
 ext.versionMajor = 3
 ext.versionMinor = 6
-ext.versionPatch = 9
+ext.versionPatch = 12
 ext.versionClassifier = null
 ext.isSnapshot = false
-ext.minimumSdkVersion = 28
+ext.minimumSdkVersion = 23
 
 buildscript {
     repositories {

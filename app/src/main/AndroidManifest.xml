@@ -2,7 +2,7 @@
 <manifest package="py.multipartesapp"
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"> <!-- uses-sdk tools:node="replace" / -->
-    <uses-sdk tools:node="merge" android:targetSdkVersion="28"/>
+    <uses-sdk tools:node="merge" android:targetSdkVersion="23"/>
 
 
 
