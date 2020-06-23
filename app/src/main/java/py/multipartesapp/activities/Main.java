@@ -225,7 +225,6 @@ public class Main extends ActionBarActivity {
 
         //startCheckLocationService();
 
-        startService(new Intent(this, ControlService.class));
     }
 
 

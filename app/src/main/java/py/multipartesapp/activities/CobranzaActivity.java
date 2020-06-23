@@ -722,8 +722,8 @@ public class CobranzaActivity extends ActionBarActivity {
     private Integer getTotalDeuda(){
         Integer total = 0;
         for (Factura p: invoicesListFiltered){
-            if (p.getGrandtotal() != null && !p.getGrandtotal().equals("0")){
-                total = total + Integer.valueOf(p.getGrandtotal());
+            if (p.getPend() != null && !p.getPend().equals("0")){
+                total = total + Integer.valueOf(p.getPend());
             }
         }
         return total;
@@ -1045,6 +1045,9 @@ public class CobranzaActivity extends ActionBarActivity {
                 }
             }
 
+            if(item.getPend()<=0){
+                cbItem.setEnabled(false);
+            }
             montoAcobrar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v1, boolean hasFocus) {
@@ -1053,7 +1056,7 @@ public class CobranzaActivity extends ActionBarActivity {
                         ListView listView = (ListView) viewParent.getParent();
                         int position = listView.getPositionForView((View) viewParent);
                         /*Actualizar monto en la lista*/
-                        if (invoicesListFiltered.get(position).isSelected()){
+                        if (position>-1 && invoicesListFiltered.get(position).isSelected()){
                         //if(cbItem.isChecked()) {
                             String montoCob = montoAcobrar.getText().toString();
 

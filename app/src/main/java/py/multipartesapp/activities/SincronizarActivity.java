@@ -188,7 +188,7 @@ public class SincronizarActivity extends ActionBarActivity {
 
         sincronizarFacturas();
 
-        sincronizarStock();
+        //sincronizarStock();
 
         sincronizarImagenesProducto();
 

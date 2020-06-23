@@ -1140,13 +1140,13 @@ public class AppDatabase {
                 updateProducto(p);
             }
 
-//            Log.d(TAG,"Producto"+p.getName()+ " "+p.getM_product_id());
-//            Log.d(TAG,"Eliminamos el Stock del Producto");
-//            deleteStockProductoByID(p.getM_product_id());
-//
-//            //insertamos el nuevo stock
-//            Log.d(TAG,"Insertar Stock Producto");
-//            insertarStockProducto(p);
+            Log.d(TAG,"Producto"+p.getName()+ " "+p.getM_product_id());
+            Log.d(TAG,"Eliminamos el Stock del Producto");
+            deleteStockProductoByID(p.getM_product_id());
+
+            //insertamos el nuevo stock
+            Log.d(TAG,"Insertar Stock Producto");
+            insertarStockProducto(p);
         }
     }
 

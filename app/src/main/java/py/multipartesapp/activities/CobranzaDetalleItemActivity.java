@@ -13,6 +13,7 @@ import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -59,6 +60,7 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
     private Button cargarPagoBtn;
     private FormaPago formaPagoSeleccionado;
     private SimpleDateFormat dateFormatter;
+    private CheckBox isCrossed;
 
     private LinearLayout datosChequeLinearLayout;
     private LinearLayout datosEfectivoLinearLayout;
@@ -89,6 +91,7 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //muestra el boton atras
         getSupportActionBar().setTitle("Cargar cobro");
 
+        isCrossed=(CheckBox) findViewById(R.id.isCrossed);
         montoEfectivoEditText = (EditText) findViewById(R.id.cobranza_detalles_monto_efectivo);
         montoChequeEditText = (EditText) findViewById(R.id.cobranza_detalles_monto_cheque);
 
@@ -126,6 +129,14 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
         //mostrar el de efectivo,
         datosEfectivoLinearLayout.setVisibility(View.VISIBLE);
         datosChequeLinearLayout.setVisibility(View.GONE);
+
+        isCrossed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"checkbox clicked"+ isCrossed.isChecked());
+
+            }
+        });
 
         formaPagoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -339,6 +350,11 @@ public class CobranzaDetalleItemActivity extends ActionBarActivity implements Vi
             itemCobro.setCheck_number(nroChequeEditText.getText().toString());
             itemCobro.setExpired_date(fechaVencChequeEditText.getText().toString());
             itemCobro.setCheck_name(nombreChequeEditText.getText().toString());
+
+            if(isCrossed.isChecked())
+                itemCobro.setIscrossed("Y");
+            else
+                itemCobro.setIscrossed("N");
         }
         if(Globals.getItemCobroList() == null){
             Globals.setItemCobroList(new ArrayList<CobranzaFormaPago>());
