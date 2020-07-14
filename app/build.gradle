@@ -8,7 +8,7 @@ repositories {
 
 ext.versionMajor = 3
 ext.versionMinor = 6
-ext.versionPatch = 12
+ext.versionPatch = 14
 ext.versionClassifier = null
 ext.isSnapshot = false
 ext.minimumSdkVersion = 23
@@ -52,7 +52,7 @@ android {
     defaultConfig {
         applicationId 'py.multipartesapp'
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 28
         minSdkVersion project.ext.minimumSdkVersion
         versionCode generateVersionCode()
         versionName generateVersionName()

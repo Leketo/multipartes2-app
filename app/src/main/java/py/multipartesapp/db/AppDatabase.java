@@ -1759,7 +1759,7 @@ public class AppDatabase {
                 insStmt.bindLong(6, p.getIdSubFamilia());
 //                insStmt.bindLong(7, p.getStock());
 
-                //insertarStockProducto(p);
+                insertarStockProducto(p);
 
                 insStmt.executeInsert();
             }
