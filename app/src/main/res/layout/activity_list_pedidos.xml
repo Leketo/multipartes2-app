@@ -24,8 +24,6 @@
         android:layout_below="@id/toolbar"
         android:orientation="vertical">
 
-
-
         <Button
             style="@style/button"
             android:id="@+id/pedidos_btn_new"

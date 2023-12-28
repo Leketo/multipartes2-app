@@ -46,6 +46,7 @@ public class StockDTO extends Bean {
 
         locator.setM_locator_value(getString(locatorObject,"m_locator_value"));
         locator.setM_locator_id(getString(locatorObject,"m_locator_id"));
+        locator.setAd_org_id(getString(locatorObject,"ad_org_id"));
         setLocator(locator);
 
 
@@ -53,6 +54,10 @@ public class StockDTO extends Bean {
         Producto producto = new Producto();
         producto.setName(getString(productoObject,"name"));
         producto.setM_product_id(getInteger(productoObject,"m_product_id"));
+
+        producto.setStockCde(getInteger(productoObject,"stockCde"));
+        producto.setStockCasaCentral(getInteger(productoObject,"stockCasaCentral"));
+        producto.setStockVidrios(getInteger(productoObject,"stockVidrios"));
 
         setProducto(producto);
 

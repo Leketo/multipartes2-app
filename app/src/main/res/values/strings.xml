@@ -16,5 +16,10 @@
     <string name="mac_address_hint">AA:BB:CC:11:22:33</string>
     <string name="config">Utilizar esta impresora</string>
     <string name="print">Probar Impresión</string>
+    <string-array name="sucursales_array">
+        <item>1000047 - Casa Central</item>
+        <item>1010047 - Agencia Ciudad del Este</item>
+        <item>1200000 - Vidrios</item>
+    </string-array>
 
 </resources>

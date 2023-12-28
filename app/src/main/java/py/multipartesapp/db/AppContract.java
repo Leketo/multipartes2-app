@@ -127,6 +127,9 @@ public class AppContract {
         String codinterno = "COD_INTERNO";
         String id_familia = "ID_FAMILIA";
         String id_subfamilia = "ID_SUBFAMILIA";
+        String stock_casa_central = "STOCK_CASA_CENTRAL";
+        String stock_vidrios = "STOCK_VIDRIOS";
+        String stock_cde = "STOCK_CDE";
     }
 
     interface PedidoColumns {
@@ -256,6 +259,12 @@ public class AppContract {
         String ad_org_id="AD_ORG_ID";
         String desc_ad_org="DESC_AD_ORG";
         String stock_disponible="STOCK_DISPONIBLE";
+
+        String stock_cde="STOCK_CDE";
+
+        String stock_vidrios="STOCK_VIDRIOS";
+
+        String stock_casa_central="STOCK_CASA_CENTRAL";
     }
 
 

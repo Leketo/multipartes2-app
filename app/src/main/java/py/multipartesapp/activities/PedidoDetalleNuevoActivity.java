@@ -53,8 +53,8 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
     private TextView stockProductoTxtView;
     private EditText cantidadTxtView;
     private Button verCatalogoBtn;
-
     private ImageView vistaPreviaImgView;
+    private String idSucursal;
 
 
     private List<StockDTO> listStock= new ArrayList<>();
@@ -70,6 +70,13 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //muestra el boton atras
         getSupportActionBar().setTitle("Agregar detalle");
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            idSucursal = intent.getStringExtra("idSucursal");
+        } else {
+            Log.e("PedidoActivity", "Intent es null.");
+        }
 
         agregar_detalle_pedido = (Button) findViewById(R.id.agregar_detalle_pedido);
         productoTextView = (AutoCompleteTextView) findViewById(R.id.pedido_detalle_nuevo_producto);
@@ -194,37 +201,76 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
         listStock= new ArrayList<>();
 
         //obtener el stock del producto haciendo la llamada al servicio stock-productos
-//        CommDelegateAndroid delegate = new CommDelegateAndroid(){
-//            @Override
-//            public void onError(){
-//                Log.e(TAG, this.exception.getMessage());
-//            }
-//            @Override
-//            public void onSuccess(){
-//                Log.d(TAG, "Datos de producto");
-//                Comm.CommResponse r = response;
-//
-//                StockList stockList=(StockList) r.getBean();
-//
-//                listStock=stockList.getList();
-//
-//                procesarStock(listStock);
-//
-//            }
-//        };
-//
-//        new Comm().requestGet(Comm.URL, CommReq.CommReqGetStockProducto, new String[][]{
-//                {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
-//        }, delegate);
+        CommDelegateAndroid delegate = new CommDelegateAndroid(){
+            @Override
+            public void onError(){
+                Log.e(TAG, this.exception.getMessage());
+            }
+            @Override
+            public void onSuccess(){
+                Log.d(TAG, "Datos de producto");
+                Comm.CommResponse r = response;
+                StockList stockList=(StockList) r.getBean();
+                listStock=stockList.getList();
+                procesarStock(listStock);
+
+            }
+        };
+
+        new Comm().requestGet(Comm.URL, CommReq.CommReqGetStockProducto, new String[][]{
+                {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
+        }, delegate, false, StockList.class.getName());
+
 
         //obtenemos el stock consultando a la tabla de Stock
 
-        listStock=db.selectStockPorProducto(productoSeleccionado.getM_product_id().toString());
-        procesarStock(listStock);
+       // listStock=db.selectStockPorProducto(productoSeleccionado.getM_product_id().toString());
+     //   procesarStock(listStock);
+       //   procesarStock(productoSeleccionado.getM_product_id());
 
     }
 
-    private void procesarStock(List<StockDTO> listStock){
+       private void procesarStock(List<StockDTO> listStock){
+            int sumaAsu=0;
+            int sumaCDE=0;
+            int sumaVidrio=0;
+            int suma=0;
+
+            int sumaSucursales=0;
+            String avbre = "ASU";
+            for(StockDTO stockDTO: listStock) {
+                String ad_org_id = stockDTO.getLocator().getAd_org_id();
+                if ("1000047".equals(ad_org_id)){
+                    sumaAsu = stockDTO.getStock_disponible();
+                } else if ("1010047".equals(ad_org_id)) {
+                    sumaCDE = stockDTO.getStock_disponible();
+                }else if ("1200000".equals(ad_org_id)) {
+                    sumaVidrio = stockDTO.getStock_disponible();
+                }
+                sumaSucursales=sumaSucursales+stockDTO.getStock_disponible();
+            }
+
+            if("1000047".equals(idSucursal)){
+                 avbre = "ASU:";
+                 suma = sumaAsu;
+                 productoSeleccionado.setStockCasaCentral(suma);
+            }else if("1010047".equals(idSucursal)){
+                avbre = "CDE:";
+                suma = sumaCDE;
+                productoSeleccionado.setStockCde(suma);
+            }else if("1200000".equals(idSucursal)){
+                avbre = "VIDRIOS:";
+                suma = sumaVidrio;
+                productoSeleccionado.setStockVidrios(suma);
+            }
+
+
+            Log.d(TAG, "setear stock producto seleccionado ASU: " +sumaAsu);
+            productoSeleccionado.setStock(sumaAsu);
+            stockProductoTxtView.setText(avbre+suma+" / SUC.:"+ (sumaSucursales-suma));
+        }
+
+   /* private void procesarStock(List<StockDTO> listStock){
         int sumaAsu=0;
         int sumaSucursales=0;
         for(StockDTO stockDTO: listStock){
@@ -239,7 +285,7 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
         productoSeleccionado.setStock(sumaAsu);
 
         stockProductoTxtView.setText("ASU:"+sumaAsu+" / SUC.:"+sumaSucursales);
-    }
+    }*/
 
     private void agregarDetalle (){
         //validar producto
@@ -266,12 +312,27 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
             AppUtils.show(null, "Ingrese una cantidad válida", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
             //guardarVisitaBtn.setEnabled(true);
             return;
-        } else if (Integer.valueOf(cantidadTxtView.getText().toString()) > Integer.valueOf(productoSeleccionado.getStock())){
+        }else if("1000047".equals(idSucursal) && Integer.valueOf(cantidadTxtView.getText().toString()) > productoSeleccionado.getStockCasaCentral()){
+            String[] buttons = {"Ok"};
+            AppUtils.show(null, "No hay stock suficiente en Casa Central para la cantidad ingresada", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
+            //guardarVisitaBtn.setEnabled(true);
+            return;
+        } else if("1010047".equals(idSucursal) && Integer.valueOf(cantidadTxtView.getText().toString()) > productoSeleccionado.getStockCde()){
+            String[] buttons = {"Ok"};
+            AppUtils.show(null, "No hay stock suficiente en CDE para la cantidad ingresada", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
+            //guardarVisitaBtn.setEnabled(true);
+            return;
+        } else if("1200000".equals(idSucursal) && Integer.valueOf(cantidadTxtView.getText().toString()) > productoSeleccionado.getStockVidrios()){
+            String[] buttons = {"Ok"};
+            AppUtils.show(null, "No hay stock suficiente en VIDRIOS para la cantidad ingresada", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
+            //guardarVisitaBtn.setEnabled(true);
+            return;
+        } /*else if (Integer.valueOf(cantidadTxtView.getText().toString()) > Integer.valueOf(productoSeleccionado.getStockCasaCentral())){
             String[] buttons = {"Ok"};
             AppUtils.show(null, "No hay stock suficiente para la cantidad ingresada", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
             //guardarVisitaBtn.setEnabled(true);
             return;
-        }
+        }*/
 
         Integer precio = calcularPrecioProducto();
 

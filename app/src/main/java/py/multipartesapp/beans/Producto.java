@@ -24,6 +24,10 @@ public class Producto extends Bean {
     Integer idSubFamilia;
     List<StockDTO> listaStock;
 
+    Integer stock_casa_central;
+    Integer stock_cde;
+    Integer stock_vidrios;
+
 
     @Override
     public void initWithJson(JSONObject o) throws JSONException {
@@ -43,6 +47,12 @@ public class Producto extends Bean {
         codinterno = getString(o, "codinterno");
         idFamilia = getInteger(o, "m_product_family_id");
         idSubFamilia = getInteger(o, "m_product_subfamily_id");
+
+        stock_casa_central = getInteger(o, "stockCasaCentral");
+        stock_cde = getInteger(o, "stockCde");
+        stock_vidrios = getInteger(o, "stockVidrios");
+
+
         //////////////////////
 
 //
@@ -125,4 +135,35 @@ public class Producto extends Bean {
     public void setListaStock(List<StockDTO> listaStock) {
         this.listaStock = listaStock;
     }
+
+    // Setter para stock_casa_central
+    public void setStockCasaCentral(Integer stock_casa_central) {
+        this.stock_casa_central = stock_casa_central;
+    }
+
+    // Getter para stock_casa_central
+    public Integer getStockCasaCentral() {
+        return stock_casa_central;
+    }
+
+    // Setter para stock_cde
+    public void setStockCde(Integer stock_cde) {
+        this.stock_cde = stock_cde;
+    }
+
+    // Getter para stock_cde
+    public Integer getStockCde() {
+        return stock_cde;
+    }
+
+    // Setter para stock_vidrios
+    public void setStockVidrios(Integer stock_vidrios) {
+        this.stock_vidrios = stock_vidrios;
+    }
+
+    // Getter para stock_vidrios
+    public Integer getStockVidrios() {
+        return stock_vidrios;
+    }
+
 }

@@ -8,7 +8,7 @@ repositories {
 
 ext.versionMajor = 3
 ext.versionMinor = 6
-ext.versionPatch = 14
+ext.versionPatch = 15
 ext.versionClassifier = null
 ext.isSnapshot = false
 ext.minimumSdkVersion = 23

@@ -279,7 +279,6 @@ public class AppDatabase {
         return mappingStockDTO(c);
 
     }
-
     public Cobranza selectCobranzaById (Integer id_cobranza){
         SQLiteDatabase db = mDatabaseOpenHelper.getReadableDatabase();
         String sql = " SELECT * FROM " +AppContract.Tables.COBRANZA + " WHERE "+ AppContract.Cobranza.id + " = "+id_cobranza;
@@ -1557,6 +1556,11 @@ public class AppDatabase {
         values.put(AppContract.Producto.stock, producto.getStock());
         values.put(AppContract.Producto.codinterno, producto.getCodinterno());
         values.put(AppContract.Producto.id_familia, producto.getIdFamilia());
+
+        values.put(AppContract.Producto.stock_casa_central, producto.getStockCasaCentral());
+        values.put(AppContract.Producto.stock_cde, producto.getStockCde());
+        values.put(AppContract.Producto.stock_vidrios, producto.getStockVidrios());
+
         values.put(AppContract.Producto.id_subfamilia, producto.getIdSubFamilia());
 
         db.insert(AppContract.Tables.PRODUCTO, null, values);
@@ -2744,6 +2748,9 @@ public class AppDatabase {
                             + AppContract.Producto.price + ", "
                             + AppContract.Producto.stock+ ", "
                             + AppContract.Producto.id_familia+ ", "
+                            + AppContract.Producto.stock_casa_central+ ", "
+                            + AppContract.Producto.stock_cde+ ", "
+                            + AppContract.Producto.stock_vidrios+ ", "
                             + AppContract.Producto.id_subfamilia+ ", "
                             + AppContract.Producto.codinterno + "); "
             );

@@ -152,12 +152,9 @@ public class ConsultaStockActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //clienteTextView.clearFocus();
                 productoSeleccionado = productosFiltrados.get(position);
-
                 //productoSeleccionado=productosFiltrados.get(0);
-
                 idProductoTextView.setText(""+productoSeleccionado.getM_product_id());
                 calcularPrecioProducto();
-
                 //obtener el stock del producto haciendo la llamada al servicio stock-productos
                 CommDelegateAndroid delegate = new CommDelegateAndroid(){
                     @Override
@@ -176,12 +173,9 @@ public class ConsultaStockActivity extends ActionBarActivity {
                         stockListAdapter.notifyDataSetChanged();
                     }
                 };
-
                 new Comm().requestGet(Comm.URL, CommReq.CommReqGetStockProducto, new String[][]{
                         {"codigo_producto",productoSeleccionado.getM_product_id().toString()}
                 }, delegate,false, StockList.class.getName());
-
-                
 //                //pedidoLinearLayout.setVisibility(View.VISIBLE);
 //                codigoProductoTxtView.setText(productoSeleccionado.getCodinterno());
 //                if (productoSeleccionado.getPrice()!= null)
@@ -190,8 +184,6 @@ public class ConsultaStockActivity extends ActionBarActivity {
 //                    stockProductoTxtView.setText(productoSeleccionado.getStock().toString());
             }
         });
-
-
 
         //boton limpiar texto producto
         productoAutoComplete.setOnTouchListener(new View.OnTouchListener() {

@@ -100,9 +100,9 @@ public class CommReq {
 
     //Reportes
 
-    public static final String  CommReqConsultaEstadoCuenta="api/report/extracto";
+    public static final String  CommReqConsultaEstadoCuenta="multip/api/report/extracto";
 
-    public static final String CommReqConsultaPedidos="api/report/pedidos";
+    public static final String CommReqConsultaPedidos="multip/api/report/pedidos";
 
 
     public static final String CommReqSincronizarStock

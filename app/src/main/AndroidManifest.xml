@@ -80,6 +80,8 @@ uses-permission android:name="android.permission.WAKE_LOCK" />
         </activity>
         <activity android:name="py.multipartesapp.activities.PedidoActivity">
         </activity>
+        <activity android:name="py.multipartesapp.activities.SeleccioneSucursalActivity">
+        </activity>
         <activity android:name="py.multipartesapp.activities.PedidoDetalleNuevoActivity">
         </activity>
         <activity android:name="py.multipartesapp.activities.ConsultasActivity">

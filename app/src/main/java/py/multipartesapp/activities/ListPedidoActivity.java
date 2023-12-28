@@ -68,7 +68,8 @@ public class ListPedidoActivity extends ActionBarActivity {
         nuevoPedidoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ListPedidoActivity.this, PedidoActivity.class);
+               // Intent intent = new Intent(ListPedidoActivity.this, PedidoActivity.class);
+                Intent intent = new Intent(ListPedidoActivity.this, SeleccioneSucursalActivity.class);
                 startActivity(intent);
             }
         });

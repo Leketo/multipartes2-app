@@ -93,6 +93,11 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
 
     private AppDatabase db = new AppDatabase(this);
 
+    private TextView textViewDescripcionSucursal;
+
+    private String idSucursal;
+    private String descripcionSucursal;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,11 +115,28 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //muestra el boton atras
         getSupportActionBar().setTitle("Pedido");
 
+
         //progressBar = (ProgressBar)findViewById(R.id.indeterminateBar);
         progressStyle = new Circle();
 
         progressStyle.setVisible(false,true);
         progressStyle.setBounds(0,0,100,100);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            idSucursal = intent.getStringExtra("idSucursal");
+            descripcionSucursal = intent.getStringExtra("descripcionSucursal");
+
+            // Mostrar la descripción en un campo de texto no editable
+            textViewDescripcionSucursal = findViewById(R.id.textViewDescripcionSucursal);
+            if (textViewDescripcionSucursal != null) {
+                textViewDescripcionSucursal.setText(descripcionSucursal);
+            } else {
+                Log.e("PedidoActivity", "textViewDescripcionSucursal es null.");
+            }
+        } else {
+            Log.e("PedidoActivity", "Intent es null.");
+        }
 
         clienteTextView = (AutoCompleteTextView) findViewById(R.id.pedido_cliente);
         detallesListView = (ListView) findViewById(R.id.pedido_detalle_list);
@@ -191,6 +213,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
                     return;
                 }
                 Intent intent = new Intent(PedidoActivity.this, PedidoDetalleNuevoActivity.class);
+                intent.putExtra("idSucursal", idSucursal);
                 startActivity(intent);
 
 
@@ -425,7 +448,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
             JSONObject jsonObject = new JSONObject();
 
             jsonObject.accumulate("ad_client_id", "1000010");
-            jsonObject.accumulate("ad_org_id", "1000047");
+            jsonObject.accumulate("ad_org_id", idSucursal);
             jsonObject.accumulate("date_order", pedido.getDate_order());
             jsonObject.accumulate("isactive", pedido.getIsactive());
             jsonObject.accumulate("client_id", pedido.getClient_id());
@@ -832,7 +855,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
                 JSONObject jsonObject = new JSONObject();
 
                 jsonObject.accumulate("ad_client_id", "1000010");
-                jsonObject.accumulate("ad_org_id", "1000047");
+                jsonObject.accumulate("ad_org_id", idSucursal);
                 jsonObject.accumulate("date_order", pedido.getDate_order());
                 jsonObject.accumulate("isactive", pedido.getIsactive());
                 jsonObject.accumulate("client_id", pedido.getClient_id());

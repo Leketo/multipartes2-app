@@ -4,6 +4,15 @@ public class LocatorDTO {
 
     private String m_locator_id;
     private String m_locator_value;
+    private String ad_org_id;
+
+    public String getAd_org_id() {
+        return ad_org_id;
+    }
+
+    public void setAd_org_id(String ad_org_id) {
+        this.ad_org_id = ad_org_id;
+    }
 
     public String getM_locator_id() {
         return m_locator_id;
