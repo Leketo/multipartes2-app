@@ -227,7 +227,6 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
        // listStock=db.selectStockPorProducto(productoSeleccionado.getM_product_id().toString());
      //   procesarStock(listStock);
        //   procesarStock(productoSeleccionado.getM_product_id());
-
     }
 
        private void procesarStock(List<StockDTO> listStock){

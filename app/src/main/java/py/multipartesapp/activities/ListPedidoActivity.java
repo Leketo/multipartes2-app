@@ -113,6 +113,8 @@ public class ListPedidoActivity extends ActionBarActivity {
 
 
                 Intent intent = new Intent(ListPedidoActivity.this, PedidoActivity.class);
+                intent.putExtra("idSucursal", pedido.getAd_org_id().toString());
+                intent.putExtra("descripcionSucursal", pedido.getObservation());
                 startActivity(intent);
             }
         });

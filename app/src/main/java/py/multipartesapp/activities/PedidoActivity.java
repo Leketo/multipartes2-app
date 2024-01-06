@@ -356,6 +356,7 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         }
 
         Pedido pedido = Globals.getPedidoSeleccionado();
+        pedido.setTotal(getSumaTotalDetalles());
         pedido.setClient_id(clienteSeleccionado.getId());
         pedido.setEstado_envio("PENDIENTE");
         db.updatePedido(pedido);
@@ -563,6 +564,8 @@ public class PedidoActivity extends ActionBarActivity implements View.OnClickLis
         pedido.setIsactive("Y");
         pedido.setIsinvoiced("N");
         pedido.setClient_id(clienteSeleccionado.getId());
+        pedido.setAd_org_id(Integer.valueOf(idSucursal));
+        pedido.setObservation(descripcionSucursal);
 
         String fechaPedido = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         pedido.setDate_order(fechaPedido);
