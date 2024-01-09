@@ -30,6 +30,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import py.multipartesapp.BuildConfig;
 import py.multipartesapp.beans.Configuracion;
 import py.multipartesapp.beans.Login;
 import py.multipartesapp.beans.Session;
@@ -322,6 +324,7 @@ public class LoginActivity extends  ActionBarActivity {
             // 7. Set some headers to inform server about the type of the content
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
+            httpPost.setHeader("api_version", BuildConfig.VERSION_NAME);
 
             Log.d(TAG, "enviando post: "+ url);
             Log.d(TAG, "mensaje post: "+ json);
@@ -410,6 +413,7 @@ public class LoginActivity extends  ActionBarActivity {
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("Authorization", "Bearer "+token);
+            httpPost.setHeader("api_version", BuildConfig.VERSION_NAME);
 
             Log.d(TAG, "obtener datos usuario: "+ url);
 

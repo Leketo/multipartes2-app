@@ -3,6 +3,8 @@ package py.multipartesapp.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -39,6 +41,7 @@ import org.apache.sshd.server.shell.ProcessShellFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
@@ -52,6 +55,7 @@ import py.multipartesapp.comm.CommDelegateAndroid;
 import py.multipartesapp.comm.CommReq;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.locationServices.LocationService;
+import py.multipartesapp.services.LogoutReceiver;
 import py.multipartesapp.utils.Globals;
 import py.multipartesapp.utils.control.ControlService;
 
@@ -222,6 +226,7 @@ public class Main extends ActionBarActivity {
 
         String [] permisos= {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
         solicitarPermisos(permisos);
+        Main.programarCierreDeSesionDiario(context);
 
         //startCheckLocationService();
 
@@ -338,6 +343,30 @@ public class Main extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public static void programarCierreDeSesionDiario(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, LogoutReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+        // Configurar la alarma para las 13:25 horas
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
+    }
+
 
     @Override
     protected void onResume() {

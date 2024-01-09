@@ -63,6 +63,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import py.multipartesapp.BuildConfig;
 import py.multipartesapp.R;
 import py.multipartesapp.beans.*;
 import py.multipartesapp.comm.Comm;
@@ -547,6 +548,7 @@ public class CobranzaActivity extends ActionBarActivity {
             // 7. Set some headers to inform server about the type of the content
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
+            httpPost.setHeader("api_version", BuildConfig.VERSION_NAME);
 
             Log.d(TAG, "enviando post: "+ url);
             Log.d(TAG, "mensaje post: "+ json);
@@ -894,6 +896,7 @@ public class CobranzaActivity extends ActionBarActivity {
                 // 7. Set some headers to inform server about the type of the content
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
+                httpPost.setHeader("api_version", BuildConfig.VERSION_NAME);
 
                 Log.d(TAG, "enviando post: "+ url);
                 Log.d(TAG, "mensaje post: "+ json);

@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import py.multipartesapp.BuildConfig;
 import py.multipartesapp.R;
 import py.multipartesapp.beans.Cliente;
 import py.multipartesapp.beans.Entrega;
@@ -407,6 +408,7 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
             // 7. Set some headers to inform server about the type of the content
             //httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
+            httpPost.setHeader("api_version", BuildConfig.VERSION_NAME);
 
             Log.d(TAG, "enviando post: "+ httpPost.toString());
             Log.d(TAG, "mensaje post: "+ json);
@@ -607,6 +609,7 @@ public class RutaLocationNewActivity extends ActionBarActivity implements View.O
                 // 7. Set some headers to inform server about the type of the content
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
+                httpPost.setHeader("api_version", BuildConfig.VERSION_NAME);
 
                 Log.d(TAG, "enviando post: "+ httpPost.toString());
                 Log.d(TAG, "mensaje post: "+ json);

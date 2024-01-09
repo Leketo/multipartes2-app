@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import py.multipartesapp.BuildConfig;
+
 public class DownloaderPdf {
 
         public static void DownloadFile(String fileURL, File directory) {
@@ -15,6 +17,7 @@ public class DownloaderPdf {
                 URL u = new URL(fileURL);
                 HttpURLConnection c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("GET");
+                c.setRequestProperty("api_version", BuildConfig.VERSION_NAME);
                 //c.setDoOutput(true);
                 c.connect();
 

@@ -30,6 +30,7 @@ import java.util.ArrayList;
         import java.util.List;
 import java.util.Map;
 
+import py.multipartesapp.BuildConfig;
 import py.multipartesapp.utils.Globals;
 
 
@@ -187,6 +188,7 @@ public class Http {
 
 
 		HttpPost post = new HttpPost(url);
+		post.setHeader("api_version", BuildConfig.VERSION_NAME);
         //post.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 		if( params!=null ){
 //			JSONObject jParams = new JSONObject();
@@ -353,6 +355,7 @@ public class Http {
 	    	}
     	}
         HttpGet httpGet = new HttpGet(url+queryString);
+		httpGet.setHeader("api_version", BuildConfig.VERSION_NAME);
         //httpGet.setParams();
 
         Throwable t = null;
