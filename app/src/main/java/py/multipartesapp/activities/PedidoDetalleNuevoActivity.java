@@ -56,6 +56,8 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
     private ImageView vistaPreviaImgView;
     private String idSucursal;
 
+    private Integer stockAllSucursalesWithoutSuc;
+
 
     private List<StockDTO> listStock= new ArrayList<>();
 
@@ -191,6 +193,14 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             //clic en boton Ok
+            extracted();
+        }
+    };
+
+    DialogInterface.OnClickListener dialogOnclicListenerOK = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            //clic en boton Ok
         }
     };
 
@@ -266,6 +276,7 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
 
             Log.d(TAG, "setear stock producto seleccionado ASU: " +sumaAsu);
             productoSeleccionado.setStock(sumaAsu);
+            stockAllSucursalesWithoutSuc = sumaSucursales;
             stockProductoTxtView.setText(avbre+suma+" / SUC.:"+ (sumaSucursales-suma));
         }
 
@@ -290,7 +301,7 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
         //validar producto
         if (productoSeleccionado == null || productoTextView.getText().equals("")){
             String[] buttons = {"Ok"};
-            AppUtils.show(null, "Seleccione un producto", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
+            AppUtils.show(null, "Seleccione un producto", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListenerOK);
             //guardarVisitaBtn.setEnabled(true);
             return;
         }
@@ -299,7 +310,7 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
         for (PedidoDetalle detalle : PedidoActivity.detallesList){
             if (detalle.getProduct_id().equals(productoSeleccionado.getM_product_id())){
                 String[] buttons = {"Ok"};
-                AppUtils.show(null, "El producto ya existe en el Pedido.", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
+                AppUtils.show(null, "El producto ya existe en el Pedido.", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListenerOK);
                 //guardarVisitaBtn.setEnabled(true);
                 return;
             }
@@ -311,7 +322,28 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
             AppUtils.show(null, "Ingrese una cantidad válida", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
             //guardarVisitaBtn.setEnabled(true);
             return;
-        }else if("1000047".equals(idSucursal) && Integer.valueOf(cantidadTxtView.getText().toString()) > productoSeleccionado.getStockCasaCentral()){
+        }else if("1000047".equals(idSucursal) && Integer.valueOf(cantidadTxtView.getText().toString()) > productoSeleccionado.getStockCasaCentral()
+                && Integer.valueOf(cantidadTxtView.getText().toString()) <= stockAllSucursalesWithoutSuc){
+            String[] buttons = {"Ok"};
+            AppUtils.show(null, "No hay stock suficiente en Casa Central. Pero SI hay Stock en otras sucursales", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
+            return;
+        } else if("1010047".equals(idSucursal) && Integer.valueOf(cantidadTxtView.getText().toString()) > productoSeleccionado.getStockCde()
+                && Integer.valueOf(cantidadTxtView.getText().toString()) <= stockAllSucursalesWithoutSuc){
+            String[] buttons = {"Ok"};
+            AppUtils.show(null, "No hay stock suficiente en CDE. Pero SI hay Stock en otras sucursales", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
+            return;
+        } else if("1200000".equals(idSucursal) && Integer.valueOf(cantidadTxtView.getText().toString()) > productoSeleccionado.getStockVidrios()
+                && Integer.valueOf(cantidadTxtView.getText().toString()) <= stockAllSucursalesWithoutSuc){
+            String[] buttons = {"Ok"};
+            AppUtils.show(null, "No hay stock suficiente en VIDRIOS. Pero SI hay Stock en otras sucursales", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
+            return;
+        } else if (Integer.valueOf(cantidadTxtView.getText().toString()) > stockAllSucursalesWithoutSuc){
+            String[] buttons = {"Ok"};
+            AppUtils.show(null, "No hay stock suficiente para la cantidad ingresada", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListenerOK);
+            //guardarVisitaBtn.setEnabled(true);
+            return;
+        }
+      /*  }else if("1000047".equals(idSucursal) && Integer.valueOf(cantidadTxtView.getText().toString()) > productoSeleccionado.getStockCasaCentral()){
             String[] buttons = {"Ok"};
             AppUtils.show(null, "No hay stock suficiente en Casa Central para la cantidad ingresada", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
             //guardarVisitaBtn.setEnabled(true);
@@ -326,13 +358,13 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
             AppUtils.show(null, "No hay stock suficiente en VIDRIOS para la cantidad ingresada", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
             //guardarVisitaBtn.setEnabled(true);
             return;
-        } /*else if (Integer.valueOf(cantidadTxtView.getText().toString()) > Integer.valueOf(productoSeleccionado.getStockCasaCentral())){
-            String[] buttons = {"Ok"};
-            AppUtils.show(null, "No hay stock suficiente para la cantidad ingresada", buttons, PedidoDetalleNuevoActivity.this, false, dialogOnclicListener);
-            //guardarVisitaBtn.setEnabled(true);
-            return;
-        }*/
+        */
 
+        extracted();
+        return;
+    }
+
+    private void extracted() {
         Integer precio = calcularPrecioProducto();
 
         PedidoDetalle nuevoDetalle = new PedidoDetalle ();
@@ -350,7 +382,6 @@ public class PedidoDetalleNuevoActivity extends ActionBarActivity {
 
         Globals.setProductoSeleccionadoCatalogo(null);
         finish();
-        return;
     }
 
     public Integer calcularPrecioProducto (){
