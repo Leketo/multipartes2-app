@@ -44,19 +44,24 @@ import py.multipartesapp.R;
 import py.multipartesapp.utils.AppUtils;
 import py.multipartesapp.utils.Globals;
 
-import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import py.multipartesapp.utils.CrashlyticsHelper;
 
 /**
  * Created by Adolfo on 10/06/2015.
  */
 public class LoginActivity extends  ActionBarActivity {
     public static final String TAG = LoginActivity.class.getSimpleName();
+
+    private enum LoginServerResult {
+        SUCCESS,
+        ACCESS_DENIED,
+        NETWORK_ERROR
+    }
 
 
     private Button loginBtn;
@@ -71,7 +76,7 @@ public class LoginActivity extends  ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Fabric.with(this, new Crashlytics());
+        CrashlyticsHelper.initialize(this);
         setContentView(R.layout.activiy_login);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -149,38 +154,13 @@ public class LoginActivity extends  ActionBarActivity {
     }
 
     private void login () {
-        Boolean enLinea = AppUtils.isOnline(getApplicationContext());
-        //login sin conexion
-        if (!enLinea){
-            //buscar usuario
-            Usuario usuario = db.buscarUsuario(usernameEditText.getText().toString().trim(), passwordEditText.getText().toString());
-            if (usuario.getName() == null){
+        if (!AppUtils.hasNetworkConnection(getApplicationContext())){
+            if (!loginOffline()) {
                 progressBar.setVisibility(View.GONE);
                 String[] buttons = {"Ok"};
                 AppUtils.show(null, "Acceso denegado.", buttons, LoginActivity.this, false, null);
-                return;
-            }else {
-                // borrar login y session
-                db.deleteLogin();
-                db.deleteSession();
-
-                //setear login y cookie
-                Login login = new Login();
-                login.setUserName(usernameEditText.getText().toString());
-                login.setStatus("ACTIVE");
-                login.setSessionID("un_cookie_creado_en_login_sin_conexion");
-                db.insertLogin(login);
-
-                //setear session
-                Session session = new Session();
-                session.setUserId(usuario.getId());
-                db.insertSession(session);
-
-                Intent intent = new Intent(LoginActivity.this, Main.class);
-                startActivity(intent);
-                finish();
-                return;
             }
+            return;
         }
         /*
         CommDelegateAndroid delegateLogin = new CommDelegateAndroid(){
@@ -229,8 +209,43 @@ public class LoginActivity extends  ActionBarActivity {
             e.printStackTrace();
         }
 
-        loginServer(json.toString());
+        if (json == null) {
+            progressBar.setVisibility(View.GONE);
+            AppUtils.handleError("Error al preparar login.", LoginActivity.this);
+            return;
+        }
 
+        LoginServerResult loginResult = loginServer(json.toString());
+        if (loginResult == LoginServerResult.NETWORK_ERROR && !loginOffline()) {
+            progressBar.setVisibility(View.GONE);
+            AppUtils.handleError("Sin conexion. No existe acceso offline para este usuario.", LoginActivity.this);
+        }
+
+    }
+
+    private boolean loginOffline() {
+        Usuario usuario = db.buscarUsuario(usernameEditText.getText().toString().trim(), passwordEditText.getText().toString());
+        if (usuario.getName() == null) {
+            return false;
+        }
+
+        db.deleteLogin();
+        db.deleteSession();
+
+        Login login = new Login();
+        login.setUserName(usernameEditText.getText().toString());
+        login.setStatus("ACTIVE");
+        login.setSessionID("un_cookie_creado_en_login_sin_conexion");
+        db.insertLogin(login);
+
+        Session session = new Session();
+        session.setUserId(usuario.getId());
+        db.insertSession(session);
+
+        Intent intent = new Intent(LoginActivity.this, Main.class);
+        startActivity(intent);
+        finish();
+        return true;
     }
 
 
@@ -304,7 +319,7 @@ public class LoginActivity extends  ActionBarActivity {
 
     }
 
-    private String loginServer(String json){
+    private LoginServerResult loginServer(String json){
         InputStream inputStream = null;
         String result = "";
         try {
@@ -359,9 +374,7 @@ public class LoginActivity extends  ActionBarActivity {
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.setGravity(Gravity.CENTER|Gravity.CENTER,0,0);
                     toast.show();
-                    finish();
-
-                    return "NO_ENVIADO_SIN_CONEXION_A_INTERNET";
+                    return LoginServerResult.NETWORK_ERROR;
 
                 }
 
@@ -383,7 +396,7 @@ public class LoginActivity extends  ActionBarActivity {
 
 
 
-                return "ENVIADO_CORRECTAMENTE";
+                return LoginServerResult.SUCCESS;
             } else {
                 AppUtils.handleError("Acceso denegado.", LoginActivity.this);
                 progressBar.setVisibility(View.GONE);
@@ -391,10 +404,10 @@ public class LoginActivity extends  ActionBarActivity {
 
             Log.d(TAG, "resultado  post: "+ result);
         } catch (Exception e) {
-            AppUtils.handleError("Error al enviar login.", LoginActivity.this);
             Log.e(TAG, e.getStackTrace().toString() + e.getMessage());
+            return LoginServerResult.NETWORK_ERROR;
         }
-        return "ENVIADO_CORRECTAMENTE";
+        return LoginServerResult.ACCESS_DENIED;
 
     }
 

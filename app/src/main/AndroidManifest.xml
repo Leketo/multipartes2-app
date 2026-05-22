@@ -118,6 +118,10 @@ uses-permission android:name="android.permission.WAKE_LOCK" />
         </activity>
         <activity android:name="py.multipartesapp.activities.ConsultaPedidosWebViewActivity">
         </activity>
+        <activity android:name="py.multipartesapp.activities.ConsultaRemitosActivity">
+        </activity>
+        <activity android:name="py.multipartesapp.activities.ConsultaRemitosWebViewActivity">
+        </activity>
         <activity android:name="py.multipartesapp.activities.ConsultaEntregasActivity">
         </activity>
         <activity android:name="py.multipartesapp.activities.ConsultaEntregasWebViewActivity">

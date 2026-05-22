@@ -29,6 +29,7 @@ public class ConsultasActivity extends ActionBarActivity {
     private Button misPedidosBtn;
     private Button misEntregasBtn;
     private Button misCobrosBtn;
+    private Button misRemitosBtn;
 
     private Button estadoCuentaBtn;
     private Button stockProductoBtn;
@@ -50,12 +51,14 @@ public class ConsultasActivity extends ActionBarActivity {
         misPedidosBtn = (Button) findViewById(R.id.consultas_pedidos);
         misEntregasBtn = (Button) findViewById(R.id.consultas_entregas);
         misCobrosBtn = (Button) findViewById(R.id.consultas_cobranzas);
+        misRemitosBtn = (Button) findViewById(R.id.consultas_remitos);
 
         estadoCuentaBtn = (Button) findViewById(R.id.consultas_estado_cuenta);
         stockProductoBtn = (Button) findViewById(R.id.consultas_stock_producto);
 
 
         misEntregasBtn.setVisibility(View.INVISIBLE);
+        misCobrosBtn.setVisibility(View.GONE);
 
         misVisitasBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +88,14 @@ public class ConsultasActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ConsultasActivity.this, ConsultaCobrosActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        misRemitosBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ConsultasActivity.this, ConsultaRemitosActivity.class);
                 startActivity(intent);
             }
         });

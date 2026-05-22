@@ -1,6 +1,13 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'io.fabric'
+def requestedTaskNames = gradle.startParameter.taskNames.collect { it.toLowerCase() }
+def enableFabricPlugin = requestedTaskNames.any { it.contains('release') || it.contains('crashlytics') } || project.hasProperty('enableFabricPlugin')
+
+// The legacy Fabric Gradle plugin is only needed for release-era Crashlytics tasks.
+// Keeping it off debug/sync avoids failures on modern local JDK setups.
+if (enableFabricPlugin) {
+    apply plugin: 'io.fabric'
+}
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -117,8 +124,7 @@ dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'com.google.android.gms:play-services:4.2.42'
     compile 'com.google.maps.android:android-maps-utils:0.4+'
-    //    compile 'com.github.barteksc:android-pdf-viewer:2.3.0'
-    compile 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    // Local replacement for the deprecated android-pdf-viewer dependency.
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'

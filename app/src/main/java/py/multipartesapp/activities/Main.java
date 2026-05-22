@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 //import org.apache.http.impl.cookie.BasicClientCookie;
 
-import com.crashlytics.android.Crashlytics;
 //import com.hypertrack.hyperlog.HyperLog;
 
 import org.apache.sshd.SshServer;
@@ -44,7 +43,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import io.fabric.sdk.android.Fabric;
 import py.multipartesapp.R;
 import py.multipartesapp.beans.Configuracion;
 import py.multipartesapp.beans.LocationTable;
@@ -55,6 +53,7 @@ import py.multipartesapp.comm.CommDelegateAndroid;
 import py.multipartesapp.comm.CommReq;
 import py.multipartesapp.db.AppDatabase;
 import py.multipartesapp.locationServices.LocationService;
+import py.multipartesapp.utils.CrashlyticsHelper;
 import py.multipartesapp.services.LogoutReceiver;
 import py.multipartesapp.utils.Globals;
 import py.multipartesapp.utils.control.ControlService;
@@ -91,7 +90,7 @@ public class Main extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Fabric.with(this, new Crashlytics());
+        CrashlyticsHelper.initialize(this);
 
 //        HyperLog.initialize(this);
 //        HyperLog.setLogLevel(Log.VERBOSE);
@@ -238,9 +237,7 @@ public class Main extends ActionBarActivity {
 
     private void logUser(Usuario usuario) {
 
-        Crashlytics.setUserIdentifier(""+usuario.getId());
-        Crashlytics.setUserEmail(usuario.getMail());
-        Crashlytics.setUserName(usuario.getName());
+        CrashlyticsHelper.logUser(usuario);
     }
 
     public void forceCrash(View view) {

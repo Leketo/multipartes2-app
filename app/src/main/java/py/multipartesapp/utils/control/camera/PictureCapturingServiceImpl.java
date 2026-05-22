@@ -19,7 +19,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -109,9 +108,9 @@ public class PictureCapturingServiceImpl extends APictureCapturingService {
     private void openCamera() {
         Log.d(TAG, "opening camera " + currentCameraId);
         try {
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+            if (context.checkSelfPermission(Manifest.permission.CAMERA)
                     == PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(context,
+                    && context.checkSelfPermission(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 manager.openCamera(currentCameraId, stateCallback, null);

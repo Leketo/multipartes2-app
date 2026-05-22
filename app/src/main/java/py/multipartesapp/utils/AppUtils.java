@@ -127,24 +127,18 @@ public class AppUtils {
         progressDialog.dismiss();
     }
 
-    public static boolean isOnline(Context context) {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
-
+    public static boolean hasNetworkConnection(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
+        if (cm == null) {
+            return false;
         }
 
-        boolean isConnected = false;
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
+    }
 
-        if(haveConnectedMobile || haveConnectedWifi){
+    public static boolean isOnline(Context context) {
+        if (hasNetworkConnection(context)){
             try {
                 Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 app.multipartes.com.py");
                 int returnVal = p1.waitFor();

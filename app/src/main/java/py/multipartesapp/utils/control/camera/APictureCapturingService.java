@@ -1,10 +1,9 @@
 package py.multipartesapp.utils.control.camera;
 
 import android.app.Activity;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.camera2.CameraManager;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.SparseIntArray;
 import android.view.Surface;
 
@@ -34,7 +33,7 @@ public abstract class APictureCapturingService {
      *
      * @param activity the activity used to get display manager and the application context
      */
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(21)
     APictureCapturingService(final Activity activity) {
         this.activity = activity;
         this.context = activity.getApplicationContext();
