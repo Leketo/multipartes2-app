@@ -62,6 +62,9 @@ import py.multipartesapp.utils.control.ControlService;
 public class Main extends ActionBarActivity {
 
     public static final String TAG = Main.class.getSimpleName();
+    public static final int LOGOUT_HOUR_OF_DAY = 23;
+    public static final int LOGOUT_MINUTE = 0;
+    public static final int LOGOUT_SECOND = 0;
 
     private TextView nombreUsuarioTextView;
     private Button registroVisistasBtn;
@@ -346,18 +349,22 @@ public class Main extends ActionBarActivity {
         Intent intent = new Intent(context, LogoutReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
-        // Configurar la alarma para las 13:25 horas
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, LOGOUT_HOUR_OF_DAY);
+        calendar.set(Calendar.MINUTE, LOGOUT_MINUTE);
+        calendar.set(Calendar.SECOND, LOGOUT_SECOND);
+        calendar.set(Calendar.MILLISECOND, 0);
 
         if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
             calendar.add(Calendar.DAY_OF_YEAR, 1);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        Log.d(TAG, "Cierre de sesion diario programado para: " + calendar.getTime());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
