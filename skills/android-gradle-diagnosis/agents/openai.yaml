@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Gradle Diagnosis"
+  short_description: "Diagnose Android/Gradle build failures"
+  default_prompt: "Use $android-gradle-diagnosis to diagnose an Android/Gradle build failure, identify blockers, and propose the next unblocking steps."

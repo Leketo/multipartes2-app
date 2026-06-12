@@ -11,3 +11,8 @@
 .idea/**
 *.apk
 *.aab
+
+# Local tool homes/caches
+/.android-home*/
+/.gradle-user*/
+/.sandbox-home/

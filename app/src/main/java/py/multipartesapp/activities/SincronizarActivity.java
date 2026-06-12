@@ -21,6 +21,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import py.multipartesapp.R;
+import py.multipartesapp.BuildConfig;
 import py.multipartesapp.beans.ClienteList;
 import py.multipartesapp.beans.CobranzaList;
 import py.multipartesapp.beans.Configuracion;
@@ -1287,7 +1289,9 @@ public class SincronizarActivity extends ActionBarActivity {
                 Log.d(TAG, "invocar URL->" + _url);
 
                 url = new URL(_url);
-                in = url.openStream();
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestProperty("api_version", BuildConfig.VERSION_NAME);
+                in = connection.getInputStream();
 
                 // Read the inputstream
                 buf = new BufferedInputStream(in);

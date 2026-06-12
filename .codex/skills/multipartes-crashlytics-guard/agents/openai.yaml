@@ -1,0 +1,7 @@
+﻿interface:
+  display_name: "Multipartes Crashlytics Guard"
+  short_description: "Avoid debug Crashlytics startup crash"
+  default_prompt: "Use $multipartes-crashlytics-guard to preserve the Crashlytics startup guard in multipartes2-app."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Multipartes External API"
+  short_description: "Inspect and validate Multipartes REST APIs"
+  default_prompt: "Use $multipartes-external-api to inspect, document, and validate Multipartes external API endpoints, auth, and health checks."
+
+policy:
+  allow_implicit_invocation: true
