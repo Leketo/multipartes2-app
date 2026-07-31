@@ -15,10 +15,21 @@
         app:contentInsetStart="0dp">
     </android.support.v7.widget.Toolbar>
 
+    <Button
+        style="@style/button"
+        android:id="@+id/consulta_remitos_descargar_pdf_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Descargar"/>
+
     <com.github.barteksc.pdfviewer.PDFView
         android:id="@+id/webView6"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"/>
+        android:layout_below="@id/consulta_remitos_descargar_pdf_btn"/>
 
 </RelativeLayout>
